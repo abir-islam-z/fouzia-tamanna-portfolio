@@ -123,7 +123,7 @@ export const footerSchema = z.object({
 
 // --- AUTH ---
 export const login = createServerFn({ method: "POST" })
-  .inputValidator(loginSchema)
+  .validator(loginSchema)
   .handler(async ({ data }) => {
     return loginServer(data)
   })
@@ -142,7 +142,7 @@ export const getHero = createServerFn({ method: "GET" }).handler(async () => {
 })
 
 export const updateHero = createServerFn({ method: "POST" })
-  .inputValidator(heroSchema)
+  .validator(heroSchema)
   .handler(async ({ data }) => {
     return updateHeroServer(data)
   })
@@ -152,7 +152,7 @@ export const getFooter = createServerFn({ method: "GET" }).handler(async () => {
 })
 
 export const updateFooter = createServerFn({ method: "POST" })
-  .inputValidator(footerSchema)
+  .validator(footerSchema)
   .handler(async ({ data }) => {
     return updateFooterServer(data)
   })
@@ -163,13 +163,13 @@ export const getStats = createServerFn({ method: "GET" }).handler(async () => {
 })
 
 export const updateStat = createServerFn({ method: "POST" })
-  .inputValidator(statSchema)
+  .validator(statSchema)
   .handler(async ({ data }) => {
     return updateStatServer(data)
   })
 
 export const deleteStat = createServerFn({ method: "POST" })
-  .inputValidator(z.number())
+  .validator(z.number())
   .handler(async ({ data: id }) => {
     return deleteStatServer(id)
   })
@@ -182,13 +182,13 @@ export const getExperience = createServerFn({ method: "GET" }).handler(
 )
 
 export const updateExperience = createServerFn({ method: "POST" })
-  .inputValidator(experienceSchema)
+  .validator(experienceSchema)
   .handler(async ({ data }) => {
     return updateExperienceServer(data)
   })
 
 export const deleteExperience = createServerFn({ method: "POST" })
-  .inputValidator(z.number())
+  .validator(z.number())
   .handler(async ({ data: id }) => {
     return deleteExperienceServer(id)
   })
@@ -201,20 +201,20 @@ export const getProjects = createServerFn({ method: "GET" }).handler(
 )
 
 export const updateProject = createServerFn({ method: "POST" })
-  .inputValidator(projectSchema)
+  .validator(projectSchema)
   .handler(async ({ data }) => {
     return updateProjectServer(data)
   })
 
 export const deleteProject = createServerFn({ method: "POST" })
-  .inputValidator(z.number())
+  .validator(z.number())
   .handler(async ({ data: id }) => {
     return deleteProjectServer(id)
   })
 
 // --- CONTACT MESSAGES ---
 export const submitContact = createServerFn({ method: "POST" })
-  .inputValidator(contactSchema)
+  .validator(contactSchema)
   .handler(async ({ data }) => {
     return submitContactServer(data)
   })
@@ -233,13 +233,13 @@ export const getTestimonials = createServerFn({ method: "GET" }).handler(
 )
 
 export const updateTestimonial = createServerFn({ method: "POST" })
-  .inputValidator(testimonialSchema)
+  .validator(testimonialSchema)
   .handler(async ({ data }) => {
     return updateTestimonialServer(data)
   })
 
 export const deleteTestimonial = createServerFn({ method: "POST" })
-  .inputValidator(z.number())
+  .validator(z.number())
   .handler(async ({ data: id }) => {
     return deleteTestimonialServer(id)
   })
@@ -252,13 +252,13 @@ export const getCertifications = createServerFn({ method: "GET" }).handler(
 )
 
 export const updateCertification = createServerFn({ method: "POST" })
-  .inputValidator(certificationSchema)
+  .validator(certificationSchema)
   .handler(async ({ data }) => {
     return updateCertificationServer(data)
   })
 
 export const deleteCertification = createServerFn({ method: "POST" })
-  .inputValidator(z.number())
+  .validator(z.number())
   .handler(async ({ data: id }) => {
     return deleteCertificationServer(id)
   })
@@ -266,7 +266,7 @@ export const deleteCertification = createServerFn({ method: "POST" })
 // --- MEDIA LIBRARY ---
 
 export const getMedia = createServerFn({ method: "GET" })
-  .inputValidator(
+  .validator(
     z
       .object({ folder: z.string().optional() })
       .optional()
@@ -276,7 +276,7 @@ export const getMedia = createServerFn({ method: "GET" })
   })
 
 export const getMediaItem = createServerFn({ method: "GET" })
-  .inputValidator(z.number())
+  .validator(z.number())
   .handler(async ({ data: id }) => {
     return getMediaItemServer(id)
   })
@@ -286,7 +286,7 @@ export const getR2Status = createServerFn({ method: "GET" }).handler(async () =>
 })
 
 export const getPresignedUpload = createServerFn({ method: "POST" })
-  .inputValidator(
+  .validator(
     z.object({
       fileName: z.string().min(1),
       mimeType: z.string().min(1),
@@ -298,7 +298,7 @@ export const getPresignedUpload = createServerFn({ method: "POST" })
   })
 
 export const finalizeMediaUploadFn = createServerFn({ method: "POST" })
-  .inputValidator(
+  .validator(
     z.object({
       key: z.string().min(1),
       originalName: z.string().min(1),
@@ -313,7 +313,7 @@ export const finalizeMediaUploadFn = createServerFn({ method: "POST" })
   })
 
 export const uploadMedia = createServerFn({ method: "POST" })
-  .inputValidator(
+  .validator(
     z.object({
       fileName: z.string().min(1),
       mimeType: z.string().min(1),
@@ -328,7 +328,7 @@ export const uploadMedia = createServerFn({ method: "POST" })
   })
 
 export const updateMedia = createServerFn({ method: "POST" })
-  .inputValidator(
+  .validator(
     z.object({
       id: z.number(),
       alt: z.string().nullable().optional(),
@@ -341,7 +341,7 @@ export const updateMedia = createServerFn({ method: "POST" })
   })
 
 export const deleteMedia = createServerFn({ method: "POST" })
-  .inputValidator(z.number())
+  .validator(z.number())
   .handler(async ({ data: id }) => {
     return deleteMediaServer(id)
   })

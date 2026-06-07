@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/library"
+import type * as runtime from "@prisma/client/runtime/client"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -200,7 +200,7 @@ export type HeroGroupByOutputType = {
   _max: HeroMaxAggregateOutputType | null
 }
 
-type GetHeroGroupByPayload<T extends HeroGroupByArgs> = Prisma.PrismaPromise<
+export type GetHeroGroupByPayload<T extends HeroGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<HeroGroupByOutputType, T['by']> &
       {
@@ -1126,6 +1126,11 @@ export type HeroFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Skip the first `n` Heroes.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Heroes.
+   */
   distinct?: Prisma.HeroScalarFieldEnum | Prisma.HeroScalarFieldEnum[]
 }
 

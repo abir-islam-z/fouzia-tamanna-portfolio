@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/library"
+import type * as runtime from "@prisma/client/runtime/client"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -217,7 +217,7 @@ export type ExperienceGroupByOutputType = {
   _max: ExperienceMaxAggregateOutputType | null
 }
 
-type GetExperienceGroupByPayload<T extends ExperienceGroupByArgs> = Prisma.PrismaPromise<
+export type GetExperienceGroupByPayload<T extends ExperienceGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ExperienceGroupByOutputType, T['by']> &
       {
@@ -1085,6 +1085,11 @@ export type ExperienceFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Skip the first `n` Experiences.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Experiences.
+   */
   distinct?: Prisma.ExperienceScalarFieldEnum | Prisma.ExperienceScalarFieldEnum[]
 }
 

@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/library"
+import type * as runtime from "@prisma/client/runtime/client"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -264,7 +264,7 @@ export type MediaGroupByOutputType = {
   _max: MediaMaxAggregateOutputType | null
 }
 
-type GetMediaGroupByPayload<T extends MediaGroupByArgs> = Prisma.PrismaPromise<
+export type GetMediaGroupByPayload<T extends MediaGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<MediaGroupByOutputType, T['by']> &
       {
@@ -1473,6 +1473,11 @@ export type MediaFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Skip the first `n` Media.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Media.
+   */
   distinct?: Prisma.MediaScalarFieldEnum | Prisma.MediaScalarFieldEnum[]
 }
 

@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/library"
+import type * as runtime from "@prisma/client/runtime/client"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -196,7 +196,7 @@ export type StatGroupByOutputType = {
   _max: StatMaxAggregateOutputType | null
 }
 
-type GetStatGroupByPayload<T extends StatGroupByArgs> = Prisma.PrismaPromise<
+export type GetStatGroupByPayload<T extends StatGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<StatGroupByOutputType, T['by']> &
       {
@@ -1001,6 +1001,11 @@ export type StatFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Skip the first `n` Stats.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Stats.
+   */
   distinct?: Prisma.StatScalarFieldEnum | Prisma.StatScalarFieldEnum[]
 }
 

@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/library"
+import type * as runtime from "@prisma/client/runtime/client"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -210,7 +210,7 @@ export type TestimonialGroupByOutputType = {
   _max: TestimonialMaxAggregateOutputType | null
 }
 
-type GetTestimonialGroupByPayload<T extends TestimonialGroupByArgs> = Prisma.PrismaPromise<
+export type GetTestimonialGroupByPayload<T extends TestimonialGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TestimonialGroupByOutputType, T['by']> &
       {
@@ -1057,6 +1057,11 @@ export type TestimonialFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` Testimonials.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Testimonials.
+   */
   distinct?: Prisma.TestimonialScalarFieldEnum | Prisma.TestimonialScalarFieldEnum[]
 }
 

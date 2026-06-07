@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/library"
+import type * as runtime from "@prisma/client/runtime/client"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -179,7 +179,7 @@ export type FooterGroupByOutputType = {
   _max: FooterMaxAggregateOutputType | null
 }
 
-type GetFooterGroupByPayload<T extends FooterGroupByArgs> = Prisma.PrismaPromise<
+export type GetFooterGroupByPayload<T extends FooterGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<FooterGroupByOutputType, T['by']> &
       {
@@ -1038,6 +1038,11 @@ export type FooterFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Skip the first `n` Footers.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Footers.
+   */
   distinct?: Prisma.FooterScalarFieldEnum | Prisma.FooterScalarFieldEnum[]
 }
 
