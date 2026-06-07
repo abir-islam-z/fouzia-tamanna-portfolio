@@ -1,38 +1,40 @@
 import { createServerFn } from "@tanstack/react-start"
 import { z } from "zod"
 import {
-    deleteCertificationServer,
-    deleteExperienceServer,
-    deleteMediaServer,
-    deleteProjectServer,
-    deleteStatServer,
-    deleteTestimonialServer,
-    finalizeMediaUpload,
-    getCertificationsServer,
-    getContactMessagesServer,
-    getExperienceServer,
-    getFooterServer,
-    getHeroServer,
-    getMediaItemServer,
-    getMediaServer,
-    getPresignedUploadServer,
-    getProjectsServer,
-    getR2StatusServer,
-    getStatsServer,
-    getTestimonialsServer,
-    getUserServer,
-    loginServer,
-    logoutServer,
-    submitContactServer,
-    updateCertificationServer,
-    updateExperienceServer,
-    updateFooterServer,
-    updateHeroServer,
-    updateMediaServer,
-    updateProjectServer,
-    updateStatServer,
-    updateTestimonialServer,
-    uploadMediaServer,
+  applyR2CorsServer,
+  deleteCertificationServer,
+  deleteExperienceServer,
+  deleteMediaServer,
+  deleteProjectServer,
+  deleteStatServer,
+  deleteTestimonialServer,
+  finalizeMediaUpload,
+  getCertificationsServer,
+  getContactMessagesServer,
+  getExperienceServer,
+  getFooterServer,
+  getHeroServer,
+  getMediaItemServer,
+  getMediaServer,
+  getPresignedUploadServer,
+  getProjectsServer,
+  getR2CorsStatusServer,
+  getR2StatusServer,
+  getStatsServer,
+  getTestimonialsServer,
+  getUserServer,
+  loginServer,
+  logoutServer,
+  submitContactServer,
+  updateCertificationServer,
+  updateExperienceServer,
+  updateFooterServer,
+  updateHeroServer,
+  updateMediaServer,
+  updateProjectServer,
+  updateStatServer,
+  updateTestimonialServer,
+  uploadMediaServer,
 } from "./cms.server"
 
 // --- SCHEMAS (Shared) ---
@@ -344,4 +346,16 @@ export const deleteMedia = createServerFn({ method: "POST" })
   .validator(z.number())
   .handler(async ({ data: id }) => {
     return deleteMediaServer(id)
+  })
+
+// --- CORS management ---
+
+export const getR2CorsStatus = createServerFn({ method: "GET" }).handler(async () => {
+  return getR2CorsStatusServer()
+})
+
+export const applyR2Cors = createServerFn({ method: "POST" })
+  .validator(z.object({ origins: z.array(z.string()).default([]) }))
+  .handler(async ({ data }) => {
+    return applyR2CorsServer(data)
   })

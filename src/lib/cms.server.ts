@@ -9,11 +9,14 @@ import { decrypt, encrypt } from "./auth"
 import type { LoginSchema } from "./cms"
 import { getDb } from "./db.server"
 import {
+    buildDefaultCorsRules,
     buildObjectKey,
     checkR2Config,
     deleteFromR2,
     getPresignedPutUrl,
     getPublicUrl,
+    getR2CorsStatus,
+    setR2CorsRules,
     uploadToR2,
 } from "./r2.server"
 
@@ -496,4 +499,20 @@ export async function deleteMediaServer(id: number) {
 export async function getR2StatusServer() {
   await checkAuth()
   return checkR2Config()
+}
+
+// --- CORS management ---
+
+export async function getR2CorsStatusServer() {
+  await checkAuth()
+  return getR2CorsStatus()
+}
+
+export async function applyR2CorsServer(input: { origins: string[] }) {
+  await checkAuth()
+  const origins = (input?.origins ?? []).filter(
+    (o) => typeof o === "string" && o.trim().length > 0
+  )
+  const rules = buildDefaultCorsRules(origins)
+  return setR2CorsRules(rules)
 }

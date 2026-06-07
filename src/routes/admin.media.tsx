@@ -1,3 +1,18 @@
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  applyR2Cors,
+  deleteMedia,
+  finalizeMediaUploadFn,
+  getMedia,
+  getPresignedUpload,
+  getR2CorsStatus,
+  getR2Status,
+  updateMedia,
+} from "@/lib/cms"
 import {
   RiAddLine,
   RiCheckLine,
@@ -14,24 +29,11 @@ import {
   RiFolderLine,
   RiImageLine,
   RiLoader4Line,
-  RiUploadCloud2Line,
+  RiUploadCloud2Line
 } from "@remixicon/react"
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  deleteMedia,
-  finalizeMediaUploadFn,
-  getMedia,
-  getPresignedUpload,
-  getR2Status,
-  updateMedia,
-} from "@/lib/cms"
 
 interface MediaItem {
   id: number
@@ -85,14 +87,20 @@ function pickIcon(mime: string) {
 }
 
 function AdminMediaComponent() {
-  const [items, setItems] = useState<MediaItem[]>([])
+  const [items, setItems] = useState<Array<MediaItem>>([])
   const [loading, setLoading] = useState(true)
   const [folder, setFolder] = useState<string>("all")
   const [search, setSearch] = useState("")
   const [r2Ok, setR2Ok] = useState<boolean | null>(null)
   const [r2Error, setR2Error] = useState<string | null>(null)
   const [uploading, setUploading] = useState<
-    Array<{ name: string; progress: number; status: "uploading" | "done" | "error"; error?: string }>
+    Array<{
+      id: number
+      name: string
+      progress: number
+      status: "uploading" | "done" | "error"
+      error?: string
+    }>
   >([])
   const [isDragging, setIsDragging] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -100,18 +108,34 @@ function AdminMediaComponent() {
     alt: "",
     folder: "general",
   })
+  const [corsApplying, setCorsApplying] = useState(false)
+  const [corsStatus, setCorsStatus] = useState<{
+    checked: boolean
+    hasRules: boolean
+    error?: string
+  }>({ checked: false, hasRules: false })
+  const [corsOrigins, setCorsOrigins] = useState<string>("")
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     void (async () => {
       try {
-        const [list, status] = await Promise.all([
+        const [list, status, cors] = await Promise.all([
           getMedia({ data: undefined }),
           getR2Status(),
+          getR2CorsStatus(),
         ])
-        setItems(list as MediaItem[])
+        setItems(list as Array<MediaItem>)
         setR2Ok(status.ok)
         if (!status.ok) setR2Error(status.error)
+        setCorsStatus({
+          checked: true,
+          hasRules: Array.isArray(cors.rules) && cors.rules.length > 0,
+          error: cors.ok ? undefined : cors.error,
+        })
+        if (typeof window !== "undefined") {
+          setCorsOrigins(window.location.origin)
+        }
       } catch (err: any) {
         toast.error(err?.message || "Failed to load media")
       } finally {
@@ -119,6 +143,32 @@ function AdminMediaComponent() {
       }
     })()
   }, [])
+
+  async function applyCors() {
+    const origins = corsOrigins
+      .split(/[,\s]+/)
+      .map((o) => o.trim())
+      .filter(Boolean)
+    if (origins.length === 0) {
+      toast.error("Enter at least one origin (e.g. https://yourdomain.com)")
+      return
+    }
+    setCorsApplying(true)
+    try {
+      const res = await applyR2Cors({ data: { origins } })
+      if (!res.ok) {
+        toast.error(res.error || "Failed to apply CORS")
+        setCorsStatus({ checked: true, hasRules: false, error: res.error })
+        return
+      }
+      toast.success("CORS policy applied — uploads should work now")
+      setCorsStatus({ checked: true, hasRules: true, error: undefined })
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to apply CORS")
+    } finally {
+      setCorsApplying(false)
+    }
+  }
 
   const folders = useMemo(() => {
     const set = new Set<string>()
@@ -142,10 +192,10 @@ function AdminMediaComponent() {
 
   async function refresh(folderName?: string) {
     const list = await getMedia({ data: folderName ? { folder: folderName } : undefined })
-    setItems(list as MediaItem[])
+    setItems(list as Array<MediaItem>)
   }
 
-  async function uploadFiles(fileList: FileList | File[]) {
+  async function uploadFiles(fileList: FileList | Array<File>) {
     const files = Array.from(fileList)
     if (files.length === 0) return
     if (r2Ok === false) {
@@ -153,15 +203,34 @@ function AdminMediaComponent() {
       return
     }
 
-    const queue = files.map((f) => ({
+    // Track uploads by a stable id so progress updates always target the
+    // correct entry, even when multiple files share a name.
+    let nextId = Date.now()
+    type UploadEntry = {
+      id: number
+      name: string
+      progress: number
+      status: "uploading" | "done" | "error"
+      error?: string
+    }
+    const placeholders: Array<UploadEntry> = files.map((f) => ({
+      id: nextId++,
       name: f.name,
       progress: 0,
-      status: "uploading" as const,
+      status: "uploading",
     }))
-    setUploading((prev) => [...prev, ...queue])
+    setUploading((prev) => [...prev, ...placeholders])
+    const idByFile = new Map<File, number>()
+    files.forEach((f, i) => idByFile.set(f, placeholders[i].id))
+
+    function setProgress(id: number, patch: Partial<UploadEntry>) {
+      setUploading((prev) =>
+        prev.map((q) => (q.id === id ? { ...q, ...patch } : q))
+      )
+    }
 
     for (const file of files) {
-      const idx = queue.findIndex((q) => q.name === file.name && q.status === "uploading")
+      const id = idByFile.get(file)!
       try {
         if (!isAccepted(file.type)) {
           throw new Error(`Unsupported file type: ${file.type || "unknown"}`)
@@ -172,7 +241,11 @@ function AdminMediaComponent() {
 
         // 1) Ask server for a presigned URL
         const { key, uploadUrl, publicUrl } = await getPresignedUpload({
-          data: { fileName: file.name, mimeType: file.type, folder },
+          data: {
+            fileName: file.name,
+            mimeType: file.type,
+            folder: folder === "all" ? "general" : folder,
+          },
         })
 
         // 2) Upload directly to R2 with XHR for progress
@@ -183,19 +256,24 @@ function AdminMediaComponent() {
           xhr.upload.onprogress = (e) => {
             if (!e.lengthComputable) return
             const pct = Math.round((e.loaded / e.total) * 100)
-            setUploading((prev) =>
-              prev.map((q, i) =>
-                i === uploading.length + idx
-                  ? { ...q, progress: pct }
-                  : q
-              )
-            )
+            setProgress(id, { progress: pct })
           }
           xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) resolve()
-            else reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`))
+            else
+              reject(
+                new Error(
+                  `Upload failed: ${xhr.status} ${xhr.statusText || "R2 rejected the request"}`
+                )
+              )
           }
-          xhr.onerror = () => reject(new Error("Network error during upload"))
+          xhr.onerror = () =>
+            reject(
+              new Error(
+                "Network error — this is usually a CORS misconfiguration on the R2 bucket. Use the CORS fixer below."
+              )
+            )
+          xhr.ontimeout = () => reject(new Error("Upload timed out"))
           xhr.send(file)
         })
 
@@ -210,29 +288,16 @@ function AdminMediaComponent() {
           },
         })
 
-        setUploading((prev) =>
-          prev.map((q) =>
-            q.name === file.name && q.status === "uploading"
-              ? { ...q, progress: 100, status: "done" }
-              : q
-          )
-        )
+        setProgress(id, { progress: 100, status: "done" })
         toast.success(`Uploaded ${file.name}`)
-        void publicUrl // referenced for clarity (CDN url)
+        void publicUrl
       } catch (err: any) {
-        setUploading((prev) =>
-          prev.map((q) =>
-            q.name === file.name && q.status === "uploading"
-              ? { ...q, status: "error", error: err?.message }
-              : q
-          )
-        )
+        setProgress(id, { status: "error", error: err?.message })
         toast.error(err?.message || `Failed to upload ${file.name}`)
       }
     }
 
     await refresh()
-    // Clean up completed uploads after a short delay
     setTimeout(() => {
       setUploading((prev) => prev.filter((q) => q.status === "uploading"))
     }, 1500)
@@ -316,27 +381,9 @@ function AdminMediaComponent() {
         </div>
       </header>
 
-      {r2Ok === false && (
-        <Card className="border-destructive/50 bg-destructive/5 p-5">
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-destructive/15 text-destructive">
-              <RiCloseLine size={18} />
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold text-destructive">Cloudflare R2 is not configured</h3>
-              <p className="text-sm text-muted-foreground">{r2Error}</p>
-              <p className="text-xs text-muted-foreground">
-                Set <code className="rounded bg-secondary px-1.5 py-0.5">R2_ACCOUNT_ID</code>,{" "}
-                <code className="rounded bg-secondary px-1.5 py-0.5">R2_ACCESS_KEY_ID</code>,{" "}
-                <code className="rounded bg-secondary px-1.5 py-0.5">R2_SECRET_ACCESS_KEY</code>,{" "}
-                <code className="rounded bg-secondary px-1.5 py-0.5">R2_BUCKET</code>, and{" "}
-                <code className="rounded bg-secondary px-1.5 py-0.5">R2_PUBLIC_URL</code> in your
-                environment to enable uploads.
-              </p>
-            </div>
-          </div>
-        </Card>
-      )}
+      
+
+     
 
       {/* Upload area */}
       <div

@@ -1,8 +1,8 @@
 import {
-    DeleteObjectCommand,
-    GetObjectCommand,
-    PutObjectCommand,
-    S3Client,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { randomUUID } from "node:crypto"
@@ -45,7 +45,7 @@ function getR2Config() {
   const bucket = process.env.R2_BUCKET ?? process.env.R2_BUCKET_NAME
   const publicUrl = process.env.R2_PUBLIC_URL
 
-  const missing: string[] = []
+  const missing: Array<string> = []
   if (!accessKeyId) missing.push("R2_ACCESS_KEY_ID")
   if (!secretAccessKey) missing.push("R2_SECRET_ACCESS_KEY")
   if (!bucket) missing.push("R2_BUCKET (or R2_BUCKET_NAME)")
@@ -228,4 +228,103 @@ export function checkR2Config(): { ok: true } | { ok: false; error: string } {
   } catch (err: any) {
     return { ok: false, error: err?.message || "R2 misconfigured" }
   }
+}
+
+// ─── CORS configuration via the Cloudflare management API ────────────────────
+//
+// Browser PUT requests against a presigned R2 URL are blocked by the browser
+// unless the bucket has a CORS policy that allows the request origin. We use
+// the Cloudflare REST API (R2_TOKEN_VALUE) to apply the policy programmatically
+// so the admin UI can offer a one-click "Fix CORS" button.
+
+export interface R2CorsRule {
+  allowed: { methods: Array<string>; origins: Array<string>; headers?: Array<string> }
+  exposeHeaders?: Array<string>
+  maxAgeSeconds?: number
+}
+
+export interface R2CorsStatus {
+  ok: boolean
+  rules?: Array<R2CorsRule>
+  error?: string
+}
+
+function getCloudflareApiToken(): string | null {
+  return process.env.R2_TOKEN_VALUE || process.env.CF_API_TOKEN || null
+}
+
+async function getCloudflareR2BaseUrl(): Promise<string> {
+  const { accountId } = getR2Config()
+  if (!accountId) {
+    throw new Error(
+      "Cloudflare account ID could not be resolved. Set R2_ACCOUNT_ID or R2_ENDPOINT_URL."
+    )
+  }
+  return `https://api.cloudflare.com/client/v4/accounts/${accountId}/r2/buckets/${getR2Bucket()}`
+}
+
+export async function getR2CorsStatus(): Promise<R2CorsStatus> {
+  const token = getCloudflareApiToken()
+  if (!token) {
+    return { ok: false, error: "R2_TOKEN_VALUE is not set." }
+  }
+  const baseUrl = await getCloudflareR2BaseUrl()
+  const res = await fetch(`${baseUrl}/cors`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const data: any = await res.json().catch(() => ({}))
+  if (!res.ok || data?.success === false) {
+    return {
+      ok: false,
+      error:
+        data?.errors?.[0]?.message ||
+        `Cloudflare API returned ${res.status} ${res.statusText}`,
+    }
+  }
+  return { ok: true, rules: (data?.result ?? []) as Array<R2CorsRule> }
+}
+
+export async function setR2CorsRules(rules: Array<R2CorsRule>): Promise<R2CorsStatus> {
+  const token = getCloudflareApiToken()
+  if (!token) {
+    return { ok: false, error: "R2_TOKEN_VALUE is not set." }
+  }
+  const baseUrl = await getCloudflareR2BaseUrl()
+  const res = await fetch(`${baseUrl}/cors`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ rules }),
+  })
+  const data: any = await res.json().catch(() => ({}))
+  if (!res.ok || data?.success === false) {
+    return {
+      ok: false,
+      error:
+        data?.errors?.[0]?.message ||
+        `Cloudflare API returned ${res.status} ${res.statusText}`,
+    }
+  }
+  return { ok: true, rules: (data?.result ?? rules) as Array<R2CorsRule> }
+}
+
+/**
+ * Build a sensible default CORS policy that allows PUT/GET/HEAD/DELETE
+ * from the configured app origin(s) and exposes ETag for upload progress.
+ */
+export function buildDefaultCorsRules(origins: Array<string>): Array<R2CorsRule> {
+  return [
+    {
+      allowed: {
+        methods: ["GET", "PUT", "POST", "DELETE", "HEAD"],
+        origins: origins.length > 0 ? origins : ["*"],
+        headers: ["*"],
+      },
+      exposeHeaders: ["ETag"],
+      maxAgeSeconds: 3600,
+    },
+  ]
 }
