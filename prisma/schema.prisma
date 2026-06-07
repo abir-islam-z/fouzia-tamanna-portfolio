@@ -4,6 +4,7 @@ generator client {
 }
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -11,6 +12,7 @@ model User {
   username  String   @unique
   password  String   // Hashed
   createdAt DateTime @default(now())
+  media     Media[]
 }
 
 model Hero {
@@ -85,6 +87,26 @@ model Certification {
   link      String?
   order     Int      @default(0)
   updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id           Int      @id @default(autoincrement())
+  key          String   @unique // R2 object key (path in bucket)
+  url          String   // Public URL to access the file
+  originalName String   // User's original filename
+  mimeType     String   // e.g. image/png, application/pdf
+  size         Int      // Size in bytes
+  width        Int?     // Optional: image width in px
+  height       Int?     // Optional: image height in px
+  folder       String   @default("general") // Logical folder for organization
+  alt          String?  // Optional alt text for accessibility
+  uploadedById Int?     // Optional: who uploaded it
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([folder])
+  @@index([createdAt])
 }
 
 model Footer {

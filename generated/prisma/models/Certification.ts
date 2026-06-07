@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client"
+import type * as runtime from "@prisma/client/runtime/library"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -210,7 +210,7 @@ export type CertificationGroupByOutputType = {
   _max: CertificationMaxAggregateOutputType | null
 }
 
-export type GetCertificationGroupByPayload<T extends CertificationGroupByArgs> = Prisma.PrismaPromise<
+type GetCertificationGroupByPayload<T extends CertificationGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CertificationGroupByOutputType, T['by']> &
       {
@@ -1057,11 +1057,6 @@ export type CertificationFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` Certifications.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of Certifications.
-   */
   distinct?: Prisma.CertificationScalarFieldEnum | Prisma.CertificationScalarFieldEnum[]
 }
 

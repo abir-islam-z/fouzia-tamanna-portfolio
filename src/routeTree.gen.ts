@@ -17,6 +17,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminExperienceRouteImport } from './routes/admin.experience'
 import { Route as AdminCertificationsRouteImport } from './routes/admin.certifications'
 
@@ -60,6 +61,11 @@ const AdminMessagesRoute = AdminMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminExperienceRoute = AdminExperienceRouteImport.update({
   id: '/experience',
   path: '/experience',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/test': typeof TestRoute
   '/admin/certifications': typeof AdminCertificationsRoute
   '/admin/experience': typeof AdminExperienceRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/projects': typeof AdminProjectsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/test': typeof TestRoute
   '/admin/certifications': typeof AdminCertificationsRoute
   '/admin/experience': typeof AdminExperienceRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/projects': typeof AdminProjectsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/test': typeof TestRoute
   '/admin/certifications': typeof AdminCertificationsRoute
   '/admin/experience': typeof AdminExperienceRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/projects': typeof AdminProjectsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/test'
     | '/admin/certifications'
     | '/admin/experience'
+    | '/admin/media'
     | '/admin/messages'
     | '/admin/projects'
     | '/admin/testimonials'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/test'
     | '/admin/certifications'
     | '/admin/experience'
+    | '/admin/media'
     | '/admin/messages'
     | '/admin/projects'
     | '/admin/testimonials'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/test'
     | '/admin/certifications'
     | '/admin/experience'
+    | '/admin/media'
     | '/admin/messages'
     | '/admin/projects'
     | '/admin/testimonials'
@@ -210,6 +222,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMessagesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/experience': {
       id: '/admin/experience'
       path: '/experience'
@@ -230,6 +249,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminCertificationsRoute: typeof AdminCertificationsRoute
   AdminExperienceRoute: typeof AdminExperienceRoute
+  AdminMediaRoute: typeof AdminMediaRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
   AdminProjectsRoute: typeof AdminProjectsRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
@@ -239,6 +259,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCertificationsRoute: AdminCertificationsRoute,
   AdminExperienceRoute: AdminExperienceRoute,
+  AdminMediaRoute: AdminMediaRoute,
   AdminMessagesRoute: AdminMessagesRoute,
   AdminProjectsRoute: AdminProjectsRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,

@@ -7,6 +7,7 @@ async function main() {
   console.log("Seeding database...")
 
   // --- Clear existing data ---
+  await prisma.media.deleteMany({})
   await prisma.user.deleteMany({})
   await prisma.hero.deleteMany({})
   await prisma.stat.deleteMany({})

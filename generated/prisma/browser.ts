@@ -58,6 +58,11 @@ export type Testimonial = Prisma.TestimonialModel
  */
 export type Certification = Prisma.CertificationModel
 /**
+ * Model Media
+ * 
+ */
+export type Media = Prisma.MediaModel
+/**
  * Model Footer
  * 
  */

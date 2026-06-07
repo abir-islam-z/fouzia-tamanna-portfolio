@@ -1,28 +1,29 @@
+import { Button } from "@/components/ui/button"
+import { getUser, logout } from "@/lib/cms"
+import { cn } from "@/lib/utils"
 import {
-  RiAwardLine,
-  RiBriefcaseLine,
-  RiCloseLine,
-  RiCodeBoxLine,
-  RiDashboardLine,
-  RiExternalLinkLine,
-  RiLogoutBoxLine,
-  RiMenuLine,
-  RiMessageLine,
-  RiSidebarFoldLine,
-  RiSidebarUnfoldLine,
-  RiStarLine,
+    RiAwardLine,
+    RiBriefcaseLine,
+    RiCloseLine,
+    RiCodeBoxLine,
+    RiDashboardLine,
+    RiExternalLinkLine,
+    RiImageLine,
+    RiLogoutBoxLine,
+    RiMenuLine,
+    RiMessageLine,
+    RiSidebarFoldLine,
+    RiSidebarUnfoldLine,
+    RiStarLine,
 } from "@remixicon/react"
 import {
-  Link,
-  Outlet,
-  createFileRoute,
-  redirect,
-  useNavigate,
+    Link,
+    Outlet,
+    createFileRoute,
+    redirect,
+    useNavigate,
 } from "@tanstack/react-router"
 import { useState } from "react"
-import { getUser, logout } from "@/lib/cms"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 
 function AdminLayout() {
   const navigate = useNavigate()
@@ -38,6 +39,7 @@ function AdminLayout() {
     { to: "/admin", label: "Overview", icon: RiDashboardLine },
     { to: "/admin/experience", label: "Experience", icon: RiBriefcaseLine },
     { to: "/admin/projects", label: "Projects", icon: RiCodeBoxLine },
+    { to: "/admin/media", label: "Media Library", icon: RiImageLine },
     { to: "/admin/messages", label: "Messages", icon: RiMessageLine },
     { to: "/admin/testimonials", label: "Testimonials", icon: RiStarLine },
     { to: "/admin/certifications", label: "Certifications", icon: RiAwardLine },

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react"
-import { Badge } from "./ui/badge"
-import { Card } from "./ui/card"
 import { getExperience } from "@/lib/cms"
 import { RiBuilding4Line, RiCalendarLine, RiStackLine } from "@remixicon/react"
+import { useEffect, useState } from "react"
+import { Badge } from "./ui/badge"
 
 interface ExperienceItem {
   role: string

@@ -1,30 +1,38 @@
 import { createServerFn } from "@tanstack/react-start"
 import { z } from "zod"
 import {
-  deleteCertificationServer,
-  deleteExperienceServer,
-  deleteProjectServer,
-  deleteStatServer,
-  deleteTestimonialServer,
-  getCertificationsServer,
-  getContactMessagesServer,
-  getExperienceServer,
-  getFooterServer,
-  getHeroServer,
-  getProjectsServer,
-  getStatsServer,
-  getTestimonialsServer,
-  getUserServer,
-  loginServer,
-  logoutServer,
-  submitContactServer,
-  updateCertificationServer,
-  updateExperienceServer,
-  updateFooterServer,
-  updateHeroServer,
-  updateProjectServer,
-  updateStatServer,
-  updateTestimonialServer,
+    deleteCertificationServer,
+    deleteExperienceServer,
+    deleteMediaServer,
+    deleteProjectServer,
+    deleteStatServer,
+    deleteTestimonialServer,
+    finalizeMediaUpload,
+    getCertificationsServer,
+    getContactMessagesServer,
+    getExperienceServer,
+    getFooterServer,
+    getHeroServer,
+    getMediaItemServer,
+    getMediaServer,
+    getPresignedUploadServer,
+    getProjectsServer,
+    getR2StatusServer,
+    getStatsServer,
+    getTestimonialsServer,
+    getUserServer,
+    loginServer,
+    logoutServer,
+    submitContactServer,
+    updateCertificationServer,
+    updateExperienceServer,
+    updateFooterServer,
+    updateHeroServer,
+    updateMediaServer,
+    updateProjectServer,
+    updateStatServer,
+    updateTestimonialServer,
+    uploadMediaServer,
 } from "./cms.server"
 
 // --- SCHEMAS (Shared) ---
@@ -253,4 +261,87 @@ export const deleteCertification = createServerFn({ method: "POST" })
   .inputValidator(z.number())
   .handler(async ({ data: id }) => {
     return deleteCertificationServer(id)
+  })
+
+// --- MEDIA LIBRARY ---
+
+export const getMedia = createServerFn({ method: "GET" })
+  .inputValidator(
+    z
+      .object({ folder: z.string().optional() })
+      .optional()
+  )
+  .handler(async ({ data }) => {
+    return getMediaServer(data?.folder)
+  })
+
+export const getMediaItem = createServerFn({ method: "GET" })
+  .inputValidator(z.number())
+  .handler(async ({ data: id }) => {
+    return getMediaItemServer(id)
+  })
+
+export const getR2Status = createServerFn({ method: "GET" }).handler(async () => {
+  return getR2StatusServer()
+})
+
+export const getPresignedUpload = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      fileName: z.string().min(1),
+      mimeType: z.string().min(1),
+      folder: z.string().optional(),
+    })
+  )
+  .handler(async ({ data }) => {
+    return getPresignedUploadServer(data)
+  })
+
+export const finalizeMediaUploadFn = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      key: z.string().min(1),
+      originalName: z.string().min(1),
+      mimeType: z.string().min(1),
+      size: z.number().int().positive(),
+      folder: z.string().optional(),
+      alt: z.string().optional(),
+    })
+  )
+  .handler(async ({ data }) => {
+    return finalizeMediaUpload(data)
+  })
+
+export const uploadMedia = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      fileName: z.string().min(1),
+      mimeType: z.string().min(1),
+      size: z.number().int().positive(),
+      dataBase64: z.string().min(1),
+      folder: z.string().optional(),
+      alt: z.string().optional(),
+    })
+  )
+  .handler(async ({ data }) => {
+    return uploadMediaServer(data)
+  })
+
+export const updateMedia = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      id: z.number(),
+      alt: z.string().nullable().optional(),
+      folder: z.string().optional(),
+      originalName: z.string().optional(),
+    })
+  )
+  .handler(async ({ data }) => {
+    return updateMediaServer(data)
+  })
+
+export const deleteMedia = createServerFn({ method: "POST" })
+  .inputValidator(z.number())
+  .handler(async ({ data: id }) => {
+    return deleteMediaServer(id)
   })
