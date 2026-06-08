@@ -5,7 +5,7 @@ import {
 import { Card } from "@/components/ui/card"
 import { getQueryClient, projectsQuery, useDeleteProject } from "@/lib/queries"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router"
 import { toast } from "sonner"
 
 interface ProjectListItem {
@@ -101,6 +101,12 @@ function AdminProjectsComponent() {
       ),
     },
   ]
+
+  const isChildRoute = useRouterState({
+    select: (s) => s.location.pathname !== "/admin/projects",
+  })
+
+  if (isChildRoute) return <Outlet />
 
   return (
     <Card variant="admin" className="p-6">

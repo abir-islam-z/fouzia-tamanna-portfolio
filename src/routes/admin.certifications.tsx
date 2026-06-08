@@ -9,7 +9,7 @@ import {
   useDeleteCertification,
 } from "@/lib/queries"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router"
 import { toast } from "sonner"
 
 interface CertificationItem {
@@ -88,6 +88,12 @@ function AdminCertificationsComponent() {
         ),
     },
   ]
+
+  const isChildRoute = useRouterState({
+    select: (s) => s.location.pathname !== "/admin/certifications",
+  })
+
+  if (isChildRoute) return <Outlet />
 
   return (
     <Card variant="admin" className="p-6">
