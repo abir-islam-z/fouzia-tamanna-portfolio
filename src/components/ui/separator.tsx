@@ -22,8 +22,8 @@ function Separator({
             className={cn(
                 "shrink-0",
                 orientation === "horizontal"
-                    ? "h-px w-full bg-gradient-to-r from-transparent via-primary/40 to-transparent"
-                    : "w-px self-stretch bg-gradient-to-b from-transparent via-primary/40 to-transparent",
+                    ? "h-px w-full bg-linear-to-r from-transparent via-primary/40 to-transparent"
+                    : "w-px self-stretch bg-linear-to-b from-transparent via-primary/40 to-transparent",
                 className
             )}
             {...props}

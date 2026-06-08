@@ -1,24 +1,22 @@
+import { AppDialog } from "@/components/app-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
-  applyR2Cors,
   deleteMedia,
   finalizeMediaUploadFn,
   getMedia,
   getPresignedUpload,
-  getR2CorsStatus,
   getR2Status,
   updateMedia,
 } from "@/lib/cms"
 import {
   RiAddLine,
   RiCheckLine,
-  RiCloseLine,
+  RiClipboardLine,
   RiDeleteBinLine,
-  RiDownloadLine,
   RiFile3Line,
   RiFileChartLine,
   RiFileCodeLine,
@@ -29,6 +27,7 @@ import {
   RiFolderLine,
   RiImageLine,
   RiLoader4Line,
+  RiPencilLine,
   RiUploadCloud2Line,
 } from "@remixicon/react"
 import { createFileRoute } from "@tanstack/react-router"
@@ -97,7 +96,6 @@ function AdminMediaComponent() {
   const [folder, setFolder] = useState<string>("all")
   const [search, setSearch] = useState("")
   const [r2Ok, setR2Ok] = useState<boolean | null>(null)
-  const [r2Error, setR2Error] = useState<string | null>(null)
   const [uploading, setUploading] = useState<
     Array<{
       id: number
@@ -113,34 +111,17 @@ function AdminMediaComponent() {
     alt: "",
     folder: "general",
   })
-  const [corsApplying, setCorsApplying] = useState(false)
-  const [corsStatus, setCorsStatus] = useState<{
-    checked: boolean
-    hasRules: boolean
-    error?: string
-  }>({ checked: false, hasRules: false })
-  const [corsOrigins, setCorsOrigins] = useState<string>("")
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     void (async () => {
       try {
-        const [list, status, cors] = await Promise.all([
+        const [list, status] = await Promise.all([
           getMedia({ data: undefined }),
           getR2Status(),
-          getR2CorsStatus(),
         ])
-        setItems(list as Array<MediaItem>)
+        setItems(list)
         setR2Ok(status.ok)
-        if (!status.ok) setR2Error(status.error)
-        setCorsStatus({
-          checked: true,
-          hasRules: Array.isArray(cors.rules) && cors.rules.length > 0,
-          error: cors.ok ? undefined : cors.error,
-        })
-        if (typeof window !== "undefined") {
-          setCorsOrigins(window.location.origin)
-        }
       } catch (err: any) {
         toast.error(err?.message || "Failed to load media")
       } finally {
@@ -148,32 +129,6 @@ function AdminMediaComponent() {
       }
     })()
   }, [])
-
-  async function applyCors() {
-    const origins = corsOrigins
-      .split(/[,\s]+/)
-      .map((o) => o.trim())
-      .filter(Boolean)
-    if (origins.length === 0) {
-      toast.error("Enter at least one origin (e.g. https://yourdomain.com)")
-      return
-    }
-    setCorsApplying(true)
-    try {
-      const res = await applyR2Cors({ data: { origins } })
-      if (!res.ok) {
-        toast.error(res.error || "Failed to apply CORS")
-        setCorsStatus({ checked: true, hasRules: false, error: res.error })
-        return
-      }
-      toast.success("CORS policy applied — uploads should work now")
-      setCorsStatus({ checked: true, hasRules: true, error: undefined })
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to apply CORS")
-    } finally {
-      setCorsApplying(false)
-    }
-  }
 
   const folders = useMemo(() => {
     const set = new Set<string>()
@@ -204,7 +159,7 @@ function AdminMediaComponent() {
     const list = await getMedia({
       data: folderName ? { folder: folderName } : undefined,
     })
-    setItems(list as Array<MediaItem>)
+    setItems(list)
   }
 
   async function uploadFiles(fileList: FileList | Array<File>) {
@@ -285,9 +240,7 @@ function AdminMediaComponent() {
           }
           xhr.onerror = () =>
             reject(
-              new Error(
-                "Network error — this is usually a CORS misconfiguration on the R2 bucket. Use the CORS fixer below."
-              )
+              new Error("Network error — check your connection and try again.")
             )
           xhr.ontimeout = () => reject(new Error("Upload timed out"))
           xhr.send(file)
@@ -322,7 +275,7 @@ function AdminMediaComponent() {
   function onDrop(e: React.DragEvent) {
     e.preventDefault()
     setIsDragging(false)
-    if (e.dataTransfer.files?.length) {
+    if (e.dataTransfer.files.length) {
       void uploadFiles(e.dataTransfer.files)
     }
   }
@@ -556,14 +509,14 @@ function AdminMediaComponent() {
                       </span>
                     </div>
                   )}
-                  <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-1 bg-gradient-to-t from-black/80 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-1 bg-linear-to-t from-black/80 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <Button
                       size="icon-sm"
                       variant="secondary"
                       onClick={() => handleCopy(item.url)}
                       title="Copy URL"
                     >
-                      <RiDownloadLine size={14} />
+                      <RiClipboardLine size={14} />
                     </Button>
                     <Button
                       size="icon-sm"
@@ -571,7 +524,7 @@ function AdminMediaComponent() {
                       onClick={() => startEdit(item)}
                       title="Edit details"
                     >
-                      <RiAddLine size={14} />
+                      <RiPencilLine size={14} />
                     </Button>
                     <Button
                       size="icon-sm"
@@ -607,60 +560,45 @@ function AdminMediaComponent() {
         </div>
       )}
 
-      {/* Edit modal */}
-      {editingId != null && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm"
-          onClick={() => setEditingId(null)}
-        >
-          <Card
-            variant="admin"
-            className="w-full max-w-md space-y-5 p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">Edit Media</h2>
-              <Button
-                size="icon-sm"
-                variant="ghost"
-                onClick={() => setEditingId(null)}
-              >
-                <RiCloseLine size={18} />
-              </Button>
-            </div>
-            <div className="space-y-2">
-              <Label variant="admin">Folder</Label>
-              <Input
-                variant="admin"
-                value={editForm.folder}
-                onChange={(e) =>
-                  setEditForm((f) => ({ ...f, folder: e.target.value }))
-                }
-                placeholder="general"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label variant="admin">Alt text</Label>
-              <Input
-                variant="admin"
-                value={editForm.alt}
-                onChange={(e) =>
-                  setEditForm((f) => ({ ...f, alt: e.target.value }))
-                }
-                placeholder="Describe the asset…"
-              />
-            </div>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button variant="ghost" onClick={() => setEditingId(null)}>
-                Cancel
-              </Button>
-              <Button variant="admin" onClick={saveEdit}>
-                Save changes
-              </Button>
-            </div>
-          </Card>
+      {/* Edit dialog */}
+      <AppDialog
+        open={editingId != null}
+        onOpenChange={(open) => !open && setEditingId(null)}
+        title="Edit Media"
+      >
+        <div className="space-y-4 pt-2">
+          <div className="space-y-2">
+            <Label variant="admin">Folder</Label>
+            <Input
+              variant="admin"
+              value={editForm.folder}
+              onChange={(e) =>
+                setEditForm((f) => ({ ...f, folder: e.target.value }))
+              }
+              placeholder="general"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label variant="admin">Alt text</Label>
+            <Input
+              variant="admin"
+              value={editForm.alt}
+              onChange={(e) =>
+                setEditForm((f) => ({ ...f, alt: e.target.value }))
+              }
+              placeholder="Describe the asset…"
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setEditingId(null)}>
+              Cancel
+            </Button>
+            <Button variant="admin" onClick={saveEdit}>
+              Save changes
+            </Button>
+          </div>
         </div>
-      )}
+      </AppDialog>
     </div>
   )
 }
