@@ -297,6 +297,8 @@ export type MediaWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Media"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Media"> | Date | string
   uploadedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  projectsAsCover?: Prisma.ProjectListRelationFilter
+  galleryIn?: Prisma.ProjectGalleryListRelationFilter
 }
 
 export type MediaOrderByWithRelationInput = {
@@ -314,6 +316,8 @@ export type MediaOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   uploadedBy?: Prisma.UserOrderByWithRelationInput
+  projectsAsCover?: Prisma.ProjectOrderByRelationAggregateInput
+  galleryIn?: Prisma.ProjectGalleryOrderByRelationAggregateInput
 }
 
 export type MediaWhereUniqueInput = Prisma.AtLeast<{
@@ -334,6 +338,8 @@ export type MediaWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Media"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Media"> | Date | string
   uploadedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  projectsAsCover?: Prisma.ProjectListRelationFilter
+  galleryIn?: Prisma.ProjectGalleryListRelationFilter
 }, "id" | "key">
 
 export type MediaOrderByWithAggregationInput = {
@@ -389,6 +395,8 @@ export type MediaCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   uploadedBy?: Prisma.UserCreateNestedOneWithoutMediaInput
+  projectsAsCover?: Prisma.ProjectCreateNestedManyWithoutCoverInput
+  galleryIn?: Prisma.ProjectGalleryCreateNestedManyWithoutMediaInput
 }
 
 export type MediaUncheckedCreateInput = {
@@ -405,6 +413,8 @@ export type MediaUncheckedCreateInput = {
   uploadedById?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  projectsAsCover?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoverInput
+  galleryIn?: Prisma.ProjectGalleryUncheckedCreateNestedManyWithoutMediaInput
 }
 
 export type MediaUpdateInput = {
@@ -420,6 +430,8 @@ export type MediaUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploadedBy?: Prisma.UserUpdateOneWithoutMediaNestedInput
+  projectsAsCover?: Prisma.ProjectUpdateManyWithoutCoverNestedInput
+  galleryIn?: Prisma.ProjectGalleryUpdateManyWithoutMediaNestedInput
 }
 
 export type MediaUncheckedUpdateInput = {
@@ -436,6 +448,8 @@ export type MediaUncheckedUpdateInput = {
   uploadedById?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCover?: Prisma.ProjectUncheckedUpdateManyWithoutCoverNestedInput
+  galleryIn?: Prisma.ProjectGalleryUncheckedUpdateManyWithoutMediaNestedInput
 }
 
 export type MediaCreateManyInput = {
@@ -492,6 +506,16 @@ export type MediaListRelationFilter = {
 
 export type MediaOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type MediaNullableScalarRelationFilter = {
+  is?: Prisma.MediaWhereInput | null
+  isNot?: Prisma.MediaWhereInput | null
+}
+
+export type MediaScalarRelationFilter = {
+  is?: Prisma.MediaWhereInput
+  isNot?: Prisma.MediaWhereInput
 }
 
 export type MediaCountOrderByAggregateInput = {
@@ -600,12 +624,34 @@ export type MediaUncheckedUpdateManyWithoutUploadedByNestedInput = {
   deleteMany?: Prisma.MediaScalarWhereInput | Prisma.MediaScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type MediaCreateNestedOneWithoutProjectsAsCoverInput = {
+  create?: Prisma.XOR<Prisma.MediaCreateWithoutProjectsAsCoverInput, Prisma.MediaUncheckedCreateWithoutProjectsAsCoverInput>
+  connectOrCreate?: Prisma.MediaCreateOrConnectWithoutProjectsAsCoverInput
+  connect?: Prisma.MediaWhereUniqueInput
+}
+
+export type MediaUpdateOneWithoutProjectsAsCoverNestedInput = {
+  create?: Prisma.XOR<Prisma.MediaCreateWithoutProjectsAsCoverInput, Prisma.MediaUncheckedCreateWithoutProjectsAsCoverInput>
+  connectOrCreate?: Prisma.MediaCreateOrConnectWithoutProjectsAsCoverInput
+  upsert?: Prisma.MediaUpsertWithoutProjectsAsCoverInput
+  disconnect?: Prisma.MediaWhereInput | boolean
+  delete?: Prisma.MediaWhereInput | boolean
+  connect?: Prisma.MediaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MediaUpdateToOneWithWhereWithoutProjectsAsCoverInput, Prisma.MediaUpdateWithoutProjectsAsCoverInput>, Prisma.MediaUncheckedUpdateWithoutProjectsAsCoverInput>
+}
+
+export type MediaCreateNestedOneWithoutGalleryInInput = {
+  create?: Prisma.XOR<Prisma.MediaCreateWithoutGalleryInInput, Prisma.MediaUncheckedCreateWithoutGalleryInInput>
+  connectOrCreate?: Prisma.MediaCreateOrConnectWithoutGalleryInInput
+  connect?: Prisma.MediaWhereUniqueInput
+}
+
+export type MediaUpdateOneRequiredWithoutGalleryInNestedInput = {
+  create?: Prisma.XOR<Prisma.MediaCreateWithoutGalleryInInput, Prisma.MediaUncheckedCreateWithoutGalleryInInput>
+  connectOrCreate?: Prisma.MediaCreateOrConnectWithoutGalleryInInput
+  upsert?: Prisma.MediaUpsertWithoutGalleryInInput
+  connect?: Prisma.MediaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MediaUpdateToOneWithWhereWithoutGalleryInInput, Prisma.MediaUpdateWithoutGalleryInInput>, Prisma.MediaUncheckedUpdateWithoutGalleryInInput>
 }
 
 export type MediaCreateWithoutUploadedByInput = {
@@ -620,6 +666,8 @@ export type MediaCreateWithoutUploadedByInput = {
   alt?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  projectsAsCover?: Prisma.ProjectCreateNestedManyWithoutCoverInput
+  galleryIn?: Prisma.ProjectGalleryCreateNestedManyWithoutMediaInput
 }
 
 export type MediaUncheckedCreateWithoutUploadedByInput = {
@@ -635,6 +683,8 @@ export type MediaUncheckedCreateWithoutUploadedByInput = {
   alt?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  projectsAsCover?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoverInput
+  galleryIn?: Prisma.ProjectGalleryUncheckedCreateNestedManyWithoutMediaInput
 }
 
 export type MediaCreateOrConnectWithoutUploadedByInput = {
@@ -682,6 +732,170 @@ export type MediaScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Media"> | Date | string
 }
 
+export type MediaCreateWithoutProjectsAsCoverInput = {
+  key: string
+  url: string
+  originalName: string
+  mimeType: string
+  size: number
+  width?: number | null
+  height?: number | null
+  folder?: string
+  alt?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  uploadedBy?: Prisma.UserCreateNestedOneWithoutMediaInput
+  galleryIn?: Prisma.ProjectGalleryCreateNestedManyWithoutMediaInput
+}
+
+export type MediaUncheckedCreateWithoutProjectsAsCoverInput = {
+  id?: number
+  key: string
+  url: string
+  originalName: string
+  mimeType: string
+  size: number
+  width?: number | null
+  height?: number | null
+  folder?: string
+  alt?: string | null
+  uploadedById?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  galleryIn?: Prisma.ProjectGalleryUncheckedCreateNestedManyWithoutMediaInput
+}
+
+export type MediaCreateOrConnectWithoutProjectsAsCoverInput = {
+  where: Prisma.MediaWhereUniqueInput
+  create: Prisma.XOR<Prisma.MediaCreateWithoutProjectsAsCoverInput, Prisma.MediaUncheckedCreateWithoutProjectsAsCoverInput>
+}
+
+export type MediaUpsertWithoutProjectsAsCoverInput = {
+  update: Prisma.XOR<Prisma.MediaUpdateWithoutProjectsAsCoverInput, Prisma.MediaUncheckedUpdateWithoutProjectsAsCoverInput>
+  create: Prisma.XOR<Prisma.MediaCreateWithoutProjectsAsCoverInput, Prisma.MediaUncheckedCreateWithoutProjectsAsCoverInput>
+  where?: Prisma.MediaWhereInput
+}
+
+export type MediaUpdateToOneWithWhereWithoutProjectsAsCoverInput = {
+  where?: Prisma.MediaWhereInput
+  data: Prisma.XOR<Prisma.MediaUpdateWithoutProjectsAsCoverInput, Prisma.MediaUncheckedUpdateWithoutProjectsAsCoverInput>
+}
+
+export type MediaUpdateWithoutProjectsAsCoverInput = {
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.IntFieldUpdateOperationsInput | number
+  width?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  folder?: Prisma.StringFieldUpdateOperationsInput | string
+  alt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  uploadedBy?: Prisma.UserUpdateOneWithoutMediaNestedInput
+  galleryIn?: Prisma.ProjectGalleryUpdateManyWithoutMediaNestedInput
+}
+
+export type MediaUncheckedUpdateWithoutProjectsAsCoverInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.IntFieldUpdateOperationsInput | number
+  width?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  folder?: Prisma.StringFieldUpdateOperationsInput | string
+  alt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uploadedById?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  galleryIn?: Prisma.ProjectGalleryUncheckedUpdateManyWithoutMediaNestedInput
+}
+
+export type MediaCreateWithoutGalleryInInput = {
+  key: string
+  url: string
+  originalName: string
+  mimeType: string
+  size: number
+  width?: number | null
+  height?: number | null
+  folder?: string
+  alt?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  uploadedBy?: Prisma.UserCreateNestedOneWithoutMediaInput
+  projectsAsCover?: Prisma.ProjectCreateNestedManyWithoutCoverInput
+}
+
+export type MediaUncheckedCreateWithoutGalleryInInput = {
+  id?: number
+  key: string
+  url: string
+  originalName: string
+  mimeType: string
+  size: number
+  width?: number | null
+  height?: number | null
+  folder?: string
+  alt?: string | null
+  uploadedById?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projectsAsCover?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoverInput
+}
+
+export type MediaCreateOrConnectWithoutGalleryInInput = {
+  where: Prisma.MediaWhereUniqueInput
+  create: Prisma.XOR<Prisma.MediaCreateWithoutGalleryInInput, Prisma.MediaUncheckedCreateWithoutGalleryInInput>
+}
+
+export type MediaUpsertWithoutGalleryInInput = {
+  update: Prisma.XOR<Prisma.MediaUpdateWithoutGalleryInInput, Prisma.MediaUncheckedUpdateWithoutGalleryInInput>
+  create: Prisma.XOR<Prisma.MediaCreateWithoutGalleryInInput, Prisma.MediaUncheckedCreateWithoutGalleryInInput>
+  where?: Prisma.MediaWhereInput
+}
+
+export type MediaUpdateToOneWithWhereWithoutGalleryInInput = {
+  where?: Prisma.MediaWhereInput
+  data: Prisma.XOR<Prisma.MediaUpdateWithoutGalleryInInput, Prisma.MediaUncheckedUpdateWithoutGalleryInInput>
+}
+
+export type MediaUpdateWithoutGalleryInInput = {
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.IntFieldUpdateOperationsInput | number
+  width?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  folder?: Prisma.StringFieldUpdateOperationsInput | string
+  alt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  uploadedBy?: Prisma.UserUpdateOneWithoutMediaNestedInput
+  projectsAsCover?: Prisma.ProjectUpdateManyWithoutCoverNestedInput
+}
+
+export type MediaUncheckedUpdateWithoutGalleryInInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.IntFieldUpdateOperationsInput | number
+  width?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  folder?: Prisma.StringFieldUpdateOperationsInput | string
+  alt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uploadedById?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCover?: Prisma.ProjectUncheckedUpdateManyWithoutCoverNestedInput
+}
+
 export type MediaCreateManyUploadedByInput = {
   id?: number
   key: string
@@ -709,6 +923,8 @@ export type MediaUpdateWithoutUploadedByInput = {
   alt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCover?: Prisma.ProjectUpdateManyWithoutCoverNestedInput
+  galleryIn?: Prisma.ProjectGalleryUpdateManyWithoutMediaNestedInput
 }
 
 export type MediaUncheckedUpdateWithoutUploadedByInput = {
@@ -724,6 +940,8 @@ export type MediaUncheckedUpdateWithoutUploadedByInput = {
   alt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCover?: Prisma.ProjectUncheckedUpdateManyWithoutCoverNestedInput
+  galleryIn?: Prisma.ProjectGalleryUncheckedUpdateManyWithoutMediaNestedInput
 }
 
 export type MediaUncheckedUpdateManyWithoutUploadedByInput = {
@@ -742,6 +960,44 @@ export type MediaUncheckedUpdateManyWithoutUploadedByInput = {
 }
 
 
+/**
+ * Count Type MediaCountOutputType
+ */
+
+export type MediaCountOutputType = {
+  projectsAsCover: number
+  galleryIn: number
+}
+
+export type MediaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  projectsAsCover?: boolean | MediaCountOutputTypeCountProjectsAsCoverArgs
+  galleryIn?: boolean | MediaCountOutputTypeCountGalleryInArgs
+}
+
+/**
+ * MediaCountOutputType without action
+ */
+export type MediaCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MediaCountOutputType
+   */
+  select?: Prisma.MediaCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * MediaCountOutputType without action
+ */
+export type MediaCountOutputTypeCountProjectsAsCoverArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectWhereInput
+}
+
+/**
+ * MediaCountOutputType without action
+ */
+export type MediaCountOutputTypeCountGalleryInArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectGalleryWhereInput
+}
+
 
 export type MediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -758,6 +1014,9 @@ export type MediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   updatedAt?: boolean
   uploadedBy?: boolean | Prisma.Media$uploadedByArgs<ExtArgs>
+  projectsAsCover?: boolean | Prisma.Media$projectsAsCoverArgs<ExtArgs>
+  galleryIn?: boolean | Prisma.Media$galleryInArgs<ExtArgs>
+  _count?: boolean | Prisma.MediaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["media"]>
 
 export type MediaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -813,6 +1072,9 @@ export type MediaSelectScalar = {
 export type MediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "url" | "originalName" | "mimeType" | "size" | "width" | "height" | "folder" | "alt" | "uploadedById" | "createdAt" | "updatedAt", ExtArgs["result"]["media"]>
 export type MediaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   uploadedBy?: boolean | Prisma.Media$uploadedByArgs<ExtArgs>
+  projectsAsCover?: boolean | Prisma.Media$projectsAsCoverArgs<ExtArgs>
+  galleryIn?: boolean | Prisma.Media$galleryInArgs<ExtArgs>
+  _count?: boolean | Prisma.MediaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MediaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   uploadedBy?: boolean | Prisma.Media$uploadedByArgs<ExtArgs>
@@ -825,6 +1087,8 @@ export type $MediaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Media"
   objects: {
     uploadedBy: Prisma.$UserPayload<ExtArgs> | null
+    projectsAsCover: Prisma.$ProjectPayload<ExtArgs>[]
+    galleryIn: Prisma.$ProjectGalleryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1235,6 +1499,8 @@ readonly fields: MediaFieldRefs;
 export interface Prisma__MediaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   uploadedBy<T extends Prisma.Media$uploadedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$uploadedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  projectsAsCover<T extends Prisma.Media$projectsAsCoverArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$projectsAsCoverArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  galleryIn<T extends Prisma.Media$galleryInArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$galleryInArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectGalleryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1694,6 +1960,54 @@ export type Media$uploadedByArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * Media.projectsAsCover
+ */
+export type Media$projectsAsCoverArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Project
+   */
+  select?: Prisma.ProjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Project
+   */
+  omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  where?: Prisma.ProjectWhereInput
+  orderBy?: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
+}
+
+/**
+ * Media.galleryIn
+ */
+export type Media$galleryInArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectGallery
+   */
+  select?: Prisma.ProjectGallerySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProjectGallery
+   */
+  omit?: Prisma.ProjectGalleryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectGalleryInclude<ExtArgs> | null
+  where?: Prisma.ProjectGalleryWhereInput
+  orderBy?: Prisma.ProjectGalleryOrderByWithRelationInput | Prisma.ProjectGalleryOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectGalleryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectGalleryScalarFieldEnum | Prisma.ProjectGalleryScalarFieldEnum[]
 }
 
 /**

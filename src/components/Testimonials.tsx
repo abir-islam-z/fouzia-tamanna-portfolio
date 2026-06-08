@@ -3,72 +3,87 @@ import { RiDoubleQuotesL } from "@remixicon/react"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 interface TestimonialItem {
-    name: string
-    role: string
-    content: string
+  name: string
+  role: string
+  content: string
 }
 
-export default function Testimonials() {
-    const { data: rawTestimonials } = useSuspenseQuery(testimonialsQuery)
-    const testimonials = (rawTestimonials ?? []) as TestimonialItem[]
+interface TestimonialsProps {
+  sectionConfig?: {
+    badge?: string | null
+    heading?: string | null
+    subtext?: string | null
+  }
+}
 
-    if (testimonials.length === 0) return null
+export default function Testimonials({
+  sectionConfig,
+}: TestimonialsProps = {}) {
+  const { data: rawTestimonials } = useSuspenseQuery(testimonialsQuery)
+  const testimonials = (rawTestimonials ?? []) as TestimonialItem[]
 
-    return (
-        <section
-            id="testimonials"
-            className="relative border-y border-border/50 bg-muted/20 px-4 py-16 md:px-6 md:py-24"
-        >
-            <div className="mx-auto max-w-6xl">
-                <div className="mb-12 space-y-3 text-center md:mb-16">
-                    <div className="label-mono">// PEER_REVIEWS.LOG</div>
-                    <h2 className="font-display text-3xl font-bold uppercase leading-none tracking-wide md:text-5xl">
-                        Kind words from{" "}
-                        <span className="text-gradient-neon-bg">partners</span>
-                    </h2>
+  if (testimonials.length === 0) return null
+
+  const badge = sectionConfig?.badge ?? "// PEER_REVIEWS.LOG"
+  const heading = sectionConfig?.heading ?? (
+    <>
+      Kind words from <span className="text-gradient-neon-bg">partners</span>
+    </>
+  )
+
+  return (
+    <section
+      id="testimonials"
+      className="relative border-y border-border/50 bg-muted/20 px-4 py-16 md:px-6 md:py-24"
+    >
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-12 space-y-3 text-center md:mb-16">
+          <div className="label-mono">{badge}</div>
+          <h2 className="font-display text-3xl leading-none font-bold tracking-wide uppercase md:text-5xl">
+            {heading}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+          {testimonials.map((item, i) => (
+            <div
+              key={i}
+              className="group hover:neon-glow-sm cyber-chamfer relative border border-border bg-card/60 p-6 transition-all hover:border-primary md:p-8"
+            >
+              <RiDoubleQuotesL className="absolute top-6 right-6 size-10 text-primary/15 transition-colors group-hover:text-primary/30 md:size-12" />
+              <div className="absolute top-4 left-4 font-mono text-[9px] tracking-[0.2em] text-muted-foreground/40 uppercase">
+                SIG_0{i + 1}
+              </div>
+
+              <div className="relative space-y-5 pt-6 md:space-y-6">
+                <div className="flex items-start gap-2">
+                  <span className="text-glow-sm mt-0.5 font-mono text-xs text-primary">
+                    {">>"}
+                  </span>
+                  <div
+                    className="prose prose-invert prose-p:my-0 max-w-none flex-1 font-mono text-sm leading-relaxed text-muted-foreground italic md:text-[15px]"
+                    dangerouslySetInnerHTML={{ __html: item.content }}
+                  />
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-                    {testimonials.map((item, i) => (
-                        <div
-                            key={i}
-                            className="group relative border border-border bg-card/60 p-6 transition-all hover:border-primary hover:neon-glow-sm cyber-chamfer md:p-8"
-                        >
-                            <RiDoubleQuotesL
-                                className="absolute right-6 top-6 size-10 text-primary/15 transition-colors group-hover:text-primary/30 md:size-12"
-                            />
-                            <div className="absolute left-4 top-4 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40">
-                                SIG_0{i + 1}
-                            </div>
-
-                            <div className="relative space-y-5 pt-6 md:space-y-6">
-                                <div className="flex items-start gap-2">
-                                    <span className="mt-0.5 font-mono text-xs text-primary text-glow-sm">
-                                        {">>"}
-                                    </span>
-                                    <p className="flex-1 font-mono text-sm italic leading-relaxed text-muted-foreground md:text-[15px]">
-                                        &ldquo;{item.content}&rdquo;
-                                    </p>
-                                </div>
-
-                                <div className="flex items-center gap-3 border-t border-border/60 pt-4 md:gap-4">
-                                    <div className="flex h-11 w-11 items-center justify-center border border-primary/50 font-display text-base font-bold text-primary cyber-chamfer-sm md:h-12 md:w-12">
-                                        {item.name[0]}
-                                    </div>
-                                    <div>
-                                        <h4 className="font-display text-xs font-bold uppercase tracking-wide md:text-sm">
-                                            {item.name}
-                                        </h4>
-                                        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground md:text-xs">
-                                            {item.role}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                <div className="flex items-center gap-3 border-t border-border/60 pt-4 md:gap-4">
+                  <div className="cyber-chamfer-sm flex h-11 w-11 items-center justify-center border border-primary/50 font-display text-base font-bold text-primary md:h-12 md:w-12">
+                    {item.name?.[0] ?? "?"}
+                  </div>
+                  <div>
+                    <h4 className="font-display text-xs font-bold tracking-wide uppercase md:text-sm">
+                      {item.name}
+                    </h4>
+                    <p className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase md:text-xs">
+                      {item.role}
+                    </p>
+                  </div>
                 </div>
+              </div>
             </div>
-        </section>
-    )
+          ))}
+        </div>
+      </div>
+    </section>
+  )
 }

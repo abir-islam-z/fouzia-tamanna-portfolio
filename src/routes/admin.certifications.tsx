@@ -1,23 +1,15 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  EntityList,
+  type EntityListColumn,
+} from "@/components/admin/entity-list"
+import { Card } from "@/components/ui/card"
 import {
   certificationsQuery,
   getQueryClient,
   useDeleteCertification,
-  useUpdateCertification,
 } from "@/lib/queries"
-import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useState } from "react"
 import { toast } from "sonner"
 
 interface CertificationItem {
@@ -32,166 +24,87 @@ interface CertificationItem {
 function AdminCertificationsComponent() {
   const { data: rawCerts = [] } = useSuspenseQuery(certificationsQuery)
   const certs = rawCerts as unknown as Array<CertificationItem>
-
-  const updateMutation = useUpdateCertification()
   const deleteMutation = useDeleteCertification()
 
-  const [localCerts, setLocalCerts] = useState<Array<CertificationItem> | null>(
-    null
-  )
-  const displayItems = localCerts ?? certs
-
-  const handleSave = async (item: CertificationItem) => {
+  const handleDelete = async (item: CertificationItem) => {
+    if (!item.id) return
+    if (!confirm(`Delete "${item.title}"? This cannot be undone.`)) return
     try {
-      await updateMutation.mutateAsync(item)
-      setLocalCerts(null)
-      toast.success("Certification saved!")
-    } catch (error: any) {
-      console.error("Certification save failed:", error)
-      toast.error(error?.message || "Failed to save certification")
+      await deleteMutation.mutateAsync(item.id)
+      toast.success("Certification deleted.")
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to delete certification")
     }
   }
 
-  const handleDelete = async (id?: number) => {
-    try {
-      if (id) {
-        await deleteMutation.mutateAsync(id)
-        setLocalCerts(null)
-        toast.success("Certification removed.")
-      }
-    } catch (error: any) {
-      console.error("Certification delete failed:", error)
-      toast.error(error?.message || "Failed to remove certification")
-    }
-  }
-
-  const handleAdd = () => {
-    const newItem: CertificationItem = {
-      title: "New Certification",
-      issuer: "Issuing Organization",
-      date: "Month, Year",
-      order: displayItems.length,
-    }
-    setLocalCerts([newItem, ...displayItems])
-  }
-
-  const update = (i: number, patch: Partial<CertificationItem>) => {
-    const next = [...displayItems]
-    next[i] = { ...next[i], ...patch }
-    setLocalCerts(next)
-  }
+  const columns: EntityListColumn<CertificationItem>[] = [
+    {
+      key: "title",
+      header: "Certification",
+      render: (item) => (
+        <span className="font-medium text-foreground">{item.title}</span>
+      ),
+    },
+    {
+      key: "issuer",
+      header: "Issuer",
+      render: (item) => (
+        <span className="font-mono text-sm text-muted-foreground">
+          {item.issuer}
+        </span>
+      ),
+    },
+    {
+      key: "date",
+      header: "Date",
+      width: "w-36",
+      render: (item) => (
+        <span className="font-mono text-xs text-muted-foreground">
+          {item.date}
+        </span>
+      ),
+    },
+    {
+      key: "link",
+      header: "Link",
+      render: (item) =>
+        item.link ? (
+          <a
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-primary underline-offset-2 hover:underline"
+          >
+            {(() => {
+              try {
+                return new URL(item.link).hostname
+              } catch {
+                return "Link"
+              }
+            })()}
+          </a>
+        ) : (
+          <span className="text-xs text-muted-foreground/50">—</span>
+        ),
+    },
+  ]
 
   return (
-    <div className="space-y-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="mb-2 text-3xl font-bold tracking-tight">
-            Certifications
-          </h1>
-          <p className="text-muted-foreground">
-            Manage your professional credentials.
-          </p>
-        </div>
-        <Button variant="admin" onClick={handleAdd} className="gap-2">
-          <RiAddLine size={20} />
-          Add Certification
-        </Button>
-      </header>
-
-      {displayItems.length > 0 ? (
-        <div className="rounded-lg border border-border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-12">Order</TableHead>
-                <TableHead>Certification</TableHead>
-                <TableHead>Issuer</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Link</TableHead>
-                <TableHead className="w-28 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {displayItems.map((item, i) => (
-                <TableRow key={item.id ?? `new-${i}`}>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      type="number"
-                      value={item.order}
-                      onChange={(e) =>
-                        update(i, { order: parseInt(e.target.value) || 0 })
-                      }
-                      className="h-9 w-16"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      value={item.title}
-                      onChange={(e) => update(i, { title: e.target.value })}
-                      className="h-9"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      value={item.issuer}
-                      onChange={(e) => update(i, { issuer: e.target.value })}
-                      className="h-9"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      value={item.date}
-                      onChange={(e) => update(i, { date: e.target.value })}
-                      className="h-9 w-32"
-                      placeholder="Month, Year"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      value={item.link ?? ""}
-                      onChange={(e) => update(i, { link: e.target.value })}
-                      className="h-9"
-                      placeholder="https://..."
-                    />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(item.id)}
-                        className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                        title="Remove"
-                      >
-                        <RiDeleteBinLine size={16} />
-                      </Button>
-                      <Button
-                        variant="admin"
-                        size="icon"
-                        onClick={() => handleSave(item)}
-                        className="h-8 w-8"
-                        title="Save"
-                      >
-                        <RiSaveLine size={16} />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-          No certifications found. Add your first one.
-        </div>
-      )}
-    </div>
+    <Card variant="admin" className="p-6">
+      <EntityList
+        title="Certifications"
+        subtitle="Manage your professional credentials."
+        newHref="/admin/certifications/new"
+        newLabel="Add Certification"
+        items={certs}
+        columns={columns}
+        editHref={(item) =>
+          `/admin/certifications/${item.id}` as `/admin/certifications/${number}`
+        }
+        onDelete={handleDelete}
+        emptyMessage="No certifications yet. Add your first credential."
+      />
+    </Card>
   )
 }
 

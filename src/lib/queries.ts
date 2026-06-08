@@ -18,22 +18,28 @@ import {
   getExperience,
   getFooter,
   getHero,
+  getLandingSections,
   getMedia,
   getMediaItem,
   getPresignedUpload,
+  getProjectBySlug,
   getProjects,
   getPublications,
   getR2Status,
+  getSiteSettings,
   getStats,
   getTestimonials,
+  reorderLandingSections,
   submitContact,
   updateCertification,
   updateExperience,
   updateFooter,
   updateHero,
+  updateLandingSection,
   updateMedia,
   updateProject,
   updatePublication,
+  updateSiteSettings,
   updateStat,
   updateTestimonial,
 } from "./cms"
@@ -53,6 +59,7 @@ export const queryKeys = {
   stats: ["stats"] as const,
   experience: ["experience"] as const,
   projects: ["projects"] as const,
+  projectBySlug: (slug: string) => ["project", slug] as const,
   testimonials: ["testimonials"] as const,
   certifications: ["certifications"] as const,
   publications: (includeUnpublished?: boolean) =>
@@ -61,6 +68,8 @@ export const queryKeys = {
   media: (folder?: string) => ["media", { folder }] as const,
   mediaItem: (id: number) => ["media", id] as const,
   r2Status: ["r2Status"] as const,
+  landingSections: ["landingSections"] as const,
+  siteSettings: ["siteSettings"] as const,
 } as const
 
 // ─── Query Options ───────────────────────────────────────────────────
@@ -127,6 +136,22 @@ export const r2StatusQuery = queryOptions({
   queryKey: queryKeys.r2Status,
   queryFn: () => getR2Status(),
 })
+
+export const landingSectionsQuery = queryOptions({
+  queryKey: queryKeys.landingSections,
+  queryFn: () => getLandingSections(),
+})
+
+export const siteSettingsQuery = queryOptions({
+  queryKey: queryKeys.siteSettings,
+  queryFn: () => getSiteSettings(),
+})
+
+export const projectBySlugQuery = (slug: string) =>
+  queryOptions({
+    queryKey: queryKeys.projectBySlug(slug),
+    queryFn: () => getProjectBySlug({ data: slug }),
+  })
 
 // ─── Mutation Hooks ──────────────────────────────────────────────────
 
@@ -322,6 +347,39 @@ export function useFinalizeMediaUpload() {
       finalizeMediaUploadFn({ data }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.media() })
+    },
+  })
+}
+
+export function useUpdateLandingSection() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (data: Parameters<typeof updateLandingSection>[0]["data"]) =>
+      updateLandingSection({ data }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.landingSections })
+    },
+  })
+}
+
+export function useReorderLandingSections() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (orderedIds: string[]) =>
+      reorderLandingSections({ data: { orderedIds } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.landingSections })
+    },
+  })
+}
+
+export function useUpdateSiteSettings() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (data: Parameters<typeof updateSiteSettings>[0]["data"]) =>
+      updateSiteSettings({ data }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.siteSettings })
     },
   })
 }

@@ -53,14 +53,19 @@ export const experienceSchema = z.object({
 
 export const projectSchema = z.object({
   id: z.number().optional(),
-  title: z.string(),
-  description: z.string(),
-  image: z.string(),
-  tags: z.string(),
+  slug: z.string().min(1, "Slug is required").trim(),
+  title: z.string().min(1, "Title is required").trim(),
+  summary: z.string().default(""),
+  caseStudy: z.string().default(""),
+  coverMediaId: z.number().nullable().optional(),
+  tags: z.string().default(""),
   isFeatured: z.boolean().default(false),
   link: z.string().nullable().optional(),
   github: z.string().nullable().optional(),
   order: z.number().default(0),
+  gallery: z
+    .array(z.object({ mediaId: z.number(), order: z.number().default(0) }))
+    .optional(),
 })
 
 export const testimonialSchema = z.object({
@@ -121,6 +126,35 @@ export const footerSchema = z.object({
   github: z.string().default(""),
   twitter: z.string().default(""),
   availability: z.string().default(""),
+})
+
+// --- LANDING SECTIONS / SITE SETTINGS ---
+export const landingSectionSchema = z.object({
+  id: z.string(),
+  label: z.string().default(""),
+  enabled: z.boolean().default(true),
+  order: z.number().default(0),
+  badge: z.string().nullable().optional(),
+  heading: z.string().nullable().optional(),
+  subtext: z.string().nullable().optional(),
+  ctaLabel: z.string().nullable().optional(),
+  ctaHref: z.string().nullable().optional(),
+})
+
+export const landingSectionInputSchema = landingSectionSchema
+
+export const reorderLandingSectionsSchema = z.object({
+  orderedIds: z.array(z.string()),
+})
+
+export const siteSettingsSchema = z.object({
+  heroHeadline: z.string().nullable().optional(),
+  heroCtaPrimary: z.string().nullable().optional(),
+  heroCtaSecondary: z.string().nullable().optional(),
+  contactHeading: z.string().nullable().optional(),
+  contactSubtext: z.string().nullable().optional(),
+  marqueeItems: z.string().nullable().optional(),
+  navbarBrand: z.string().nullable().optional(),
 })
 
 // --- AUTH ---
@@ -400,4 +434,49 @@ export const deleteMedia = createServerFn({ method: "POST" })
   .handler(async ({ data: id }) => {
     const { deleteMediaServer } = await import("./cms.server")
     return deleteMediaServer(id)
+  })
+
+// --- LANDING SECTIONS ---
+export const getLandingSections = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const { getLandingSectionsServer } = await import("./cms.server")
+    return getLandingSectionsServer()
+  }
+)
+
+export const updateLandingSection = createServerFn({ method: "POST" })
+  .validator(landingSectionInputSchema)
+  .handler(async ({ data }) => {
+    const { updateLandingSectionServer } = await import("./cms.server")
+    return updateLandingSectionServer(data)
+  })
+
+export const reorderLandingSections = createServerFn({ method: "POST" })
+  .validator(reorderLandingSectionsSchema)
+  .handler(async ({ data }) => {
+    const { reorderLandingSectionsServer } = await import("./cms.server")
+    return reorderLandingSectionsServer(data.orderedIds)
+  })
+
+// --- SITE SETTINGS ---
+export const getSiteSettings = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const { getSiteSettingsServer } = await import("./cms.server")
+    return getSiteSettingsServer()
+  }
+)
+
+export const updateSiteSettings = createServerFn({ method: "POST" })
+  .validator(siteSettingsSchema)
+  .handler(async ({ data }) => {
+    const { updateSiteSettingsServer } = await import("./cms.server")
+    return updateSiteSettingsServer(data)
+  })
+
+// --- PROJECT BY SLUG (public) ---
+export const getProjectBySlug = createServerFn({ method: "GET" })
+  .validator(z.string())
+  .handler(async ({ data: slug }) => {
+    const { getProjectBySlugServer } = await import("./cms.server")
+    return getProjectBySlugServer(slug)
   })

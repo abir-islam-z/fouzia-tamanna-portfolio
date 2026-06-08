@@ -11,7 +11,9 @@ import {
   RiExternalLinkLine,
   RiImageLine,
   RiLogoutBoxLine,
+  RiMailLine,
   RiMenuLine,
+  RiSettingsLine,
   RiShieldKeyholeLine,
   RiSidebarFoldLine,
   RiSidebarUnfoldLine,
@@ -27,7 +29,10 @@ const navItems = [
   { to: "/admin/publications", label: "Publications", icon: RiBookOpenLine },
   { to: "/admin/certifications", label: "Certifications", icon: RiAwardLine },
   { to: "/admin/testimonials", label: "Testimonials", icon: RiStarLine },
+  { to: "/admin/stats", label: "Stats", icon: RiDashboardLine },
   { to: "/admin/media", label: "Media Library", icon: RiImageLine },
+  { to: "/admin/messages", label: "Messages", icon: RiMailLine },
+  { to: "/admin/settings", label: "Settings", icon: RiSettingsLine },
 ]
 
 export function AdminSidebar() {

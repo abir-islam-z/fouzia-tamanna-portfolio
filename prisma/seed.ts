@@ -8,6 +8,7 @@ async function main() {
 
   // --- Clear existing data ---
   await prisma.publication.deleteMany({})
+  await prisma.projectGallery.deleteMany({})
   await prisma.media.deleteMany({})
   await prisma.user.deleteMany({})
   await prisma.hero.deleteMany({})
@@ -17,6 +18,8 @@ async function main() {
   await prisma.testimonial.deleteMany({})
   await prisma.certification.deleteMany({})
   await prisma.footer.deleteMany({})
+  await prisma.landingSection.deleteMany({})
+  await prisma.siteSettings.deleteMany({})
 
   // --- User ---
   const hashedPassword = await bcrypt.hash("password123", 10)
@@ -88,35 +91,44 @@ async function main() {
   // --- Projects ---
   const projects = [
     {
+      slug: "threat-hunting-lab",
       title: "Threat-Hunting Lab (ELK + Caldera)",
-      description: "Home SOC lab using Elastic Stack and MITRE Caldera to emulate APT techniques, detect them, and build detection rules. Full ATT&CK coverage.",
-      image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
+      summary:
+        "Home SOC lab using Elastic Stack and MITRE Caldera to emulate APT techniques, detect them, and build detection rules.",
+      caseStudy:
+        "<h2>Overview</h2><p>Built a personal SOC lab that emulates adversary techniques end-to-end.</p><h3>Stack</h3><ul><li>Elastic Stack (Elasticsearch, Kibana, Beats)</li><li>MITRE Caldera for automated adversary emulation</li><li>Custom detection rules mapped to ATT&amp;CK</li></ul><h3>Results</h3><p>Achieved 100% ATT&amp;CK tactic coverage with validated detections and a 0.4% false-positive rate.</p>",
       tags: "ELK, MITRE Caldera, Detection Engineering",
       isFeatured: true,
       link: "#",
       github: "#",
-      order: 1
+      order: 1,
     },
     {
+      slug: "network-forensics-toolkit",
       title: "Network Forensics Toolkit",
-      description: "Python-based toolkit that parses PCAP files, extracts IOCs (IPs, domains, hashes), and exports to STIX 2.1 for threat-intel platforms.",
-      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=800",
+      summary:
+        "Python-based toolkit that parses PCAP files, extracts IOCs, and exports to STIX 2.1 for threat-intel platforms.",
+      caseStudy:
+        "<h2>Overview</h2><p>A Python CLI for fast triage of packet captures and IOC extraction.</p><h3>Features</h3><ul><li>PCAP parsing with Scapy</li><li>IOC extraction (IPs, domains, hashes)</li><li>STIX 2.1 export for sharing with threat-intel platforms</li></ul><h3>Results</h3><p>Processed a 10 GB capture in under 90 seconds on commodity hardware.</p>",
       tags: "Python, Scapy, STIX 2.1, PCAP Analysis",
       isFeatured: true,
       link: "#",
       github: "#",
-      order: 2
+      order: 2,
     },
     {
+      slug: "zero-trust-vpn",
       title: "Zero-Trust VPN Deployment",
-      description: "Designed and deployed a WireGuard-based zero-trust mesh VPN with mutual TLS, device posture checks, and per-app access policies.",
-      image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=800",
+      summary:
+        "WireGuard-based zero-trust mesh VPN with mutual TLS, device posture checks, and per-app access policies.",
+      caseStudy:
+        "<h2>Overview</h2><p>Replaced a legacy site-to-site VPN with a zero-trust mesh.</p><h3>Design</h3><ul><li>WireGuard tunnels between every node</li><li>Mutual TLS for service identity</li><li>Device-posture checks before granting access</li><li>Per-app policies enforced at the gateway</li></ul>",
       tags: "WireGuard, mTLS, Zero Trust, OpenWRT",
       isFeatured: false,
       link: "#",
       github: "#",
-      order: 3
-    }
+      order: 3,
+    },
   ]
   for (const project of projects) {
     await prisma.project.create({ data: project })
@@ -232,6 +244,41 @@ async function main() {
     }
   })
   console.log("Footer seeded.")
+
+  // --- Landing Sections ---
+  const sections = [
+    { id: "hero", label: "Hero", badge: "// SECURE_SESSION.0001", order: 1, enabled: true },
+    { id: "stats", label: "Stats / Profile", badge: "// PROFILE.SYS", order: 2, enabled: true },
+    { id: "experience", label: "Experience", badge: "// TIMELINE.LOG", order: 3, enabled: true },
+    { id: "projects", label: "Projects", badge: "// PROJECTS.MKD", order: 4, enabled: true },
+    { id: "testimonials", label: "Testimonials", badge: "// PEER_REVIEWS.LOG", order: 5, enabled: true },
+    { id: "certifications", label: "Certifications", badge: "// CREDENTIALS.CRT", order: 6, enabled: true },
+    { id: "publications", label: "Publications", badge: "// RESEARCH · PUBLICATIONS", order: 7, enabled: true },
+    { id: "contact", label: "Contact", badge: "// CONTACT.SH", order: 8, enabled: true },
+  ]
+  for (const s of sections) {
+    await prisma.landingSection.create({
+      data: { ...s, updatedAt: new Date() },
+    })
+  }
+  console.log("Landing sections seeded.")
+
+  // --- Site Settings ---
+  await prisma.siteSettings.create({
+    data: {
+      id: "singleton",
+      heroHeadline: "SOC Analyst",
+      heroCtaPrimary: "Download CV",
+      heroCtaSecondary: "View Research",
+      contactHeading: null,
+      contactSubtext: null,
+      marqueeItems:
+        "// SYS://fouzia_tamanna, SOC ANALYST, // LONDON UK, // THREAT_HUNT, // INCIDENT_RESPONSE, // OPEN_TO_WORK, // ZERO_TRUST",
+      navbarBrand: "Fouzia Tamanna",
+      updatedAt: new Date(),
+    },
+  })
+  console.log("Site settings seeded.")
 
   console.log("Seeding complete!")
 }

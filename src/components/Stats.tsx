@@ -6,46 +6,49 @@ interface StatItem {
   label: string
 }
 
-const FALLBACK_STATS: Array<StatItem> = [
-  { value: "2K+", label: "Threats Triaged" },
-  { value: "150+", label: "Incidents Resolved" },
-  { value: "99.9%", label: "Network Uptime" },
-  { value: "4+", label: "Years in IT Security" },
-]
+interface StatsProps {
+  sectionConfig?: {
+    badge?: string | null
+    heading?: string | null
+    subtext?: string | null
+  }
+}
 
-export default function Stats() {
+export default function Stats({ sectionConfig }: StatsProps = {}) {
   const { data: rawStats } = useSuspenseQuery(statsQuery)
-  const stats =
-    rawStats && rawStats.length > 0
-      ? (rawStats as Array<StatItem>)
-      : FALLBACK_STATS
+  const stats = (rawStats ?? []) as unknown as Array<StatItem>
+
+  if (stats.length === 0) return null
+
+  const badge = sectionConfig?.badge ?? "// PROFILE.SYS"
+  const heading = sectionConfig?.heading ?? (
+    <>
+      Hello, I&apos;m Fouzia —
+      <br className="hidden md:block" />
+      <span
+        className="cyber-glitch text-gradient-neon-bg"
+        data-text="SOC Analyst"
+      >
+        SOC Analyst
+      </span>{" "}
+      &amp; Network Security Specialist.
+    </>
+  )
+  const subtext = sectionConfig?.subtext
 
   return (
     <section className="tech-grid relative border-y border-border/50 px-4 py-16 md:px-6 md:py-24">
       <div className="mx-auto grid max-w-7xl items-start gap-12 lg:grid-cols-5 lg:gap-16">
-        {/* Left: Heading */}
         <div className="space-y-6 text-center lg:col-span-2 lg:text-left">
-          <div className="label-mono">// PROFILE.SYS</div>
+          <div className="label-mono">{badge}</div>
           <h2 className="font-display text-2xl leading-tight font-bold tracking-wide uppercase md:text-4xl">
-            Hello, I&apos;m Fouzia —
-            <br className="hidden md:block" />
-            <span
-              className="cyber-glitch text-gradient-neon-bg"
-              data-text="SOC Analyst"
-            >
-              SOC Analyst
-            </span>{" "}
-            &amp; Network Security Specialist.
+            {heading}
           </h2>
-          <p className="font-mono text-sm leading-relaxed text-muted-foreground md:text-base">
-            I hold an{" "}
-            <span className="text-primary">
-              MSc in Computer Networks and Systems Security
-            </span>{" "}
-            and work at the intersection of threat detection, incident response,
-            and systems hardening — protecting enterprise infrastructure from
-            evolving cyber threats.
-          </p>
+          {subtext && (
+            <p className="font-mono text-sm leading-relaxed text-muted-foreground md:text-base">
+              {subtext}
+            </p>
+          )}
           <div className="flex items-center justify-center gap-2 pt-2 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase lg:justify-start">
             <span className="status-dot" />
             <span>System online</span>
@@ -54,7 +57,6 @@ export default function Stats() {
           </div>
         </div>
 
-        {/* Right: Stats grid with neon dividers */}
         <div className="cyber-chamfer grid grid-cols-2 divide-x divide-y divide-border/50 border border-border/50 lg:col-span-3">
           {stats.map((stat, i) => (
             <div
@@ -70,7 +72,7 @@ export default function Stats() {
               <div className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground uppercase md:text-xs">
                 {stat.label}
               </div>
-              <div className="absolute inset-x-0 bottom-0 h-px scale-x-0 bg-linear-to-r from-transparent via-primary to-transparent transition-transform duration-300 group-hover:scale-x-100" />
+              <div className="absolute inset-x-0 bottom-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-primary to-transparent transition-transform duration-300 group-hover:scale-x-100" />
             </div>
           ))}
         </div>

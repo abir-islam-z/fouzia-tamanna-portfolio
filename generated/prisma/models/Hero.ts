@@ -27,46 +27,46 @@ export type AggregateHero = {
 export type HeroMinAggregateOutputType = {
   id: string | null
   introBadge: string | null
-  subtitle: string | null
   title: string | null
   description: string | null
   openToWork: boolean | null
   location: string | null
   sponsorshipInfo: string | null
-  resumeUrl: string | null
-  logoUrl: string | null
-  logoKey: string | null
   updatedAt: Date | null
+  resumeUrl: string | null
+  logoKey: string | null
+  logoUrl: string | null
+  subtitle: string | null
 }
 
 export type HeroMaxAggregateOutputType = {
   id: string | null
   introBadge: string | null
-  subtitle: string | null
   title: string | null
   description: string | null
   openToWork: boolean | null
   location: string | null
   sponsorshipInfo: string | null
-  resumeUrl: string | null
-  logoUrl: string | null
-  logoKey: string | null
   updatedAt: Date | null
+  resumeUrl: string | null
+  logoKey: string | null
+  logoUrl: string | null
+  subtitle: string | null
 }
 
 export type HeroCountAggregateOutputType = {
   id: number
   introBadge: number
-  subtitle: number
   title: number
   description: number
   openToWork: number
   location: number
   sponsorshipInfo: number
-  resumeUrl: number
-  logoUrl: number
-  logoKey: number
   updatedAt: number
+  resumeUrl: number
+  logoKey: number
+  logoUrl: number
+  subtitle: number
   _all: number
 }
 
@@ -74,46 +74,46 @@ export type HeroCountAggregateOutputType = {
 export type HeroMinAggregateInputType = {
   id?: true
   introBadge?: true
-  subtitle?: true
   title?: true
   description?: true
   openToWork?: true
   location?: true
   sponsorshipInfo?: true
-  resumeUrl?: true
-  logoUrl?: true
-  logoKey?: true
   updatedAt?: true
+  resumeUrl?: true
+  logoKey?: true
+  logoUrl?: true
+  subtitle?: true
 }
 
 export type HeroMaxAggregateInputType = {
   id?: true
   introBadge?: true
-  subtitle?: true
   title?: true
   description?: true
   openToWork?: true
   location?: true
   sponsorshipInfo?: true
-  resumeUrl?: true
-  logoUrl?: true
-  logoKey?: true
   updatedAt?: true
+  resumeUrl?: true
+  logoKey?: true
+  logoUrl?: true
+  subtitle?: true
 }
 
 export type HeroCountAggregateInputType = {
   id?: true
   introBadge?: true
-  subtitle?: true
   title?: true
   description?: true
   openToWork?: true
   location?: true
   sponsorshipInfo?: true
-  resumeUrl?: true
-  logoUrl?: true
-  logoKey?: true
   updatedAt?: true
+  resumeUrl?: true
+  logoKey?: true
+  logoUrl?: true
+  subtitle?: true
   _all?: true
 }
 
@@ -192,16 +192,16 @@ export type HeroGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type HeroGroupByOutputType = {
   id: string
   introBadge: string
-  subtitle: string
   title: string
   description: string
   openToWork: boolean
   location: string
   sponsorshipInfo: string
-  resumeUrl: string
-  logoUrl: string | null
-  logoKey: string | null
   updatedAt: Date
+  resumeUrl: string
+  logoKey: string | null
+  logoUrl: string | null
+  subtitle: string
   _count: HeroCountAggregateOutputType | null
   _min: HeroMinAggregateOutputType | null
   _max: HeroMaxAggregateOutputType | null
@@ -228,31 +228,31 @@ export type HeroWhereInput = {
   NOT?: Prisma.HeroWhereInput | Prisma.HeroWhereInput[]
   id?: Prisma.StringFilter<"Hero"> | string
   introBadge?: Prisma.StringFilter<"Hero"> | string
-  subtitle?: Prisma.StringFilter<"Hero"> | string
   title?: Prisma.StringFilter<"Hero"> | string
   description?: Prisma.StringFilter<"Hero"> | string
   openToWork?: Prisma.BoolFilter<"Hero"> | boolean
   location?: Prisma.StringFilter<"Hero"> | string
   sponsorshipInfo?: Prisma.StringFilter<"Hero"> | string
-  resumeUrl?: Prisma.StringFilter<"Hero"> | string
-  logoUrl?: Prisma.StringNullableFilter<"Hero"> | string | null
-  logoKey?: Prisma.StringNullableFilter<"Hero"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Hero"> | Date | string
+  resumeUrl?: Prisma.StringFilter<"Hero"> | string
+  logoKey?: Prisma.StringNullableFilter<"Hero"> | string | null
+  logoUrl?: Prisma.StringNullableFilter<"Hero"> | string | null
+  subtitle?: Prisma.StringFilter<"Hero"> | string
 }
 
 export type HeroOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   introBadge?: Prisma.SortOrder
-  subtitle?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   openToWork?: Prisma.SortOrder
   location?: Prisma.SortOrder
   sponsorshipInfo?: Prisma.SortOrder
-  resumeUrl?: Prisma.SortOrder
-  logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  logoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  resumeUrl?: Prisma.SortOrder
+  logoKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  subtitle?: Prisma.SortOrder
 }
 
 export type HeroWhereUniqueInput = Prisma.AtLeast<{
@@ -261,31 +261,31 @@ export type HeroWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.HeroWhereInput[]
   NOT?: Prisma.HeroWhereInput | Prisma.HeroWhereInput[]
   introBadge?: Prisma.StringFilter<"Hero"> | string
-  subtitle?: Prisma.StringFilter<"Hero"> | string
   title?: Prisma.StringFilter<"Hero"> | string
   description?: Prisma.StringFilter<"Hero"> | string
   openToWork?: Prisma.BoolFilter<"Hero"> | boolean
   location?: Prisma.StringFilter<"Hero"> | string
   sponsorshipInfo?: Prisma.StringFilter<"Hero"> | string
-  resumeUrl?: Prisma.StringFilter<"Hero"> | string
-  logoUrl?: Prisma.StringNullableFilter<"Hero"> | string | null
-  logoKey?: Prisma.StringNullableFilter<"Hero"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Hero"> | Date | string
+  resumeUrl?: Prisma.StringFilter<"Hero"> | string
+  logoKey?: Prisma.StringNullableFilter<"Hero"> | string | null
+  logoUrl?: Prisma.StringNullableFilter<"Hero"> | string | null
+  subtitle?: Prisma.StringFilter<"Hero"> | string
 }, "id">
 
 export type HeroOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   introBadge?: Prisma.SortOrder
-  subtitle?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   openToWork?: Prisma.SortOrder
   location?: Prisma.SortOrder
   sponsorshipInfo?: Prisma.SortOrder
-  resumeUrl?: Prisma.SortOrder
-  logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  logoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  resumeUrl?: Prisma.SortOrder
+  logoKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  subtitle?: Prisma.SortOrder
   _count?: Prisma.HeroCountOrderByAggregateInput
   _max?: Prisma.HeroMaxOrderByAggregateInput
   _min?: Prisma.HeroMinOrderByAggregateInput
@@ -297,166 +297,166 @@ export type HeroScalarWhereWithAggregatesInput = {
   NOT?: Prisma.HeroScalarWhereWithAggregatesInput | Prisma.HeroScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Hero"> | string
   introBadge?: Prisma.StringWithAggregatesFilter<"Hero"> | string
-  subtitle?: Prisma.StringWithAggregatesFilter<"Hero"> | string
   title?: Prisma.StringWithAggregatesFilter<"Hero"> | string
   description?: Prisma.StringWithAggregatesFilter<"Hero"> | string
   openToWork?: Prisma.BoolWithAggregatesFilter<"Hero"> | boolean
   location?: Prisma.StringWithAggregatesFilter<"Hero"> | string
   sponsorshipInfo?: Prisma.StringWithAggregatesFilter<"Hero"> | string
-  resumeUrl?: Prisma.StringWithAggregatesFilter<"Hero"> | string
-  logoUrl?: Prisma.StringNullableWithAggregatesFilter<"Hero"> | string | null
-  logoKey?: Prisma.StringNullableWithAggregatesFilter<"Hero"> | string | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Hero"> | Date | string
+  resumeUrl?: Prisma.StringWithAggregatesFilter<"Hero"> | string
+  logoKey?: Prisma.StringNullableWithAggregatesFilter<"Hero"> | string | null
+  logoUrl?: Prisma.StringNullableWithAggregatesFilter<"Hero"> | string | null
+  subtitle?: Prisma.StringWithAggregatesFilter<"Hero"> | string
 }
 
 export type HeroCreateInput = {
   id?: string
   introBadge?: string
-  subtitle?: string
   title?: string
   description?: string
   openToWork?: boolean
   location?: string
   sponsorshipInfo?: string
-  resumeUrl?: string
-  logoUrl?: string | null
-  logoKey?: string | null
   updatedAt?: Date | string
+  resumeUrl?: string
+  logoKey?: string | null
+  logoUrl?: string | null
+  subtitle?: string
 }
 
 export type HeroUncheckedCreateInput = {
   id?: string
   introBadge?: string
-  subtitle?: string
   title?: string
   description?: string
   openToWork?: boolean
   location?: string
   sponsorshipInfo?: string
-  resumeUrl?: string
-  logoUrl?: string | null
-  logoKey?: string | null
   updatedAt?: Date | string
+  resumeUrl?: string
+  logoKey?: string | null
+  logoUrl?: string | null
+  subtitle?: string
 }
 
 export type HeroUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   introBadge?: Prisma.StringFieldUpdateOperationsInput | string
-  subtitle?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   openToWork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   location?: Prisma.StringFieldUpdateOperationsInput | string
   sponsorshipInfo?: Prisma.StringFieldUpdateOperationsInput | string
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subtitle?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type HeroUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   introBadge?: Prisma.StringFieldUpdateOperationsInput | string
-  subtitle?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   openToWork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   location?: Prisma.StringFieldUpdateOperationsInput | string
   sponsorshipInfo?: Prisma.StringFieldUpdateOperationsInput | string
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subtitle?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type HeroCreateManyInput = {
   id?: string
   introBadge?: string
-  subtitle?: string
   title?: string
   description?: string
   openToWork?: boolean
   location?: string
   sponsorshipInfo?: string
-  resumeUrl?: string
-  logoUrl?: string | null
-  logoKey?: string | null
   updatedAt?: Date | string
+  resumeUrl?: string
+  logoKey?: string | null
+  logoUrl?: string | null
+  subtitle?: string
 }
 
 export type HeroUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   introBadge?: Prisma.StringFieldUpdateOperationsInput | string
-  subtitle?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   openToWork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   location?: Prisma.StringFieldUpdateOperationsInput | string
   sponsorshipInfo?: Prisma.StringFieldUpdateOperationsInput | string
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subtitle?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type HeroUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   introBadge?: Prisma.StringFieldUpdateOperationsInput | string
-  subtitle?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   openToWork?: Prisma.BoolFieldUpdateOperationsInput | boolean
   location?: Prisma.StringFieldUpdateOperationsInput | string
   sponsorshipInfo?: Prisma.StringFieldUpdateOperationsInput | string
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subtitle?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type HeroCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   introBadge?: Prisma.SortOrder
-  subtitle?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   openToWork?: Prisma.SortOrder
   location?: Prisma.SortOrder
   sponsorshipInfo?: Prisma.SortOrder
-  resumeUrl?: Prisma.SortOrder
-  logoUrl?: Prisma.SortOrder
-  logoKey?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  resumeUrl?: Prisma.SortOrder
+  logoKey?: Prisma.SortOrder
+  logoUrl?: Prisma.SortOrder
+  subtitle?: Prisma.SortOrder
 }
 
 export type HeroMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   introBadge?: Prisma.SortOrder
-  subtitle?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   openToWork?: Prisma.SortOrder
   location?: Prisma.SortOrder
   sponsorshipInfo?: Prisma.SortOrder
-  resumeUrl?: Prisma.SortOrder
-  logoUrl?: Prisma.SortOrder
-  logoKey?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  resumeUrl?: Prisma.SortOrder
+  logoKey?: Prisma.SortOrder
+  logoUrl?: Prisma.SortOrder
+  subtitle?: Prisma.SortOrder
 }
 
 export type HeroMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   introBadge?: Prisma.SortOrder
-  subtitle?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   openToWork?: Prisma.SortOrder
   location?: Prisma.SortOrder
   sponsorshipInfo?: Prisma.SortOrder
-  resumeUrl?: Prisma.SortOrder
-  logoUrl?: Prisma.SortOrder
-  logoKey?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  resumeUrl?: Prisma.SortOrder
+  logoKey?: Prisma.SortOrder
+  logoUrl?: Prisma.SortOrder
+  subtitle?: Prisma.SortOrder
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -472,64 +472,64 @@ export type NullableStringFieldUpdateOperationsInput = {
 export type HeroSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   introBadge?: boolean
-  subtitle?: boolean
   title?: boolean
   description?: boolean
   openToWork?: boolean
   location?: boolean
   sponsorshipInfo?: boolean
-  resumeUrl?: boolean
-  logoUrl?: boolean
-  logoKey?: boolean
   updatedAt?: boolean
+  resumeUrl?: boolean
+  logoKey?: boolean
+  logoUrl?: boolean
+  subtitle?: boolean
 }, ExtArgs["result"]["hero"]>
 
 export type HeroSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   introBadge?: boolean
-  subtitle?: boolean
   title?: boolean
   description?: boolean
   openToWork?: boolean
   location?: boolean
   sponsorshipInfo?: boolean
-  resumeUrl?: boolean
-  logoUrl?: boolean
-  logoKey?: boolean
   updatedAt?: boolean
+  resumeUrl?: boolean
+  logoKey?: boolean
+  logoUrl?: boolean
+  subtitle?: boolean
 }, ExtArgs["result"]["hero"]>
 
 export type HeroSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   introBadge?: boolean
-  subtitle?: boolean
   title?: boolean
   description?: boolean
   openToWork?: boolean
   location?: boolean
   sponsorshipInfo?: boolean
-  resumeUrl?: boolean
-  logoUrl?: boolean
-  logoKey?: boolean
   updatedAt?: boolean
+  resumeUrl?: boolean
+  logoKey?: boolean
+  logoUrl?: boolean
+  subtitle?: boolean
 }, ExtArgs["result"]["hero"]>
 
 export type HeroSelectScalar = {
   id?: boolean
   introBadge?: boolean
-  subtitle?: boolean
   title?: boolean
   description?: boolean
   openToWork?: boolean
   location?: boolean
   sponsorshipInfo?: boolean
-  resumeUrl?: boolean
-  logoUrl?: boolean
-  logoKey?: boolean
   updatedAt?: boolean
+  resumeUrl?: boolean
+  logoKey?: boolean
+  logoUrl?: boolean
+  subtitle?: boolean
 }
 
-export type HeroOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "introBadge" | "subtitle" | "title" | "description" | "openToWork" | "location" | "sponsorshipInfo" | "resumeUrl" | "logoUrl" | "logoKey" | "updatedAt", ExtArgs["result"]["hero"]>
+export type HeroOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "introBadge" | "title" | "description" | "openToWork" | "location" | "sponsorshipInfo" | "updatedAt" | "resumeUrl" | "logoKey" | "logoUrl" | "subtitle", ExtArgs["result"]["hero"]>
 
 export type $HeroPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Hero"
@@ -537,16 +537,16 @@ export type $HeroPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     introBadge: string
-    subtitle: string
     title: string
     description: string
     openToWork: boolean
     location: string
     sponsorshipInfo: string
-    resumeUrl: string
-    logoUrl: string | null
-    logoKey: string | null
     updatedAt: Date
+    resumeUrl: string
+    logoKey: string | null
+    logoUrl: string | null
+    subtitle: string
   }, ExtArgs["result"]["hero"]>
   composites: {}
 }
@@ -972,16 +972,16 @@ export interface Prisma__HeroClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface HeroFieldRefs {
   readonly id: Prisma.FieldRef<"Hero", 'String'>
   readonly introBadge: Prisma.FieldRef<"Hero", 'String'>
-  readonly subtitle: Prisma.FieldRef<"Hero", 'String'>
   readonly title: Prisma.FieldRef<"Hero", 'String'>
   readonly description: Prisma.FieldRef<"Hero", 'String'>
   readonly openToWork: Prisma.FieldRef<"Hero", 'Boolean'>
   readonly location: Prisma.FieldRef<"Hero", 'String'>
   readonly sponsorshipInfo: Prisma.FieldRef<"Hero", 'String'>
-  readonly resumeUrl: Prisma.FieldRef<"Hero", 'String'>
-  readonly logoUrl: Prisma.FieldRef<"Hero", 'String'>
-  readonly logoKey: Prisma.FieldRef<"Hero", 'String'>
   readonly updatedAt: Prisma.FieldRef<"Hero", 'DateTime'>
+  readonly resumeUrl: Prisma.FieldRef<"Hero", 'String'>
+  readonly logoKey: Prisma.FieldRef<"Hero", 'String'>
+  readonly logoUrl: Prisma.FieldRef<"Hero", 'String'>
+  readonly subtitle: Prisma.FieldRef<"Hero", 'String'>
 }
     
 

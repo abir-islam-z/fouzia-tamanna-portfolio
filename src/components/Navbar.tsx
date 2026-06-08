@@ -16,17 +16,19 @@ export function Navbar() {
   const rootContext = state.matches.find((m) => m.routeId === "__root__")
   const user = rootContext?.context.user
   const hero = rootContext?.loaderData?.hero
+  const settings = rootContext?.loaderData?.siteSettings
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const navLinks = [
     { href: "/#about", label: "About" },
     { href: "/#experience", label: "Experience" },
-    { href: "/#projects", label: "Projects" },
+    { href: "/projects", label: "Projects" },
     { href: "/#publications", label: "Publications" },
   ]
 
   const logoUrl = hero?.logoUrl
-  const brandName = hero?.title || "Fouzia Tamanna"
+  const brandName =
+    settings?.navbarBrand || hero?.title || "Fouzia Tamanna"
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/60 bg-background/85 px-4 py-4 backdrop-blur-md md:px-6">

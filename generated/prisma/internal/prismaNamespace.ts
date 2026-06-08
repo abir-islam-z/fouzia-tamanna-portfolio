@@ -389,12 +389,15 @@ export const ModelName = {
   Stat: 'Stat',
   Experience: 'Experience',
   Project: 'Project',
+  ProjectGallery: 'ProjectGallery',
   ContactMessage: 'ContactMessage',
   Publication: 'Publication',
   Testimonial: 'Testimonial',
   Certification: 'Certification',
   Media: 'Media',
-  Footer: 'Footer'
+  Footer: 'Footer',
+  LandingSection: 'LandingSection',
+  SiteSettings: 'SiteSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -410,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "hero" | "stat" | "experience" | "project" | "contactMessage" | "publication" | "testimonial" | "certification" | "media" | "footer"
+    modelProps: "user" | "hero" | "stat" | "experience" | "project" | "projectGallery" | "contactMessage" | "publication" | "testimonial" | "certification" | "media" | "footer" | "landingSection" | "siteSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -781,6 +784,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProjectCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProjectCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProjectGallery: {
+      payload: Prisma.$ProjectGalleryPayload<ExtArgs>
+      fields: Prisma.ProjectGalleryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProjectGalleryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProjectGalleryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload>
+        }
+        findFirst: {
+          args: Prisma.ProjectGalleryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProjectGalleryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload>
+        }
+        findMany: {
+          args: Prisma.ProjectGalleryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload>[]
+        }
+        create: {
+          args: Prisma.ProjectGalleryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload>
+        }
+        createMany: {
+          args: Prisma.ProjectGalleryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProjectGalleryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload>[]
+        }
+        delete: {
+          args: Prisma.ProjectGalleryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload>
+        }
+        update: {
+          args: Prisma.ProjectGalleryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProjectGalleryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProjectGalleryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProjectGalleryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProjectGalleryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectGalleryPayload>
+        }
+        aggregate: {
+          args: Prisma.ProjectGalleryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProjectGallery>
+        }
+        groupBy: {
+          args: Prisma.ProjectGalleryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectGalleryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProjectGalleryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectGalleryCountAggregateOutputType> | number
         }
       }
     }
@@ -1228,6 +1305,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LandingSection: {
+      payload: Prisma.$LandingSectionPayload<ExtArgs>
+      fields: Prisma.LandingSectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LandingSectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LandingSectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload>
+        }
+        findFirst: {
+          args: Prisma.LandingSectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LandingSectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload>
+        }
+        findMany: {
+          args: Prisma.LandingSectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload>[]
+        }
+        create: {
+          args: Prisma.LandingSectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload>
+        }
+        createMany: {
+          args: Prisma.LandingSectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LandingSectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload>[]
+        }
+        delete: {
+          args: Prisma.LandingSectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload>
+        }
+        update: {
+          args: Prisma.LandingSectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.LandingSectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LandingSectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LandingSectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.LandingSectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LandingSectionPayload>
+        }
+        aggregate: {
+          args: Prisma.LandingSectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLandingSection>
+        }
+        groupBy: {
+          args: Prisma.LandingSectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LandingSectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LandingSectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LandingSectionCountAggregateOutputType> | number
+        }
+      }
+    }
+    SiteSettings: {
+      payload: Prisma.$SiteSettingsPayload<ExtArgs>
+      fields: Prisma.SiteSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SiteSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SiteSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.SiteSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SiteSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.SiteSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.SiteSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.SiteSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SiteSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.SiteSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+        }
+        update: {
+          args: Prisma.SiteSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.SiteSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SiteSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SiteSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.SiteSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.SiteSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSiteSettings>
+        }
+        groupBy: {
+          args: Prisma.SiteSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SiteSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SiteSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SiteSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1280,16 +1505,16 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const HeroScalarFieldEnum = {
   id: 'id',
   introBadge: 'introBadge',
-  subtitle: 'subtitle',
   title: 'title',
   description: 'description',
   openToWork: 'openToWork',
   location: 'location',
   sponsorshipInfo: 'sponsorshipInfo',
+  updatedAt: 'updatedAt',
   resumeUrl: 'resumeUrl',
-  logoUrl: 'logoUrl',
   logoKey: 'logoKey',
-  updatedAt: 'updatedAt'
+  logoUrl: 'logoUrl',
+  subtitle: 'subtitle'
 } as const
 
 export type HeroScalarFieldEnum = (typeof HeroScalarFieldEnum)[keyof typeof HeroScalarFieldEnum]
@@ -1322,9 +1547,11 @@ export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof
 
 export const ProjectScalarFieldEnum = {
   id: 'id',
+  slug: 'slug',
   title: 'title',
-  description: 'description',
-  image: 'image',
+  summary: 'summary',
+  caseStudy: 'caseStudy',
+  coverMediaId: 'coverMediaId',
   tags: 'tags',
   isFeatured: 'isFeatured',
   link: 'link',
@@ -1334,6 +1561,16 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const ProjectGalleryScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  mediaId: 'mediaId',
+  order: 'order'
+} as const
+
+export type ProjectGalleryScalarFieldEnum = (typeof ProjectGalleryScalarFieldEnum)[keyof typeof ProjectGalleryScalarFieldEnum]
 
 
 export const ContactMessageScalarFieldEnum = {
@@ -1422,6 +1659,37 @@ export const FooterScalarFieldEnum = {
 } as const
 
 export type FooterScalarFieldEnum = (typeof FooterScalarFieldEnum)[keyof typeof FooterScalarFieldEnum]
+
+
+export const LandingSectionScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  enabled: 'enabled',
+  order: 'order',
+  badge: 'badge',
+  heading: 'heading',
+  subtext: 'subtext',
+  ctaLabel: 'ctaLabel',
+  ctaHref: 'ctaHref',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LandingSectionScalarFieldEnum = (typeof LandingSectionScalarFieldEnum)[keyof typeof LandingSectionScalarFieldEnum]
+
+
+export const SiteSettingsScalarFieldEnum = {
+  id: 'id',
+  heroHeadline: 'heroHeadline',
+  heroCtaPrimary: 'heroCtaPrimary',
+  heroCtaSecondary: 'heroCtaSecondary',
+  contactHeading: 'contactHeading',
+  contactSubtext: 'contactSubtext',
+  marqueeItems: 'marqueeItems',
+  navbarBrand: 'navbarBrand',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SiteSettingsScalarFieldEnum = (typeof SiteSettingsScalarFieldEnum)[keyof typeof SiteSettingsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1631,12 +1899,15 @@ export type GlobalOmitConfig = {
   stat?: Prisma.StatOmit
   experience?: Prisma.ExperienceOmit
   project?: Prisma.ProjectOmit
+  projectGallery?: Prisma.ProjectGalleryOmit
   contactMessage?: Prisma.ContactMessageOmit
   publication?: Prisma.PublicationOmit
   testimonial?: Prisma.TestimonialOmit
   certification?: Prisma.CertificationOmit
   media?: Prisma.MediaOmit
   footer?: Prisma.FooterOmit
+  landingSection?: Prisma.LandingSectionOmit
+  siteSettings?: Prisma.SiteSettingsOmit
 }
 
 /* Types for Logging */

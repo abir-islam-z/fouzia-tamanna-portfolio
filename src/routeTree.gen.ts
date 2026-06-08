@@ -14,13 +14,26 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
+import { Route as AdminStatsRouteImport } from './routes/admin.stats'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminPublicationsRouteImport } from './routes/admin.publications'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminExperienceRouteImport } from './routes/admin.experience'
 import { Route as AdminCertificationsRouteImport } from './routes/admin.certifications'
+import { Route as AdminTestimonialsNewRouteImport } from './routes/admin.testimonials.new'
+import { Route as AdminTestimonialsIdRouteImport } from './routes/admin.testimonials.$id'
+import { Route as AdminPublicationsNewRouteImport } from './routes/admin.publications.new'
+import { Route as AdminPublicationsIdRouteImport } from './routes/admin.publications.$id'
+import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
+import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
+import { Route as AdminExperienceNewRouteImport } from './routes/admin.experience.new'
+import { Route as AdminExperienceIdRouteImport } from './routes/admin.experience.$id'
+import { Route as AdminCertificationsNewRouteImport } from './routes/admin.certifications.new'
+import { Route as AdminCertificationsIdRouteImport } from './routes/admin.certifications.$id'
 
 const TestRoute = TestRouteImport.update({
   id: '/test',
@@ -47,9 +60,24 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStatsRoute = AdminStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPublicationsRoute = AdminPublicationsRouteImport.update({
@@ -82,33 +110,109 @@ const AdminCertificationsRoute = AdminCertificationsRouteImport.update({
   path: '/certifications',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTestimonialsNewRoute = AdminTestimonialsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminTestimonialsRoute,
+} as any)
+const AdminTestimonialsIdRoute = AdminTestimonialsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminTestimonialsRoute,
+} as any)
+const AdminPublicationsNewRoute = AdminPublicationsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminPublicationsRoute,
+} as any)
+const AdminPublicationsIdRoute = AdminPublicationsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminPublicationsRoute,
+} as any)
+const AdminProjectsNewRoute = AdminProjectsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminProjectsRoute,
+} as any)
+const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminProjectsRoute,
+} as any)
+const AdminExperienceNewRoute = AdminExperienceNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminExperienceRoute,
+} as any)
+const AdminExperienceIdRoute = AdminExperienceIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminExperienceRoute,
+} as any)
+const AdminCertificationsNewRoute = AdminCertificationsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminCertificationsRoute,
+} as any)
+const AdminCertificationsIdRoute = AdminCertificationsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminCertificationsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/test': typeof TestRoute
-  '/admin/certifications': typeof AdminCertificationsRoute
-  '/admin/experience': typeof AdminExperienceRoute
+  '/admin/certifications': typeof AdminCertificationsRouteWithChildren
+  '/admin/experience': typeof AdminExperienceRouteWithChildren
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/admin/publications': typeof AdminPublicationsRoute
-  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/publications': typeof AdminPublicationsRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRouteWithChildren
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/certifications/$id': typeof AdminCertificationsIdRoute
+  '/admin/certifications/new': typeof AdminCertificationsNewRoute
+  '/admin/experience/$id': typeof AdminExperienceIdRoute
+  '/admin/experience/new': typeof AdminExperienceNewRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/publications/$id': typeof AdminPublicationsIdRoute
+  '/admin/publications/new': typeof AdminPublicationsNewRoute
+  '/admin/testimonials/$id': typeof AdminTestimonialsIdRoute
+  '/admin/testimonials/new': typeof AdminTestimonialsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/test': typeof TestRoute
-  '/admin/certifications': typeof AdminCertificationsRoute
-  '/admin/experience': typeof AdminExperienceRoute
+  '/admin/certifications': typeof AdminCertificationsRouteWithChildren
+  '/admin/experience': typeof AdminExperienceRouteWithChildren
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/admin/publications': typeof AdminPublicationsRoute
-  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/publications': typeof AdminPublicationsRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRouteWithChildren
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/certifications/$id': typeof AdminCertificationsIdRoute
+  '/admin/certifications/new': typeof AdminCertificationsNewRoute
+  '/admin/experience/$id': typeof AdminExperienceIdRoute
+  '/admin/experience/new': typeof AdminExperienceNewRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/publications/$id': typeof AdminPublicationsIdRoute
+  '/admin/publications/new': typeof AdminPublicationsNewRoute
+  '/admin/testimonials/$id': typeof AdminTestimonialsIdRoute
+  '/admin/testimonials/new': typeof AdminTestimonialsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,14 +220,27 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/test': typeof TestRoute
-  '/admin/certifications': typeof AdminCertificationsRoute
-  '/admin/experience': typeof AdminExperienceRoute
+  '/admin/certifications': typeof AdminCertificationsRouteWithChildren
+  '/admin/experience': typeof AdminExperienceRouteWithChildren
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/admin/publications': typeof AdminPublicationsRoute
-  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/publications': typeof AdminPublicationsRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRouteWithChildren
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/certifications/$id': typeof AdminCertificationsIdRoute
+  '/admin/certifications/new': typeof AdminCertificationsNewRoute
+  '/admin/experience/$id': typeof AdminExperienceIdRoute
+  '/admin/experience/new': typeof AdminExperienceNewRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/publications/$id': typeof AdminPublicationsIdRoute
+  '/admin/publications/new': typeof AdminPublicationsNewRoute
+  '/admin/testimonials/$id': typeof AdminTestimonialsIdRoute
+  '/admin/testimonials/new': typeof AdminTestimonialsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -138,8 +255,21 @@ export interface FileRouteTypes {
     | '/admin/messages'
     | '/admin/projects'
     | '/admin/publications'
+    | '/admin/settings'
+    | '/admin/stats'
     | '/admin/testimonials'
+    | '/projects/$slug'
     | '/admin/'
+    | '/admin/certifications/$id'
+    | '/admin/certifications/new'
+    | '/admin/experience/$id'
+    | '/admin/experience/new'
+    | '/admin/projects/$id'
+    | '/admin/projects/new'
+    | '/admin/publications/$id'
+    | '/admin/publications/new'
+    | '/admin/testimonials/$id'
+    | '/admin/testimonials/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -151,8 +281,21 @@ export interface FileRouteTypes {
     | '/admin/messages'
     | '/admin/projects'
     | '/admin/publications'
+    | '/admin/settings'
+    | '/admin/stats'
     | '/admin/testimonials'
+    | '/projects/$slug'
     | '/admin'
+    | '/admin/certifications/$id'
+    | '/admin/certifications/new'
+    | '/admin/experience/$id'
+    | '/admin/experience/new'
+    | '/admin/projects/$id'
+    | '/admin/projects/new'
+    | '/admin/publications/$id'
+    | '/admin/publications/new'
+    | '/admin/testimonials/$id'
+    | '/admin/testimonials/new'
   id:
     | '__root__'
     | '/'
@@ -165,8 +308,21 @@ export interface FileRouteTypes {
     | '/admin/messages'
     | '/admin/projects'
     | '/admin/publications'
+    | '/admin/settings'
+    | '/admin/stats'
     | '/admin/testimonials'
+    | '/projects/$slug'
     | '/admin/'
+    | '/admin/certifications/$id'
+    | '/admin/certifications/new'
+    | '/admin/experience/$id'
+    | '/admin/experience/new'
+    | '/admin/projects/$id'
+    | '/admin/projects/new'
+    | '/admin/publications/$id'
+    | '/admin/publications/new'
+    | '/admin/testimonials/$id'
+    | '/admin/testimonials/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -174,6 +330,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
   TestRoute: typeof TestRoute
+  ProjectsSlugRoute: typeof ProjectsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -213,11 +370,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/projects/$slug': {
+      id: '/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof ProjectsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/testimonials': {
       id: '/admin/testimonials'
       path: '/testimonials'
       fullPath: '/admin/testimonials'
       preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/stats': {
+      id: '/admin/stats'
+      path: '/stats'
+      fullPath: '/admin/stats'
+      preLoaderRoute: typeof AdminStatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/publications': {
@@ -262,28 +440,169 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCertificationsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/testimonials/new': {
+      id: '/admin/testimonials/new'
+      path: '/new'
+      fullPath: '/admin/testimonials/new'
+      preLoaderRoute: typeof AdminTestimonialsNewRouteImport
+      parentRoute: typeof AdminTestimonialsRoute
+    }
+    '/admin/testimonials/$id': {
+      id: '/admin/testimonials/$id'
+      path: '/$id'
+      fullPath: '/admin/testimonials/$id'
+      preLoaderRoute: typeof AdminTestimonialsIdRouteImport
+      parentRoute: typeof AdminTestimonialsRoute
+    }
+    '/admin/publications/new': {
+      id: '/admin/publications/new'
+      path: '/new'
+      fullPath: '/admin/publications/new'
+      preLoaderRoute: typeof AdminPublicationsNewRouteImport
+      parentRoute: typeof AdminPublicationsRoute
+    }
+    '/admin/publications/$id': {
+      id: '/admin/publications/$id'
+      path: '/$id'
+      fullPath: '/admin/publications/$id'
+      preLoaderRoute: typeof AdminPublicationsIdRouteImport
+      parentRoute: typeof AdminPublicationsRoute
+    }
+    '/admin/projects/new': {
+      id: '/admin/projects/new'
+      path: '/new'
+      fullPath: '/admin/projects/new'
+      preLoaderRoute: typeof AdminProjectsNewRouteImport
+      parentRoute: typeof AdminProjectsRoute
+    }
+    '/admin/projects/$id': {
+      id: '/admin/projects/$id'
+      path: '/$id'
+      fullPath: '/admin/projects/$id'
+      preLoaderRoute: typeof AdminProjectsIdRouteImport
+      parentRoute: typeof AdminProjectsRoute
+    }
+    '/admin/experience/new': {
+      id: '/admin/experience/new'
+      path: '/new'
+      fullPath: '/admin/experience/new'
+      preLoaderRoute: typeof AdminExperienceNewRouteImport
+      parentRoute: typeof AdminExperienceRoute
+    }
+    '/admin/experience/$id': {
+      id: '/admin/experience/$id'
+      path: '/$id'
+      fullPath: '/admin/experience/$id'
+      preLoaderRoute: typeof AdminExperienceIdRouteImport
+      parentRoute: typeof AdminExperienceRoute
+    }
+    '/admin/certifications/new': {
+      id: '/admin/certifications/new'
+      path: '/new'
+      fullPath: '/admin/certifications/new'
+      preLoaderRoute: typeof AdminCertificationsNewRouteImport
+      parentRoute: typeof AdminCertificationsRoute
+    }
+    '/admin/certifications/$id': {
+      id: '/admin/certifications/$id'
+      path: '/$id'
+      fullPath: '/admin/certifications/$id'
+      preLoaderRoute: typeof AdminCertificationsIdRouteImport
+      parentRoute: typeof AdminCertificationsRoute
+    }
   }
 }
 
+interface AdminCertificationsRouteChildren {
+  AdminCertificationsIdRoute: typeof AdminCertificationsIdRoute
+  AdminCertificationsNewRoute: typeof AdminCertificationsNewRoute
+}
+
+const AdminCertificationsRouteChildren: AdminCertificationsRouteChildren = {
+  AdminCertificationsIdRoute: AdminCertificationsIdRoute,
+  AdminCertificationsNewRoute: AdminCertificationsNewRoute,
+}
+
+const AdminCertificationsRouteWithChildren =
+  AdminCertificationsRoute._addFileChildren(AdminCertificationsRouteChildren)
+
+interface AdminExperienceRouteChildren {
+  AdminExperienceIdRoute: typeof AdminExperienceIdRoute
+  AdminExperienceNewRoute: typeof AdminExperienceNewRoute
+}
+
+const AdminExperienceRouteChildren: AdminExperienceRouteChildren = {
+  AdminExperienceIdRoute: AdminExperienceIdRoute,
+  AdminExperienceNewRoute: AdminExperienceNewRoute,
+}
+
+const AdminExperienceRouteWithChildren = AdminExperienceRoute._addFileChildren(
+  AdminExperienceRouteChildren,
+)
+
+interface AdminProjectsRouteChildren {
+  AdminProjectsIdRoute: typeof AdminProjectsIdRoute
+  AdminProjectsNewRoute: typeof AdminProjectsNewRoute
+}
+
+const AdminProjectsRouteChildren: AdminProjectsRouteChildren = {
+  AdminProjectsIdRoute: AdminProjectsIdRoute,
+  AdminProjectsNewRoute: AdminProjectsNewRoute,
+}
+
+const AdminProjectsRouteWithChildren = AdminProjectsRoute._addFileChildren(
+  AdminProjectsRouteChildren,
+)
+
+interface AdminPublicationsRouteChildren {
+  AdminPublicationsIdRoute: typeof AdminPublicationsIdRoute
+  AdminPublicationsNewRoute: typeof AdminPublicationsNewRoute
+}
+
+const AdminPublicationsRouteChildren: AdminPublicationsRouteChildren = {
+  AdminPublicationsIdRoute: AdminPublicationsIdRoute,
+  AdminPublicationsNewRoute: AdminPublicationsNewRoute,
+}
+
+const AdminPublicationsRouteWithChildren =
+  AdminPublicationsRoute._addFileChildren(AdminPublicationsRouteChildren)
+
+interface AdminTestimonialsRouteChildren {
+  AdminTestimonialsIdRoute: typeof AdminTestimonialsIdRoute
+  AdminTestimonialsNewRoute: typeof AdminTestimonialsNewRoute
+}
+
+const AdminTestimonialsRouteChildren: AdminTestimonialsRouteChildren = {
+  AdminTestimonialsIdRoute: AdminTestimonialsIdRoute,
+  AdminTestimonialsNewRoute: AdminTestimonialsNewRoute,
+}
+
+const AdminTestimonialsRouteWithChildren =
+  AdminTestimonialsRoute._addFileChildren(AdminTestimonialsRouteChildren)
+
 interface AdminRouteChildren {
-  AdminCertificationsRoute: typeof AdminCertificationsRoute
-  AdminExperienceRoute: typeof AdminExperienceRoute
+  AdminCertificationsRoute: typeof AdminCertificationsRouteWithChildren
+  AdminExperienceRoute: typeof AdminExperienceRouteWithChildren
   AdminMediaRoute: typeof AdminMediaRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
-  AdminProjectsRoute: typeof AdminProjectsRoute
-  AdminPublicationsRoute: typeof AdminPublicationsRoute
-  AdminTestimonialsRoute: typeof AdminTestimonialsRoute
+  AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
+  AdminPublicationsRoute: typeof AdminPublicationsRouteWithChildren
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminStatsRoute: typeof AdminStatsRoute
+  AdminTestimonialsRoute: typeof AdminTestimonialsRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminCertificationsRoute: AdminCertificationsRoute,
-  AdminExperienceRoute: AdminExperienceRoute,
+  AdminCertificationsRoute: AdminCertificationsRouteWithChildren,
+  AdminExperienceRoute: AdminExperienceRouteWithChildren,
   AdminMediaRoute: AdminMediaRoute,
   AdminMessagesRoute: AdminMessagesRoute,
-  AdminProjectsRoute: AdminProjectsRoute,
-  AdminPublicationsRoute: AdminPublicationsRoute,
-  AdminTestimonialsRoute: AdminTestimonialsRoute,
+  AdminProjectsRoute: AdminProjectsRouteWithChildren,
+  AdminPublicationsRoute: AdminPublicationsRouteWithChildren,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminStatsRoute: AdminStatsRoute,
+  AdminTestimonialsRoute: AdminTestimonialsRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -294,6 +613,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
   TestRoute: TestRoute,
+  ProjectsSlugRoute: ProjectsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

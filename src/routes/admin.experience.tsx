@@ -1,24 +1,13 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Textarea } from "@/components/ui/textarea"
+import type { EntityListColumn } from "@/components/admin/entity-list"
+import { EntityList } from "@/components/admin/entity-list"
+import { Card } from "@/components/ui/card"
 import {
   experienceQuery,
   getQueryClient,
   useDeleteExperience,
-  useUpdateExperience,
 } from "@/lib/queries"
-import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useState } from "react"
 import { toast } from "sonner"
 
 interface ExperienceItem {
@@ -32,178 +21,93 @@ interface ExperienceItem {
 }
 
 function AdminExperienceComponent() {
-  const { data: rawExperience = [] } = useSuspenseQuery(experienceQuery)
-  const experience = rawExperience as unknown as Array<ExperienceItem>
+  const { data: rawExp = [] } = useSuspenseQuery(experienceQuery)
+  const experience = rawExp as unknown as Array<ExperienceItem>
+  const deleteMutation = useDeleteExperience()
 
-  const updateExpMutation = useUpdateExperience()
-  const deleteExpMutation = useDeleteExperience()
-
-  const handleSave = async (item: ExperienceItem) => {
+  const handleDelete = async (item: ExperienceItem) => {
+    if (!item.id) return
+    if (!confirm(`Delete "${item.role}" at ${item.company}?`)) return
     try {
-      await updateExpMutation.mutateAsync(item)
-      toast.success("Experience saved!")
-    } catch (error: any) {
-      console.error("Experience save failed:", error)
-      toast.error(error?.message || "Failed to save experience")
+      await deleteMutation.mutateAsync(item.id)
+      toast.success("Experience entry deleted.")
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to delete")
     }
   }
 
-  const handleDelete = async (id?: number) => {
-    try {
-      if (id) {
-        await deleteExpMutation.mutateAsync(id)
-        toast.success("Experience entry removed.")
-      } else {
-        // Optimistic remove for unsaved items - just refetch
-        toast.success("Experience entry removed.")
-      }
-    } catch (error: any) {
-      console.error("Experience delete failed:", error)
-      toast.error(error?.message || "Failed to remove experience")
-    }
-  }
-
-  const [localExperience, setLocalExperience] =
-    useState<Array<ExperienceItem> | null>(null)
-
-  const displayItems = localExperience ?? experience
-
-  const handleAdd = () => {
-    const newItem: ExperienceItem = {
-      role: "New Role",
-      company: "Company Name",
-      period: "Year - Year",
-      description: "Description...",
-      skills: "Skill 1, Skill 2",
-      order: experience.length,
-    }
-    setLocalExperience([newItem, ...displayItems])
-  }
-
-  const update = (i: number, patch: Partial<ExperienceItem>) => {
-    const next = [...displayItems]
-    next[i] = { ...next[i], ...patch }
-    setLocalExperience(next)
-  }
-
-  return (
-    <div className="space-y-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="mb-2 text-3xl font-bold tracking-tight">Experience</h1>
-          <p className="text-muted-foreground">
-            Manage your professional timeline.
+  const columns: Array<EntityListColumn<ExperienceItem>> = [
+    {
+      key: "role",
+      header: "Role",
+      render: (item) => (
+        <div className="space-y-0.5">
+          <p className="font-medium text-foreground">{item.role}</p>
+          <p className="font-mono text-xs text-muted-foreground">
+            {item.company}
           </p>
         </div>
-        <Button variant="admin" onClick={handleAdd} className="gap-2">
-          <RiAddLine size={20} />
-          Add Position
-        </Button>
-      </header>
+      ),
+    },
+    {
+      key: "period",
+      header: "Period",
+      width: "w-36",
+      render: (item) => (
+        <span className="font-mono text-xs text-muted-foreground">
+          {item.period}
+        </span>
+      ),
+    },
+    {
+      key: "description",
+      header: "Description",
+      render: (item) => (
+        <p className="line-clamp-2 max-w-md text-sm text-muted-foreground">
+          {item.description}
+        </p>
+      ),
+    },
+    {
+      key: "skills",
+      header: "Skills",
+      render: (item) => (
+        <div className="flex max-w-50 flex-wrap gap-1">
+          {item.skills
+            .split(",")
+            .slice(0, 3)
+            .map((s, i) => (
+              <span
+                key={i}
+                className="rounded border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[9px] tracking-wide text-muted-foreground"
+              >
+                {s.trim()}
+              </span>
+            ))}
+          {item.skills.split(",").length > 3 && (
+            <span className="font-mono text-[9px] text-muted-foreground/60">
+              +{item.skills.split(",").length - 3}
+            </span>
+          )}
+        </div>
+      ),
+    },
+  ]
 
-      {displayItems.length > 0 ? (
-        <div className="rounded-lg border border-border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-12">Order</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Company</TableHead>
-                <TableHead>Period</TableHead>
-                <TableHead>Skills</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead className="w-28 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {displayItems.map((item, i) => (
-                <TableRow key={item.id ?? `new-${i}`}>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      type="number"
-                      value={item.order}
-                      onChange={(e) =>
-                        update(i, { order: parseInt(e.target.value) || 0 })
-                      }
-                      className="h-9 w-16"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      value={item.role}
-                      onChange={(e) => update(i, { role: e.target.value })}
-                      className="h-9"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      value={item.company}
-                      onChange={(e) => update(i, { company: e.target.value })}
-                      className="h-9"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      value={item.period}
-                      onChange={(e) => update(i, { period: e.target.value })}
-                      className="h-9 w-36"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      variant="admin"
-                      value={item.skills}
-                      onChange={(e) => update(i, { skills: e.target.value })}
-                      className="h-9"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Textarea
-                      variant="admin"
-                      value={item.description}
-                      onChange={(e) =>
-                        update(i, { description: e.target.value })
-                      }
-                      className="min-h-15 text-sm"
-                    />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(item.id)}
-                        className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                        title="Remove"
-                      >
-                        <RiDeleteBinLine size={16} />
-                      </Button>
-                      <Button
-                        variant="admin"
-                        size="icon"
-                        onClick={() => handleSave(item)}
-                        className="h-8 w-8"
-                        title="Save"
-                      >
-                        <RiSaveLine size={16} />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-          No experience entries found. Add your first position.
-        </div>
-      )}
-    </div>
+  return (
+    <Card variant="admin" className="p-6">
+      <EntityList
+        title="Experience"
+        subtitle="Manage your professional timeline."
+        newHref="/admin/experience/new"
+        newLabel="Add Position"
+        items={experience}
+        columns={columns}
+        editHref={(item) => `/admin/experience/${item.id}`}
+        onDelete={handleDelete}
+        emptyMessage="No experience yet. Add your first position."
+      />
+    </Card>
   )
 }
 

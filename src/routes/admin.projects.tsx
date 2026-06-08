@@ -1,270 +1,123 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Textarea } from "@/components/ui/textarea"
-import {
-  getQueryClient,
-  projectsQuery,
-  useDeleteProject,
-  useUpdateProject,
-} from "@/lib/queries"
-import {
-  RiAddLine,
-  RiDeleteBinLine,
-  RiSaveLine,
-  RiStarFill,
-  RiStarLine,
-} from "@remixicon/react"
+  EntityList,
+  type EntityListColumn,
+} from "@/components/admin/entity-list"
+import { Card } from "@/components/ui/card"
+import { getQueryClient, projectsQuery, useDeleteProject } from "@/lib/queries"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useState } from "react"
 import { toast } from "sonner"
 
-interface ProjectItem {
+interface ProjectListItem {
   id?: number
+  slug: string
   title: string
-  description: string
-  image: string
+  summary: string
   tags: string
   isFeatured: boolean
-  link?: string | null
-  github?: string | null
   order: number
+  cover?: { url: string; originalName: string } | null
 }
 
 function AdminProjectsComponent() {
   const { data: rawProjects = [] } = useSuspenseQuery(projectsQuery)
-  const projects = rawProjects as unknown as Array<ProjectItem>
-
-  const updateMutation = useUpdateProject()
+  const projects = rawProjects as unknown as Array<ProjectListItem>
   const deleteMutation = useDeleteProject()
 
-  const [localProjects, setLocalProjects] = useState<Array<ProjectItem> | null>(
-    null
-  )
-  const displayItems = localProjects ?? projects
-
-  const handleSave = async (item: ProjectItem) => {
+  const handleDelete = async (item: ProjectListItem) => {
+    if (!item.id) return
+    if (!confirm(`Delete "${item.title}"? This cannot be undone.`)) return
     try {
-      await updateMutation.mutateAsync(item)
-      setLocalProjects(null)
-      toast.success(`Project "${item.title}" saved!`)
-    } catch (error: any) {
-      console.error("Project save failed:", error)
-      toast.error(error?.message || "Failed to save project")
+      await deleteMutation.mutateAsync(item.id)
+      toast.success("Project deleted.")
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to delete project")
     }
   }
 
-  const handleDelete = async (id?: number) => {
-    try {
-      if (id) {
-        await deleteMutation.mutateAsync(id)
-        setLocalProjects(null)
-        toast.success("Project deleted.")
-      }
-    } catch (error: any) {
-      console.error("Project delete failed:", error)
-      toast.error(error?.message || "Failed to delete project")
-    }
-  }
-
-  const handleAdd = () => {
-    const newItem: ProjectItem = {
-      title: "New Project",
-      description: "Brief summary...",
-      image:
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
-      tags: "React, AI",
-      isFeatured: false,
-      order: displayItems.length,
-    }
-    setLocalProjects([newItem, ...displayItems])
-  }
-
-  const update = (i: number, patch: Partial<ProjectItem>) => {
-    const next = [...displayItems]
-    next[i] = { ...next[i], ...patch }
-    setLocalProjects(next)
-  }
-
-  return (
-    <div className="space-y-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="mb-2 text-3xl font-bold tracking-tight">Projects</h1>
-          <p className="text-muted-foreground">
-            Manage your portfolio showcase.
+  const columns: EntityListColumn<ProjectListItem>[] = [
+    {
+      key: "cover",
+      header: "Cover",
+      width: "w-20",
+      render: (item) =>
+        item.cover ? (
+          <img
+            src={item.cover.url}
+            alt={item.cover.originalName}
+            className="h-10 w-16 rounded border border-border object-cover"
+          />
+        ) : (
+          <div className="flex h-10 w-16 items-center justify-center rounded border border-dashed border-border bg-muted/30 text-[9px] text-muted-foreground">
+            none
+          </div>
+        ),
+    },
+    {
+      key: "title",
+      header: "Project",
+      render: (item) => (
+        <div className="space-y-0.5">
+          <div className="flex items-center gap-2">
+            <p className="font-medium text-foreground">{item.title}</p>
+            {item.isFeatured && (
+              <span className="rounded border border-yellow-500/40 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[9px] tracking-wider text-yellow-500 uppercase">
+                Featured
+              </span>
+            )}
+          </div>
+          <p className="font-mono text-xs text-muted-foreground">
+            /{item.slug}
           </p>
         </div>
-        <Button variant="admin" onClick={handleAdd} className="gap-2">
-          <RiAddLine size={20} />
-          Add Project
-        </Button>
-      </header>
-
-      {displayItems.length > 0 ? (
-        <div className="space-y-6">
-          {displayItems.map((item, i) => (
-            <div
-              key={item.id ?? `new-${i}`}
-              className="rounded-lg border border-border bg-card p-4"
-            >
-              <div className="mb-3 flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={
-                    item.isFeatured
-                      ? "h-8 w-8 text-yellow-500"
-                      : "h-8 w-8 text-muted-foreground"
-                  }
-                  onClick={() => update(i, { isFeatured: !item.isFeatured })}
-                  title={item.isFeatured ? "Unfeature" : "Feature"}
-                >
-                  {item.isFeatured ? (
-                    <RiStarFill size={18} />
-                  ) : (
-                    <RiStarLine size={18} />
-                  )}
-                </Button>
-                <div className="flex-1">
-                  <Input
-                    variant="admin"
-                    value={item.title}
-                    onChange={(e) => update(i, { title: e.target.value })}
-                    className="h-9 font-semibold"
-                    placeholder="Project title"
-                  />
-                </div>
-                <Input
-                  variant="admin"
-                  type="number"
-                  value={item.order}
-                  onChange={(e) =>
-                    update(i, { order: parseInt(e.target.value) || 0 })
-                  }
-                  className="h-9 w-16"
-                  title="Order"
-                />
-              </div>
-
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-36">Image</TableHead>
-                    <TableHead>Tags</TableHead>
-                    <TableHead>Live Link</TableHead>
-                    <TableHead>GitHub</TableHead>
-                    <TableHead className="w-28 text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      {item.image ? (
-                        <img
-                          src={item.image}
-                          alt="Preview"
-                          className="h-14 w-24 rounded border border-border object-cover"
-                        />
-                      ) : (
-                        <span className="text-xs text-muted-foreground">
-                          No image
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        variant="admin"
-                        value={item.tags}
-                        onChange={(e) => update(i, { tags: e.target.value })}
-                        className="h-9"
-                        placeholder="React, AI"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        variant="admin"
-                        value={item.link || ""}
-                        onChange={(e) => update(i, { link: e.target.value })}
-                        className="h-9"
-                        placeholder="https://..."
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        variant="admin"
-                        value={item.github || ""}
-                        onChange={(e) => update(i, { github: e.target.value })}
-                        className="h-9"
-                        placeholder="https://github.com/..."
-                      />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(item.id)}
-                          className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          title="Delete"
-                        >
-                          <RiDeleteBinLine size={16} />
-                        </Button>
-                        <Button
-                          variant="admin"
-                          size="icon"
-                          onClick={() => handleSave(item)}
-                          className="h-8 w-8"
-                          title="Save"
-                        >
-                          <RiSaveLine size={16} />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-
-              <div className="mt-3 space-y-2">
-                <Label variant="admin" className="text-xs">
-                  Image URL
-                </Label>
-                <Input
-                  variant="admin"
-                  value={item.image}
-                  onChange={(e) => update(i, { image: e.target.value })}
-                  className="h-9"
-                  placeholder="https://images.unsplash.com/..."
-                />
-                <Label variant="admin" className="text-xs">
-                  Description
-                </Label>
-                <Textarea
-                  variant="admin"
-                  rows={3}
-                  value={item.description}
-                  onChange={(e) => update(i, { description: e.target.value })}
-                  className="text-sm"
-                />
-              </div>
-            </div>
-          ))}
+      ),
+    },
+    {
+      key: "summary",
+      header: "Summary",
+      render: (item) => (
+        <p className="line-clamp-2 max-w-md text-sm text-muted-foreground">
+          {item.summary}
+        </p>
+      ),
+    },
+    {
+      key: "tags",
+      header: "Tags",
+      render: (item) => (
+        <div className="flex max-w-[180px] flex-wrap gap-1">
+          {item.tags
+            .split(",")
+            .slice(0, 3)
+            .map((s, i) => (
+              <span
+                key={i}
+                className="rounded border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[9px] tracking-wide text-muted-foreground"
+              >
+                {s.trim()}
+              </span>
+            ))}
         </div>
-      ) : (
-        <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-          No projects found. Add your first project.
-        </div>
-      )}
-    </div>
+      ),
+    },
+  ]
+
+  return (
+    <Card variant="admin" className="p-6">
+      <EntityList
+        title="Projects"
+        subtitle="Manage your portfolio projects and case studies."
+        newHref="/admin/projects/new"
+        newLabel="Add Project"
+        items={projects}
+        columns={columns}
+        editHref={(item) =>
+          `/admin/projects/${item.id}` as `/admin/projects/${number}`
+        }
+        onDelete={handleDelete}
+        emptyMessage="No projects yet. Add your first one to feature on the landing page."
+      />
+    </Card>
   )
 }
 

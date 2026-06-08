@@ -50,16 +50,31 @@ model Experience {
 }
 
 model Project {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  image       String
-  tags        String
-  isFeatured  Boolean  @default(false)
-  link        String?
-  github      String?
-  order       Int      @default(0)
-  updatedAt   DateTime @updatedAt
+  id           Int              @id @default(autoincrement())
+  slug         String           @unique
+  title        String
+  summary      String
+  caseStudy    String           @default("")
+  coverMediaId Int?
+  cover        Media?           @relation("ProjectCover", fields: [coverMediaId], references: [id])
+  tags         String
+  isFeatured   Boolean          @default(false)
+  link         String?
+  github       String?
+  order        Int              @default(0)
+  updatedAt    DateTime         @updatedAt
+  gallery      ProjectGallery[]
+}
+
+model ProjectGallery {
+  id        Int     @id @default(autoincrement())
+  projectId Int
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  mediaId   Int
+  media     Media   @relation(fields: [mediaId], references: [id])
+  order     Int     @default(0)
+
+  @@index([projectId])
 }
 
 model ContactMessage {
@@ -106,20 +121,22 @@ model Certification {
 }
 
 model Media {
-  id           Int      @id @default(autoincrement())
-  key          String   @unique
-  url          String
-  originalName String
-  mimeType     String
-  size         Int
-  width        Int?
-  height       Int?
-  folder       String   @default("general")
-  alt          String?
-  uploadedById Int?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  uploadedBy   User?    @relation(fields: [uploadedById], references: [id])
+  id            Int              @id @default(autoincrement())
+  key           String           @unique
+  url           String
+  originalName  String
+  mimeType      String
+  size          Int
+  width         Int?
+  height        Int?
+  folder        String           @default("general")
+  alt           String?
+  uploadedById  Int?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  uploadedBy    User?            @relation(fields: [uploadedById], references: [id])
+  projectsAsCover Project[]      @relation("ProjectCover")
+  galleryIn     ProjectGallery[]
 
   @@index([folder])
   @@index([createdAt])
@@ -134,4 +151,29 @@ model Footer {
   twitter      String   @default("#")
   availability String   @default("Open for SOC Analyst & Network Security Roles")
   updatedAt    DateTime @updatedAt
+}
+
+model LandingSection {
+  id        String   @id
+  label     String
+  enabled   Boolean  @default(true)
+  order     Int      @default(0)
+  badge     String?
+  heading   String?
+  subtext   String?
+  ctaLabel  String?
+  ctaHref   String?
+  updatedAt DateTime @updatedAt
+}
+
+model SiteSettings {
+  id               String   @id @default("singleton")
+  heroHeadline     String?
+  heroCtaPrimary   String?
+  heroCtaSecondary String?
+  contactHeading   String?
+  contactSubtext   String?
+  marqueeItems     String?
+  navbarBrand      String?
+  updatedAt        DateTime @updatedAt
 }

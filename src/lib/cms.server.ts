@@ -232,17 +232,80 @@ export async function getProjectsServer() {
     await getDb()
   ).project.findMany({
     orderBy: { order: "asc" },
+    include: {
+      cover: true,
+      gallery: {
+        include: { media: true },
+        orderBy: { order: "asc" },
+      },
+    },
+  })
+}
+
+export async function getProjectBySlugServer(slug: string) {
+  return await (
+    await getDb()
+  ).project.findUnique({
+    where: { slug },
+    include: {
+      cover: true,
+      gallery: {
+        include: { media: true },
+        orderBy: { order: "asc" },
+      },
+    },
   })
 }
 
 export async function updateProjectServer(data: any) {
   try {
     await checkAuth()
-    const { id, ...rest } = data
+    const { id, gallery, ...rest } = data
+
     if (id) {
-      return await (await getDb()).project.update({ where: { id }, data: rest })
+      // Update main row
+      const project = await (
+        await getDb()
+      ).project.update({ where: { id }, data: rest })
+
+      // Replace gallery if provided
+      if (Array.isArray(gallery)) {
+        await (
+          await getDb()
+        ).projectGallery.deleteMany({ where: { projectId: id } })
+        if (gallery.length > 0) {
+          await (
+            await getDb()
+          ).projectGallery.createMany({
+            data: gallery.map((g: any, idx: number) => ({
+              projectId: id,
+              mediaId: g.mediaId,
+              order: g.order ?? idx,
+            })),
+          })
+        }
+      }
+      return project
     }
-    return await (await getDb()).project.create({ data: rest })
+
+    const { slug } = rest
+    if (!slug) throw new Error("Slug is required")
+
+    const { gallery: _, ...createRest } = data
+    const project = await (await getDb()).project.create({ data: createRest })
+
+    if (Array.isArray(gallery) && gallery.length > 0) {
+      await (
+        await getDb()
+      ).projectGallery.createMany({
+        data: gallery.map((g: any, idx: number) => ({
+          projectId: project.id,
+          mediaId: g.mediaId,
+          order: g.order ?? idx,
+        })),
+      })
+    }
+    return project
   } catch (error: any) {
     throw new Error(formatZodError(error))
   }
@@ -530,4 +593,101 @@ export async function deleteMediaServer(id: number) {
 export async function getR2StatusServer() {
   await checkAuth()
   return checkR2Config()
+}
+
+// --- LANDING SECTIONS ---
+const DEFAULT_LANDING_SECTIONS = [
+  { id: "hero", label: "Hero", badge: "// SECURE_SESSION.0001", order: 1 },
+  { id: "stats", label: "Stats / Profile", badge: "// PROFILE.SYS", order: 2 },
+  { id: "experience", label: "Experience", badge: "// TIMELINE.LOG", order: 3 },
+  { id: "projects", label: "Projects", badge: "// PROJECTS.MKD", order: 4 },
+  {
+    id: "testimonials",
+    label: "Testimonials",
+    badge: "// PEER_REVIEWS.LOG",
+    order: 5,
+  },
+  {
+    id: "certifications",
+    label: "Certifications",
+    badge: "// CREDENTIALS.CRT",
+    order: 6,
+  },
+  {
+    id: "publications",
+    label: "Publications",
+    badge: "// RESEARCH · PUBLICATIONS",
+    order: 7,
+  },
+  { id: "contact", label: "Contact", badge: "// CONTACT.SH", order: 8 },
+]
+
+export async function getLandingSectionsServer() {
+  const db = await getDb()
+  let rows = await db.landingSection.findMany({ orderBy: { order: "asc" } })
+
+  if (rows.length === 0) {
+    // Seed defaults if empty
+    for (const s of DEFAULT_LANDING_SECTIONS) {
+      await db.landingSection.create({
+        data: {
+          id: s.id,
+          label: s.label,
+          badge: s.badge,
+          order: s.order,
+          updatedAt: new Date(),
+        },
+      })
+    }
+    rows = await db.landingSection.findMany({ orderBy: { order: "asc" } })
+  }
+
+  return rows
+}
+
+export async function updateLandingSectionServer(data: any) {
+  await checkAuth()
+  const db = await getDb()
+  const { id, ...rest } = data
+  return await db.landingSection.upsert({
+    where: { id },
+    update: { ...rest, updatedAt: new Date() },
+    create: { ...rest, id, updatedAt: new Date() },
+  })
+}
+
+export async function reorderLandingSectionsServer(orderedIds: string[]) {
+  await checkAuth()
+  const db = await getDb()
+  await db.$transaction(
+    orderedIds.map((id, idx) =>
+      db.landingSection.update({
+        where: { id },
+        data: { order: idx + 1, updatedAt: new Date() },
+      })
+    )
+  )
+  return { ok: true }
+}
+
+// --- SITE SETTINGS ---
+export async function getSiteSettingsServer() {
+  const db = await getDb()
+  let row = await db.siteSettings.findUnique({ where: { id: "singleton" } })
+  if (!row) {
+    row = await db.siteSettings.create({
+      data: { id: "singleton", updatedAt: new Date() },
+    })
+  }
+  return row
+}
+
+export async function updateSiteSettingsServer(data: any) {
+  await checkAuth()
+  const db = await getDb()
+  return await db.siteSettings.upsert({
+    where: { id: "singleton" },
+    update: { ...data, updatedAt: new Date() },
+    create: { id: "singleton", ...data, updatedAt: new Date() },
+  })
 }

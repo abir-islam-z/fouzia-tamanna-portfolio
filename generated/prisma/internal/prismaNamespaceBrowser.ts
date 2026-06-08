@@ -56,12 +56,15 @@ export const ModelName = {
   Stat: 'Stat',
   Experience: 'Experience',
   Project: 'Project',
+  ProjectGallery: 'ProjectGallery',
   ContactMessage: 'ContactMessage',
   Publication: 'Publication',
   Testimonial: 'Testimonial',
   Certification: 'Certification',
   Media: 'Media',
-  Footer: 'Footer'
+  Footer: 'Footer',
+  LandingSection: 'LandingSection',
+  SiteSettings: 'SiteSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -93,16 +96,16 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const HeroScalarFieldEnum = {
   id: 'id',
   introBadge: 'introBadge',
-  subtitle: 'subtitle',
   title: 'title',
   description: 'description',
   openToWork: 'openToWork',
   location: 'location',
   sponsorshipInfo: 'sponsorshipInfo',
+  updatedAt: 'updatedAt',
   resumeUrl: 'resumeUrl',
-  logoUrl: 'logoUrl',
   logoKey: 'logoKey',
-  updatedAt: 'updatedAt'
+  logoUrl: 'logoUrl',
+  subtitle: 'subtitle'
 } as const
 
 export type HeroScalarFieldEnum = (typeof HeroScalarFieldEnum)[keyof typeof HeroScalarFieldEnum]
@@ -135,9 +138,11 @@ export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof
 
 export const ProjectScalarFieldEnum = {
   id: 'id',
+  slug: 'slug',
   title: 'title',
-  description: 'description',
-  image: 'image',
+  summary: 'summary',
+  caseStudy: 'caseStudy',
+  coverMediaId: 'coverMediaId',
   tags: 'tags',
   isFeatured: 'isFeatured',
   link: 'link',
@@ -147,6 +152,16 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const ProjectGalleryScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  mediaId: 'mediaId',
+  order: 'order'
+} as const
+
+export type ProjectGalleryScalarFieldEnum = (typeof ProjectGalleryScalarFieldEnum)[keyof typeof ProjectGalleryScalarFieldEnum]
 
 
 export const ContactMessageScalarFieldEnum = {
@@ -235,6 +250,37 @@ export const FooterScalarFieldEnum = {
 } as const
 
 export type FooterScalarFieldEnum = (typeof FooterScalarFieldEnum)[keyof typeof FooterScalarFieldEnum]
+
+
+export const LandingSectionScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  enabled: 'enabled',
+  order: 'order',
+  badge: 'badge',
+  heading: 'heading',
+  subtext: 'subtext',
+  ctaLabel: 'ctaLabel',
+  ctaHref: 'ctaHref',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LandingSectionScalarFieldEnum = (typeof LandingSectionScalarFieldEnum)[keyof typeof LandingSectionScalarFieldEnum]
+
+
+export const SiteSettingsScalarFieldEnum = {
+  id: 'id',
+  heroHeadline: 'heroHeadline',
+  heroCtaPrimary: 'heroCtaPrimary',
+  heroCtaSecondary: 'heroCtaSecondary',
+  contactHeading: 'contactHeading',
+  contactSubtext: 'contactSubtext',
+  marqueeItems: 'marqueeItems',
+  navbarBrand: 'navbarBrand',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SiteSettingsScalarFieldEnum = (typeof SiteSettingsScalarFieldEnum)[keyof typeof SiteSettingsScalarFieldEnum]
 
 
 export const SortOrder = {

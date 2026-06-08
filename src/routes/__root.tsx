@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar"
 import { getUser } from "@/lib/cms"
-import { getQueryClient, heroQuery } from "@/lib/queries"
+import { getQueryClient, heroQuery, siteSettingsQuery } from "@/lib/queries"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import {
   HeadContent,
@@ -23,8 +23,10 @@ export const Route = createRootRoute({
   loader: async ({ context }) => {
     const queryClient = getQueryClient(context)
     const hero = await queryClient.ensureQueryData(heroQuery)
+    const siteSettings = await queryClient.ensureQueryData(siteSettingsQuery)
     return {
       hero,
+      siteSettings,
     }
   },
   head: ({ loaderData }) => {

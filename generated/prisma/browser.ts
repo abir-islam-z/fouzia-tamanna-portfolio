@@ -43,6 +43,11 @@ export type Experience = Prisma.ExperienceModel
  */
 export type Project = Prisma.ProjectModel
 /**
+ * Model ProjectGallery
+ * 
+ */
+export type ProjectGallery = Prisma.ProjectGalleryModel
+/**
  * Model ContactMessage
  * 
  */
@@ -72,3 +77,13 @@ export type Media = Prisma.MediaModel
  * 
  */
 export type Footer = Prisma.FooterModel
+/**
+ * Model LandingSection
+ * 
+ */
+export type LandingSection = Prisma.LandingSectionModel
+/**
+ * Model SiteSettings
+ * 
+ */
+export type SiteSettings = Prisma.SiteSettingsModel
