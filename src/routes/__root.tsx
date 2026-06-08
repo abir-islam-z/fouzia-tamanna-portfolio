@@ -2,11 +2,11 @@ import { Navbar } from "@/components/Navbar"
 import { getHero, getUser } from "@/lib/cms"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import {
-  HeadContent,
-  Outlet,
-  Scripts,
-  createRootRoute,
-  useLocation,
+    HeadContent,
+    Outlet,
+    Scripts,
+    createRootRoute,
+    useLocation,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { Toaster } from "sonner"

@@ -5,25 +5,25 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  deleteMedia,
-  deleteStat,
-  finalizeMediaUploadFn,
-  getFooter,
-  getHero,
-  getPresignedUpload,
-  getR2Status,
-  getStats,
-  updateFooter,
-  updateHero,
-  updateStat,
+    deleteMedia,
+    deleteStat,
+    finalizeMediaUploadFn,
+    getFooter,
+    getHero,
+    getPresignedUpload,
+    getR2Status,
+    getStats,
+    updateFooter,
+    updateHero,
+    updateStat,
 } from "@/lib/cms"
 import {
-  RiAddLine,
-  RiDeleteBinLine,
-  RiImageLine,
-  RiLoader4Line,
-  RiSaveLine,
-  RiUploadCloud2Line,
+    RiAddLine,
+    RiDeleteBinLine,
+    RiImageLine,
+    RiLoader4Line,
+    RiSaveLine,
+    RiUploadCloud2Line,
 } from "@remixicon/react"
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"

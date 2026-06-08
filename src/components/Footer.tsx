@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react"
-import {
-  RiGithubFill,
-  RiLinkedinBoxFill,
-  RiMailFill,
-  RiShieldKeyholeLine,
-  RiTwitterXFill,
-} from "@remixicon/react"
-import { Button } from "./ui/button"
 import { getFooter } from "@/lib/cms"
+import {
+    RiGithubFill,
+    RiLinkedinBoxFill,
+    RiMailFill,
+    RiShieldKeyholeLine,
+    RiTwitterXFill,
+} from "@remixicon/react"
+import { useEffect, useState } from "react"
+import { Button } from "./ui/button"
 
 interface FooterData {
   bio: string

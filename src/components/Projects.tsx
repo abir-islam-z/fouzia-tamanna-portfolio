@@ -1,9 +1,9 @@
+import { getProjects } from "@/lib/cms"
+import { RiShieldKeyholeLine } from "@remixicon/react"
 import { useEffect, useState } from "react"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
 import { Card } from "./ui/card"
-import { RiShieldKeyholeLine } from "@remixicon/react"
-import { getProjects } from "@/lib/cms"
 
 interface ProjectItem {
   title: string

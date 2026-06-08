@@ -1,6 +1,6 @@
+import { getStats } from "@/lib/cms"
 import { useEffect, useState } from "react"
 import { Card } from "./ui/card"
-import { getStats } from "@/lib/cms"
 
 interface StatItem {
   value: string

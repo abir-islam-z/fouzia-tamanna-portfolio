@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
-import { Badge } from "./ui/badge"
 import { getCertifications } from "@/lib/cms"
 import { RiShieldCheckLine } from "@remixicon/react"
+import { useEffect, useState } from "react"
+import { Badge } from "./ui/badge"
 
 interface CertificationItem {
   title: string
