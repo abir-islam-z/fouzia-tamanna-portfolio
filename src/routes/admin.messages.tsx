@@ -1,6 +1,13 @@
-import { Card } from "@/components/ui/card"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { getContactMessages } from "@/lib/cms"
-import { RiMailLine, RiTimeLine, RiUserLine } from "@remixicon/react"
+import { RiMailLine } from "@remixicon/react"
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
@@ -44,40 +51,51 @@ function AdminMessagesComponent() {
         </p>
       </header>
 
-      <div className="space-y-4">
-        {messages.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border py-16 text-center">
-            <RiMailLine
-              size={48}
-              className="mx-auto mb-4 text-muted-foreground opacity-20"
-            />
-            <p className="text-muted-foreground">No messages yet.</p>
-          </div>
-        ) : (
-          messages.map((msg, i) => (
-            <Card key={i} variant="admin" className="p-6">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <RiUserLine size={20} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold">{msg.name}</h3>
-                    <p className="text-xs text-muted-foreground">{msg.email}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-xs text-muted-foreground">
-                  <RiTimeLine size={14} />
-                  {new Date(msg.createdAt).toLocaleString()}
-                </div>
-              </div>
-              <p className="rounded-lg border border-border/50 bg-muted/30 p-4 text-sm leading-relaxed text-foreground/80">
-                {msg.message}
-              </p>
-            </Card>
-          ))
-        )}
-      </div>
+      {messages.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-border py-16 text-center">
+          <RiMailLine
+            size={48}
+            className="mx-auto mb-4 text-muted-foreground opacity-20"
+          />
+          <p className="text-muted-foreground">No messages yet.</p>
+        </div>
+      ) : (
+        <div className="rounded-lg border border-border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead className="w-[50%]">Message</TableHead>
+                <TableHead className="w-44">Received</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {messages.map((msg) => (
+                <TableRow key={msg.id}>
+                  <TableCell className="font-medium">{msg.name}</TableCell>
+                  <TableCell>
+                    <a
+                      href={`mailto:${msg.email}`}
+                      className="text-primary underline-offset-2 hover:underline"
+                    >
+                      {msg.email}
+                    </a>
+                  </TableCell>
+                  <TableCell>
+                    <p className="line-clamp-2 text-sm text-foreground/80">
+                      {msg.message}
+                    </p>
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
+                    {new Date(msg.createdAt).toLocaleString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,8 +1,15 @@
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { deleteProject, getProjects, updateProject } from "@/lib/cms"
 import {
   RiAddLine,
@@ -83,6 +90,12 @@ function AdminProjectsComponent() {
     ])
   }
 
+  const update = (i: number, patch: Partial<ProjectItem>) => {
+    const next = [...projects]
+    next[i] = { ...next[i], ...patch }
+    setProjects(next)
+  }
+
   if (loading)
     return (
       <div className="flex h-[50vh] items-center justify-center">
@@ -108,172 +121,160 @@ function AdminProjectsComponent() {
         </Button>
       </header>
 
-      <div className="grid grid-cols-1 gap-6">
-        {projects.length > 0 ? (
-          projects.map((item, i) => (
-            <Card key={i} variant="admin" className="p-6">
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-                {/* Preview & Basic Info */}
-                <div className="space-y-4">
-                  <div className="flex aspect-video items-center justify-center overflow-hidden rounded-lg border border-border bg-secondary">
-                    {item.image ? (
-                      <img
-                        src={item.image}
-                        alt="Preview"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-xs text-muted-foreground">
-                        No image
-                      </span>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label variant="admin">Image URL</Label>
-                    <Input
-                      variant="admin"
-                      value={item.image}
-                      onChange={(e) => {
-                        const next = [...projects]
-                        next[i].image = e.target.value
-                        setProjects(next)
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label variant="admin">Order (Lower = First)</Label>
-                    <Input
-                      variant="admin"
-                      type="number"
-                      value={item.order}
-                      onChange={(e) => {
-                        const next = [...projects]
-                        next[i].order = parseInt(e.target.value) || 0
-                        setProjects(next)
-                      }}
-                    />
-                  </div>
+      {projects.length > 0 ? (
+        <div className="space-y-6">
+          {projects.map((item, i) => (
+            <div
+              key={i}
+              className="rounded-lg border border-border bg-card p-4"
+            >
+              <div className="mb-3 flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={
+                    item.isFeatured
+                      ? "h-8 w-8 text-yellow-500"
+                      : "h-8 w-8 text-muted-foreground"
+                  }
+                  onClick={() => update(i, { isFeatured: !item.isFeatured })}
+                  title={item.isFeatured ? "Unfeature" : "Feature"}
+                >
+                  {item.isFeatured ? (
+                    <RiStarFill size={18} />
+                  ) : (
+                    <RiStarLine size={18} />
+                  )}
+                </Button>
+                <div className="flex-1">
+                  <Input
+                    variant="admin"
+                    value={item.title}
+                    onChange={(e) => update(i, { title: e.target.value })}
+                    className="h-9 font-semibold"
+                    placeholder="Project title"
+                  />
                 </div>
+                <Input
+                  variant="admin"
+                  type="number"
+                  value={item.order}
+                  onChange={(e) =>
+                    update(i, { order: parseInt(e.target.value) || 0 })
+                  }
+                  className="h-9 w-16"
+                  title="Order"
+                />
+              </div>
 
-                {/* Details */}
-                <div className="space-y-4 md:col-span-2">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1 space-y-2">
-                      <Label variant="admin">Project Title</Label>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-36">Image</TableHead>
+                    <TableHead>Tags</TableHead>
+                    <TableHead>Live Link</TableHead>
+                    <TableHead>GitHub</TableHead>
+                    <TableHead className="w-28 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt="Preview"
+                          className="h-14 w-24 rounded border border-border object-cover"
+                        />
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          No image
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
                       <Input
                         variant="admin"
-                        value={item.title}
-                        onChange={(e) => {
-                          const next = [...projects]
-                          next[i].title = e.target.value
-                          setProjects(next)
-                        }}
+                        value={item.tags}
+                        onChange={(e) => update(i, { tags: e.target.value })}
+                        className="h-9"
+                        placeholder="React, AI"
                       />
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className={
-                        item.isFeatured
-                          ? "text-yellow-500"
-                          : "text-muted-foreground"
-                      }
-                      onClick={() => {
-                        const next = [...projects]
-                        next[i].isFeatured = !next[i].isFeatured
-                        setProjects(next)
-                      }}
-                    >
-                      {item.isFeatured ? (
-                        <RiStarFill size={24} />
-                      ) : (
-                        <RiStarLine size={24} />
-                      )}
-                    </Button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label variant="admin">Tags (Comma separated)</Label>
-                    <Input
-                      variant="admin"
-                      value={item.tags}
-                      onChange={(e) => {
-                        const next = [...projects]
-                        next[i].tags = e.target.value
-                        setProjects(next)
-                      }}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label variant="admin">Description</Label>
-                    <Textarea
-                      variant="admin"
-                      rows={4}
-                      value={item.description}
-                      onChange={(e) => {
-                        const next = [...projects]
-                        next[i].description = e.target.value
-                        setProjects(next)
-                      }}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label variant="admin">Live Link (Optional)</Label>
+                    </TableCell>
+                    <TableCell>
                       <Input
                         variant="admin"
                         value={item.link || ""}
-                        onChange={(e) => {
-                          const next = [...projects]
-                          next[i].link = e.target.value
-                          setProjects(next)
-                        }}
+                        onChange={(e) => update(i, { link: e.target.value })}
+                        className="h-9"
+                        placeholder="https://..."
                       />
-                    </div>
-                    <div className="space-y-2">
-                      <Label variant="admin">GitHub Link (Optional)</Label>
+                    </TableCell>
+                    <TableCell>
                       <Input
                         variant="admin"
                         value={item.github || ""}
-                        onChange={(e) => {
-                          const next = [...projects]
-                          next[i].github = e.target.value
-                          setProjects(next)
-                        }}
+                        onChange={(e) => update(i, { github: e.target.value })}
+                        className="h-9"
+                        placeholder="https://github.com/..."
                       />
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(item.id)}
+                          className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          title="Delete"
+                        >
+                          <RiDeleteBinLine size={16} />
+                        </Button>
+                        <Button
+                          variant="admin"
+                          size="icon"
+                          onClick={() => handleSave(item)}
+                          className="h-8 w-8"
+                          title="Save"
+                        >
+                          <RiSaveLine size={16} />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
 
-              <div className="mt-6 flex items-center justify-between border-t border-border pt-6">
-                <Button
-                  variant="ghost"
-                  onClick={() => handleDelete(item.id)}
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <RiDeleteBinLine size={20} className="mr-2" />
-                  Delete Project
-                </Button>
-                <Button
+              <div className="mt-3 space-y-2">
+                <Label variant="admin" className="text-xs">
+                  Image URL
+                </Label>
+                <Input
                   variant="admin"
-                  onClick={() => handleSave(item)}
-                  className="gap-2 px-8"
-                >
-                  <RiSaveLine size={20} />
-                  Save Project
-                </Button>
+                  value={item.image}
+                  onChange={(e) => update(i, { image: e.target.value })}
+                  className="h-9"
+                  placeholder="https://images.unsplash.com/..."
+                />
+                <Label variant="admin" className="text-xs">
+                  Description
+                </Label>
+                <Textarea
+                  variant="admin"
+                  rows={3}
+                  value={item.description}
+                  onChange={(e) => update(i, { description: e.target.value })}
+                  className="text-sm"
+                />
               </div>
-            </Card>
-          ))
-        ) : (
-          <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-            No projects found. Add your first project.
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
+          No projects found. Add your first project.
+        </div>
+      )}
     </div>
   )
 }

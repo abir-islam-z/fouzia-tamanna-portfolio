@@ -1,9 +1,15 @@
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import {
   deletePublication,
   getPublications,
@@ -112,12 +118,20 @@ function AdminPublicationsComponent() {
     ])
   }
 
+  const update = (i: number, patch: Partial<PublicationItem>) => {
+    const next = [...pubs]
+    next[i] = { ...next[i], ...patch }
+    setPubs(next)
+  }
+
   if (loading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Loading publications…</p>
+          <p className="text-sm text-muted-foreground">
+            Loading publications…
+          </p>
         </div>
       </div>
     )
@@ -140,207 +154,193 @@ function AdminPublicationsComponent() {
         </Button>
       </header>
 
-      <div className="space-y-6">
-        {pubs.length > 0 ? (
-          pubs.map((item, i) => (
-            <Card key={item.id ?? `new-${i}`} variant="admin" className="p-6">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="space-y-2 md:col-span-2">
-                  <Label variant="admin">Title</Label>
-                  <Input
-                    variant="admin"
-                    value={item.title}
-                    onChange={(e) => {
-                      const next = [...pubs]
-                      next[i] = { ...next[i], title: e.target.value }
-                      setPubs(next)
-                    }}
-                    placeholder="Paper / article title"
-                  />
-                </div>
+      {pubs.length > 0 ? (
+        <div className="space-y-6">
+          {pubs.map((item, i) => (
+            <div
+              key={item.id ?? `new-${i}`}
+              className="rounded-lg border border-border bg-card p-4"
+            >
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12">Order</TableHead>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Authors</TableHead>
+                    <TableHead>Venue</TableHead>
+                    <TableHead className="w-20">Year</TableHead>
+                    <TableHead className="w-32">Type</TableHead>
+                    <TableHead className="w-20">Pub</TableHead>
+                    <TableHead className="w-28 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      <Input
+                        variant="admin"
+                        type="number"
+                        value={item.order}
+                        onChange={(e) =>
+                          update(i, {
+                            order: parseInt(e.target.value) || 0,
+                          })
+                        }
+                        className="h-9 w-16"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        variant="admin"
+                        value={item.title}
+                        onChange={(e) => update(i, { title: e.target.value })}
+                        className="h-9"
+                        placeholder="Paper / article title"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        variant="admin"
+                        value={item.authors}
+                        onChange={(e) =>
+                          update(i, { authors: e.target.value })
+                        }
+                        className="h-9"
+                        placeholder="F. Tamanna, M. Rahman"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        variant="admin"
+                        value={item.venue}
+                        onChange={(e) => update(i, { venue: e.target.value })}
+                        className="h-9"
+                        placeholder="IEEE / ACM…"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        variant="admin"
+                        value={item.year}
+                        onChange={(e) => update(i, { year: e.target.value })}
+                        className="h-9"
+                        placeholder="2025"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <select
+                        value={item.type}
+                        onChange={(e) =>
+                          update(i, {
+                            type: e.target.value as PublicationItem["type"],
+                          })
+                        }
+                        className="h-9 w-full rounded-lg border border-input bg-background px-2 text-sm text-foreground"
+                      >
+                        {TYPE_OPTIONS.map((t) => (
+                          <option key={t} value={t}>
+                            {t.charAt(0).toUpperCase() +
+                              t.slice(1).replace("-", " ")}
+                          </option>
+                        ))}
+                      </select>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center justify-center">
+                        <Switch
+                          checked={item.isPublished}
+                          onCheckedChange={(val) =>
+                            update(i, { isPublished: val })
+                          }
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        {item.link && (
+                          <a
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded text-muted-foreground transition-colors hover:text-primary"
+                            title="Open link"
+                          >
+                            <RiExternalLinkLine size={14} />
+                          </a>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(item.id)}
+                          className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          title="Remove"
+                        >
+                          <RiDeleteBinLine size={16} />
+                        </Button>
+                        <Button
+                          variant="admin"
+                          size="icon"
+                          onClick={() => handleSave(item)}
+                          className="h-8 w-8"
+                          title="Save"
+                        >
+                          <RiSaveLine size={16} />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
 
-                <div className="space-y-2">
-                  <Label variant="admin">Authors (comma separated)</Label>
-                  <Input
-                    variant="admin"
-                    value={item.authors}
-                    onChange={(e) => {
-                      const next = [...pubs]
-                      next[i] = { ...next[i], authors: e.target.value }
-                      setPubs(next)
-                    }}
-                    placeholder="F. Tamanna, M. Rahman, A. Hossain"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label variant="admin">Venue (Journal / Conference)</Label>
-                  <Input
-                    variant="admin"
-                    value={item.venue}
-                    onChange={(e) => {
-                      const next = [...pubs]
-                      next[i] = { ...next[i], venue: e.target.value }
-                      setPubs(next)
-                    }}
-                    placeholder="IEEE Transactions on Information Forensics and Security"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label variant="admin">Year</Label>
-                  <Input
-                    variant="admin"
-                    value={item.year}
-                    onChange={(e) => {
-                      const next = [...pubs]
-                      next[i] = { ...next[i], year: e.target.value }
-                      setPubs(next)
-                    }}
-                    placeholder="2025"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label variant="admin">Type</Label>
-                  <select
-                    value={item.type}
-                    onChange={(e) => {
-                      const next = [...pubs]
-                      next[i] = {
-                        ...next[i],
-                        type: e.target.value as PublicationItem["type"],
-                      }
-                      setPubs(next)
-                    }}
-                    className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground"
-                  >
-                    {TYPE_OPTIONS.map((t) => (
-                      <option key={t} value={t}>
-                        {t.charAt(0).toUpperCase() +
-                          t.slice(1).replace("-", " ")}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-2 md:col-span-2">
-                  <Label variant="admin">Abstract</Label>
+              <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    Abstract
+                  </label>
                   <Textarea
                     variant="admin"
-                    rows={4}
+                    rows={2}
                     value={item.abstract}
-                    onChange={(e) => {
-                      const next = [...pubs]
-                      next[i] = { ...next[i], abstract: e.target.value }
-                      setPubs(next)
-                    }}
-                    placeholder="Short summary of the contribution, methodology, and key results…"
+                    onChange={(e) => update(i, { abstract: e.target.value })}
+                    className="text-sm"
+                    placeholder="Short summary of the contribution…"
                   />
                 </div>
-
-                <div className="space-y-2 md:col-span-2">
-                  <Label variant="admin">Tags (comma separated)</Label>
-                  <Input
-                    variant="admin"
-                    value={item.tags}
-                    onChange={(e) => {
-                      const next = [...pubs]
-                      next[i] = { ...next[i], tags: e.target.value }
-                      setPubs(next)
-                    }}
-                    placeholder="Encrypted Traffic, ML, Zero Trust"
-                  />
-                </div>
-
-                <div className="space-y-2 md:col-span-2">
-                  <Label variant="admin">
-                    Link (DOI / arXiv / publisher URL)
-                  </Label>
-                  <Input
-                    variant="admin"
-                    value={item.link ?? ""}
-                    onChange={(e) => {
-                      const next = [...pubs]
-                      next[i] = { ...next[i], link: e.target.value }
-                      setPubs(next)
-                    }}
-                    placeholder="https://doi.org/10.1109/…"
-                  />
-                </div>
-
                 <div className="space-y-2">
-                  <Label variant="admin">Order (Lower = First)</Label>
-                  <Input
-                    variant="admin"
-                    type="number"
-                    value={item.order}
-                    onChange={(e) => {
-                      const next = [...pubs]
-                      next[i] = {
-                        ...next[i],
-                        order: parseInt(e.target.value) || 0,
-                      }
-                      setPubs(next)
-                    }}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-4">
-                  <div className="space-y-0.5">
-                    <Label variant="admin">Published</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Show on public portfolio
-                    </p>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      Tags
+                    </label>
+                    <Input
+                      variant="admin"
+                      value={item.tags}
+                      onChange={(e) => update(i, { tags: e.target.value })}
+                      className="h-9"
+                      placeholder="Encrypted Traffic, ML"
+                    />
                   </div>
-                  <Switch
-                    checked={item.isPublished}
-                    onCheckedChange={(val) => {
-                      const next = [...pubs]
-                      next[i] = { ...next[i], isPublished: val }
-                      setPubs(next)
-                    }}
-                  />
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      Link (DOI / arXiv)
+                    </label>
+                    <Input
+                      variant="admin"
+                      value={item.link ?? ""}
+                      onChange={(e) => update(i, { link: e.target.value })}
+                      className="h-9"
+                      placeholder="https://doi.org/10.1109/…"
+                    />
+                  </div>
                 </div>
               </div>
-
-              <div className="mt-6 flex items-center justify-between border-t border-border pt-6">
-                <Button
-                  variant="ghost"
-                  onClick={() => handleDelete(item.id)}
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <RiDeleteBinLine size={20} className="mr-2" />
-                  Remove
-                </Button>
-                <div className="flex items-center gap-2">
-                  {item.link && (
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground transition-colors hover:text-primary"
-                      title="Open link"
-                    >
-                      <RiExternalLinkLine size={16} />
-                    </a>
-                  )}
-                  <Button
-                    variant="admin"
-                    onClick={() => handleSave(item)}
-                    className="gap-2"
-                  >
-                    <RiSaveLine size={18} />
-                    Save Publication
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))
-        ) : (
-          <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-            No publications yet. Click "Add Publication" to create your first.
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
+          No publications yet. Click "Add Publication" to create your first.
+        </div>
+      )}
     </div>
   )
 }

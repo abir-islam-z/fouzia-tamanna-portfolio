@@ -104,7 +104,7 @@ export function Navbar() {
       {/* Mobile Menu Overlay */}
       <div
         className={cn(
-          "fixed inset-0 top-[72px] z-40 bg-background/95 backdrop-blur-xl transition-all duration-300 md:hidden",
+          "fixed inset-0 top-18 z-40 bg-background/95 backdrop-blur-xl transition-all duration-300 md:hidden",
           isMenuOpen
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"

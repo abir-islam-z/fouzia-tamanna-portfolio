@@ -1,7 +1,13 @@
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import {
   deleteCertification,
   getCertifications,
@@ -74,6 +80,12 @@ function AdminCertificationsComponent() {
     ])
   }
 
+  const update = (i: number, patch: Partial<CertificationItem>) => {
+    const next = [...certs]
+    next[i] = { ...next[i], ...patch }
+    setCerts(next)
+  }
+
   if (loading)
     return (
       <div className="flex h-[50vh] items-center justify-center">
@@ -103,88 +115,99 @@ function AdminCertificationsComponent() {
         </Button>
       </header>
 
-      <div className="grid grid-cols-1 gap-6">
-        {certs.length > 0 ? (
-          certs.map((item, i) => (
-            <Card key={i} variant="admin" className="p-6">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
-                <div className="space-y-2 lg:col-span-2">
-                  <Label variant="admin">Certification Title</Label>
-                  <Input
-                    variant="admin"
-                    value={item.title}
-                    onChange={(e) => {
-                      const next = [...certs]
-                      next[i].title = e.target.value
-                      setCerts(next)
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label variant="admin">Issuer</Label>
-                  <Input
-                    variant="admin"
-                    value={item.issuer}
-                    onChange={(e) => {
-                      const next = [...certs]
-                      next[i].issuer = e.target.value
-                      setCerts(next)
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label variant="admin">Date</Label>
-                  <Input
-                    variant="admin"
-                    value={item.date}
-                    onChange={(e) => {
-                      const next = [...certs]
-                      next[i].date = e.target.value
-                      setCerts(next)
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label variant="admin">Order</Label>
-                  <Input
-                    variant="admin"
-                    type="number"
-                    value={item.order}
-                    onChange={(e) => {
-                      const next = [...certs]
-                      next[i].order = parseInt(e.target.value) || 0
-                      setCerts(next)
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-6 flex items-center justify-between border-t border-border pt-6">
-                <Button
-                  variant="ghost"
-                  onClick={() => handleDelete(item.id)}
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <RiDeleteBinLine size={20} className="mr-2" />
-                  Remove
-                </Button>
-                <Button
-                  variant="admin"
-                  onClick={() => handleSave(item)}
-                  className="gap-2 px-8"
-                >
-                  <RiSaveLine size={20} />
-                  Save Certification
-                </Button>
-              </div>
-            </Card>
-          ))
-        ) : (
-          <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-            No certifications found. Add your first one.
-          </div>
-        )}
-      </div>
+      {certs.length > 0 ? (
+        <div className="rounded-lg border border-border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">Order</TableHead>
+                <TableHead>Certification</TableHead>
+                <TableHead>Issuer</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Link</TableHead>
+                <TableHead className="w-28 text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {certs.map((item, i) => (
+                <TableRow key={i}>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      type="number"
+                      value={item.order}
+                      onChange={(e) =>
+                        update(i, { order: parseInt(e.target.value) || 0 })
+                      }
+                      className="h-9 w-16"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      value={item.title}
+                      onChange={(e) => update(i, { title: e.target.value })}
+                      className="h-9"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      value={item.issuer}
+                      onChange={(e) => update(i, { issuer: e.target.value })}
+                      className="h-9"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      value={item.date}
+                      onChange={(e) => update(i, { date: e.target.value })}
+                      className="h-9 w-32"
+                      placeholder="Month, Year"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      value={item.link ?? ""}
+                      onChange={(e) => update(i, { link: e.target.value })}
+                      className="h-9"
+                      placeholder="https://..."
+                    />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(item.id)}
+                        className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        title="Remove"
+                      >
+                        <RiDeleteBinLine size={16} />
+                      </Button>
+                      <Button
+                        variant="admin"
+                        size="icon"
+                        onClick={() => handleSave(item)}
+                        className="h-8 w-8"
+                        title="Save"
+                      >
+                        <RiSaveLine size={16} />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
+          No certifications found. Add your first one.
+        </div>
+      )}
     </div>
   )
 }

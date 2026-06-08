@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import {
   deleteTestimonial,
   getTestimonials,
@@ -48,18 +54,18 @@ function AdminTestimonialsComponent() {
   }
 
   const handleDelete = async (id?: number) => {
-    try {
-      if (id) {
+    if (id) {
+      try {
         await deleteTestimonial({ data: id })
         const updated = await getTestimonials()
         setTestimonials(updated as TestimonialItem[])
         toast.success("Testimonial removed.")
-      } else {
-        setTestimonials(testimonials.filter((t) => t.id !== undefined))
+      } catch (error: any) {
+        console.error("Testimonial delete failed:", error)
+        toast.error(error?.message || "Failed to remove testimonial")
       }
-    } catch (error: any) {
-      console.error("Testimonial delete failed:", error)
-      toast.error(error?.message || "Failed to remove testimonial")
+    } else {
+      setTestimonials(testimonials.filter((t) => t.id !== undefined))
     }
   }
 
@@ -75,12 +81,20 @@ function AdminTestimonialsComponent() {
     ])
   }
 
+  const update = (i: number, patch: Partial<TestimonialItem>) => {
+    const next = [...testimonials]
+    next[i] = { ...next[i], ...patch }
+    setTestimonials(next)
+  }
+
   if (loading)
     return (
       <div className="flex h-[50vh] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Loading testimonials…</p>
+          <p className="text-sm text-muted-foreground">
+            Loading testimonials…
+          </p>
         </div>
       </div>
     )
@@ -102,93 +116,89 @@ function AdminTestimonialsComponent() {
         </Button>
       </header>
 
-      <div className="grid grid-cols-1 gap-6">
-        {testimonials.length > 0 ? (
-          testimonials.map((item, i) => (
-            <Card key={i} variant="admin" className="p-6">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label variant="admin">Client Name</Label>
+      {testimonials.length > 0 ? (
+        <div className="rounded-lg border border-border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">Order</TableHead>
+                <TableHead>Client Name</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead className="w-[40%]">Content</TableHead>
+                <TableHead className="w-28 text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {testimonials.map((item, i) => (
+                <TableRow key={i}>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      type="number"
+                      value={item.order}
+                      onChange={(e) =>
+                        update(i, { order: parseInt(e.target.value) || 0 })
+                      }
+                      className="h-9 w-16"
+                    />
+                  </TableCell>
+                  <TableCell>
                     <Input
                       variant="admin"
                       value={item.name}
-                      onChange={(e) => {
-                        const next = [...testimonials]
-                        next[i].name = e.target.value
-                        setTestimonials(next)
-                      }}
+                      onChange={(e) => update(i, { name: e.target.value })}
+                      className="h-9"
                     />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label variant="admin">Position / Role</Label>
-                      <Input
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      value={item.role}
+                      onChange={(e) => update(i, { role: e.target.value })}
+                      className="h-9"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Textarea
+                      variant="admin"
+                      rows={2}
+                      value={item.content}
+                      onChange={(e) => update(i, { content: e.target.value })}
+                      className="min-h-[48px] text-sm"
+                    />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(item.id)}
+                        className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        title="Remove"
+                      >
+                        <RiDeleteBinLine size={16} />
+                      </Button>
+                      <Button
                         variant="admin"
-                        value={item.role}
-                        onChange={(e) => {
-                          const next = [...testimonials]
-                          next[i].role = e.target.value
-                          setTestimonials(next)
-                        }}
-                      />
+                        size="icon"
+                        onClick={() => handleSave(item)}
+                        className="h-8 w-8"
+                        title="Save"
+                      >
+                        <RiSaveLine size={16} />
+                      </Button>
                     </div>
-                    <div className="space-y-2">
-                      <Label variant="admin">Order</Label>
-                      <Input
-                        variant="admin"
-                        type="number"
-                        value={item.order}
-                        onChange={(e) => {
-                          const next = [...testimonials]
-                          next[i].order = parseInt(e.target.value) || 0
-                          setTestimonials(next)
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label variant="admin">Content</Label>
-                  <Textarea
-                    variant="admin"
-                    rows={4}
-                    value={item.content}
-                    onChange={(e) => {
-                      const next = [...testimonials]
-                      next[i].content = e.target.value
-                      setTestimonials(next)
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-6 flex items-center justify-between border-t border-border pt-6">
-                <Button
-                  variant="ghost"
-                  onClick={() => handleDelete(item.id)}
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <RiDeleteBinLine size={20} className="mr-2" />
-                  Remove
-                </Button>
-                <Button
-                  variant="admin"
-                  onClick={() => handleSave(item)}
-                  className="gap-2 px-8"
-                >
-                  <RiSaveLine size={20} />
-                  Save Testimonial
-                </Button>
-              </div>
-            </Card>
-          ))
-        ) : (
-          <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-            No testimonials found. Add your first one.
-          </div>
-        )}
-      </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
+          No testimonials found. Add your first one.
+        </div>
+      )}
     </div>
   )
 }

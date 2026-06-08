@@ -3,6 +3,14 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import {
   deleteStat,
@@ -593,93 +601,91 @@ function AdminIndexComponent() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {stats.length > 0 ? (
-            stats.map((stat, i) => (
-              <Card key={i} variant="admin" className="space-y-4 p-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <Label
-                      variant="admin"
-                      className="text-xs text-muted-foreground"
-                    >
-                      Value
-                    </Label>
-                    <Input
-                      variant="admin"
-                      value={stat.value}
-                      onChange={(e) => {
-                        const newStats = [...stats]
-                        newStats[i].value = e.target.value
-                        setStats(newStats)
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label
-                      variant="admin"
-                      className="text-xs text-muted-foreground"
-                    >
-                      Label
-                    </Label>
-                    <Input
-                      variant="admin"
-                      value={stat.label}
-                      onChange={(e) => {
-                        const newStats = [...stats]
-                        newStats[i].label = e.target.value
-                        setStats(newStats)
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between border-t border-border pt-2">
-                  <div className="flex items-center gap-2">
-                    <Label
-                      variant="admin"
-                      className="text-xs text-muted-foreground"
-                    >
-                      Order
-                    </Label>
-                    <Input
-                      variant="admin"
-                      type="number"
-                      className="h-8 w-16 text-xs"
-                      value={stat.order}
-                      onChange={(e) => {
-                        const newStats = [...stats]
-                        newStats[i].order = parseInt(e.target.value) || 0
-                        setStats(newStats)
-                      }}
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteStat(stat.id)}
-                      className="h-8 px-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                    >
-                      <RiDeleteBinLine size={16} />
-                    </Button>
-                    <Button
-                      variant="admin"
-                      size="sm"
-                      onClick={() => handleSaveStat(stat)}
-                      className="h-8 px-4"
-                    >
-                      Save
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            ))
-          ) : (
-            <div className="col-span-2 rounded-xl border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
-              No stats found. Add your first stat to get started.
-            </div>
-          )}
-        </div>
+        {stats.length > 0 ? (
+          <div className="rounded-lg border border-border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-12">Order</TableHead>
+                  <TableHead>Value</TableHead>
+                  <TableHead>Label</TableHead>
+                  <TableHead className="w-28 text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {stats.map((stat, i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Input
+                        variant="admin"
+                        type="number"
+                        className="h-9 w-16"
+                        value={stat.order}
+                        onChange={(e) => {
+                          const newStats = [...stats]
+                          newStats[i].order = parseInt(e.target.value) || 0
+                          setStats(newStats)
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        variant="admin"
+                        value={stat.value}
+                        onChange={(e) => {
+                          const newStats = [...stats]
+                          newStats[i].value = e.target.value
+                          setStats(newStats)
+                        }}
+                        className="h-9"
+                        placeholder="10+"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        variant="admin"
+                        value={stat.label}
+                        onChange={(e) => {
+                          const newStats = [...stats]
+                          newStats[i].label = e.target.value
+                          setStats(newStats)
+                        }}
+                        className="h-9"
+                        placeholder="Years Experience"
+                      />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteStat(stat.id)}
+                          className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          title="Delete"
+                        >
+                          <RiDeleteBinLine size={16} />
+                        </Button>
+                        <Button
+                          variant="admin"
+                          size="icon"
+                          onClick={() => handleSaveStat(stat)}
+                          className="h-8 w-8"
+                          title="Save"
+                        >
+                          <RiSaveLine size={16} />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
+            No stats found. Add your first stat to get started.
+          </div>
+        )}
       </section>
     </div>
   )

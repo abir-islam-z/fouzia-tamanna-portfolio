@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { deleteExperience, getExperience, updateExperience } from "@/lib/cms"
 import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
 import { createFileRoute } from "@tanstack/react-router"
@@ -74,6 +80,12 @@ function AdminExperienceComponent() {
     ])
   }
 
+  const update = (i: number, patch: Partial<ExperienceItem>) => {
+    const next = [...experience]
+    next[i] = { ...next[i], ...patch }
+    setExperience(next)
+  }
+
   if (loading)
     return (
       <div className="flex h-[50vh] items-center justify-center">
@@ -99,112 +111,108 @@ function AdminExperienceComponent() {
         </Button>
       </header>
 
-      <div className="space-y-6">
-        {experience.length > 0 ? (
-          experience.map((item, i) => (
-            <Card key={i} variant="admin" className="p-6">
-              <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label variant="admin">Role</Label>
-                  <Input
-                    variant="admin"
-                    value={item.role}
-                    onChange={(e) => {
-                      const next = [...experience]
-                      next[i].role = e.target.value
-                      setExperience(next)
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label variant="admin">Company</Label>
-                  <Input
-                    variant="admin"
-                    value={item.company}
-                    onChange={(e) => {
-                      const next = [...experience]
-                      next[i].company = e.target.value
-                      setExperience(next)
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label variant="admin">Period</Label>
-                  <Input
-                    variant="admin"
-                    value={item.period}
-                    onChange={(e) => {
-                      const next = [...experience]
-                      next[i].period = e.target.value
-                      setExperience(next)
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label variant="admin">Order (Lower = First)</Label>
-                  <Input
-                    variant="admin"
-                    type="number"
-                    value={item.order}
-                    onChange={(e) => {
-                      const next = [...experience]
-                      next[i].order = parseInt(e.target.value) || 0
-                      setExperience(next)
-                    }}
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label variant="admin">Skills (Comma separated)</Label>
-                  <Input
-                    variant="admin"
-                    value={item.skills}
-                    onChange={(e) => {
-                      const next = [...experience]
-                      next[i].skills = e.target.value
-                      setExperience(next)
-                    }}
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label variant="admin">Description</Label>
-                  <Textarea
-                    variant="admin"
-                    value={item.description}
-                    onChange={(e) => {
-                      const next = [...experience]
-                      next[i].description = e.target.value
-                      setExperience(next)
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between border-t border-border pt-6">
-                <Button
-                  variant="ghost"
-                  onClick={() => handleDelete(item.id)}
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <RiDeleteBinLine size={20} className="mr-2" />
-                  Remove
-                </Button>
-                <Button
-                  variant="admin"
-                  onClick={() => handleSave(item)}
-                  className="gap-2"
-                >
-                  <RiSaveLine size={20} />
-                  Save Position
-                </Button>
-              </div>
-            </Card>
-          ))
-        ) : (
-          <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-            No experience entries found. Add your first position.
-          </div>
-        )}
-      </div>
+      {experience.length > 0 ? (
+        <div className="rounded-lg border border-border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">Order</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Company</TableHead>
+                <TableHead>Period</TableHead>
+                <TableHead>Skills</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead className="w-28 text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {experience.map((item, i) => (
+                <TableRow key={i}>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      type="number"
+                      value={item.order}
+                      onChange={(e) =>
+                        update(i, { order: parseInt(e.target.value) || 0 })
+                      }
+                      className="h-9 w-16"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      value={item.role}
+                      onChange={(e) => update(i, { role: e.target.value })}
+                      className="h-9"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      value={item.company}
+                      onChange={(e) => update(i, { company: e.target.value })}
+                      className="h-9"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      value={item.period}
+                      onChange={(e) => update(i, { period: e.target.value })}
+                      className="h-9 w-36"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      variant="admin"
+                      value={item.skills}
+                      onChange={(e) => update(i, { skills: e.target.value })}
+                      className="h-9"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Textarea
+                      variant="admin"
+                      value={item.description}
+                      onChange={(e) =>
+                        update(i, { description: e.target.value })
+                      }
+                      className="min-h-[60px] text-sm"
+                    />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(item.id)}
+                        className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        title="Remove"
+                      >
+                        <RiDeleteBinLine size={16} />
+                      </Button>
+                      <Button
+                        variant="admin"
+                        size="icon"
+                        onClick={() => handleSave(item)}
+                        className="h-8 w-8"
+                        title="Save"
+                      >
+                        <RiSaveLine size={16} />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
+          No experience entries found. Add your first position.
+        </div>
+      )}
     </div>
   )
 }
