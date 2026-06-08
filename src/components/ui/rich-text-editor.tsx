@@ -28,6 +28,22 @@ import { MediaPicker } from "./media-picker"
 // Create a lowlight instance with common languages
 const lowlight = createLowlight(common)
 
+const CODE_BLOCK_LANGUAGES = [
+  { value: "plaintext", label: "Plain Text" },
+  { value: "javascript", label: "JavaScript" },
+  { value: "typescript", label: "TypeScript" },
+  { value: "jsx", label: "JSX" },
+  { value: "tsx", label: "TSX" },
+  { value: "python", label: "Python" },
+  { value: "css", label: "CSS" },
+  { value: "html", label: "HTML" },
+  { value: "json", label: "JSON" },
+  { value: "bash", label: "Bash" },
+  { value: "sql", label: "SQL" },
+  { value: "markdown", label: "Markdown" },
+  { value: "yaml", label: "YAML" },
+]
+
 interface RichTextEditorProps {
   value: string
   onChange: (html: string) => void
@@ -126,6 +142,31 @@ export function RichTextEditor({
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
   }
 
+  const formatCodeBlock = () => {
+    const { state } = editor
+    const { $from } = state.selection
+
+    if ($from.parent.type.name !== "codeBlock") return
+
+    const text = $from.parent.textContent
+    const formatted = text
+      .split("\n")
+      .map((line) => line.replace(/\t/g, "  ").trimEnd())
+      .join("\n")
+
+    const contentStart = $from.start()
+    const contentEnd = $from.end()
+
+    editor
+      .chain()
+      .focus()
+      .command(({ tr }) => {
+        tr.replaceWith(contentStart, contentEnd, state.schema.text(formatted))
+        return true
+      })
+      .run()
+  }
+
   return (
     <div
       className={cn(
@@ -212,6 +253,48 @@ export function RichTextEditor({
             <line x1="12" y1="2" x2="12" y2="22" />
           </svg>
         </ToolbarButton>
+
+        {editor.isActive("codeBlock") && (
+          <>
+            <Divider />
+            <select
+              value={editor.getAttributes("codeBlock").language || "plaintext"}
+              onChange={(e) => {
+                editor
+                  .chain()
+                  .focus()
+                  .updateAttributes("codeBlock", {
+                    language: e.target.value,
+                  })
+                  .run()
+              }}
+              className="h-7 cursor-pointer appearance-none rounded border border-border bg-muted px-1.5 font-mono text-[11px] text-muted-foreground outline-none focus:border-primary"
+            >
+              {CODE_BLOCK_LANGUAGES.map((lang) => (
+                <option key={lang.value} value={lang.value}>
+                  {lang.label}
+                </option>
+              ))}
+            </select>
+            <ToolbarButton onClick={formatCodeBlock} title="Auto-format code">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="21" y1="10" x2="7" y2="10" />
+                <line x1="21" y1="6" x2="3" y2="6" />
+                <line x1="21" y1="14" x2="3" y2="14" />
+                <line x1="21" y1="18" x2="7" y2="18" />
+              </svg>
+            </ToolbarButton>
+          </>
+        )}
 
         <Divider />
 

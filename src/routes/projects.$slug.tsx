@@ -76,14 +76,79 @@ function ProjectCaseStudyComponent() {
   } | null
   const caseStudyRef = useRef<HTMLDivElement>(null)
 
-  // Apply syntax highlighting to code blocks after render
+  // Apply syntax highlighting and enhance code blocks after render
   useEffect(() => {
     if (!caseStudyRef.current) return
+
+    // Highlight code blocks
     const blocks = caseStudyRef.current.querySelectorAll("pre code")
     blocks.forEach((block) => {
-      // Skip if already highlighted
       if (block.classList.contains("hljs")) return
       highlight.highlightElement(block as HTMLElement)
+    })
+
+    // Add copy buttons and language labels to each code block
+    const pres = caseStudyRef.current.querySelectorAll("pre")
+    pres.forEach((pre) => {
+      // Skip if already enhanced
+      if (pre.parentElement?.classList.contains("code-block-wrapper")) return
+
+      const code = pre.querySelector("code")
+      if (!code) return
+
+      // Extract language from class (e.g., "language-javascript")
+      const langClass = Array.from(code.classList).find((c) =>
+        c.startsWith("language-")
+      )
+      const lang = langClass?.replace("language-", "") || ""
+
+      // Wrapper container
+      const wrapper = document.createElement("div")
+      wrapper.className =
+        "code-block-wrapper relative my-6 overflow-hidden rounded-lg border border-border"
+
+      // Header bar with language label + copy button
+      const header = document.createElement("div")
+      header.className =
+        "flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2"
+
+      // Language label
+      const langLabel = document.createElement("span")
+      langLabel.className =
+        "font-mono text-[10px] tracking-wider text-muted-foreground uppercase"
+      langLabel.textContent = lang || "code"
+      header.appendChild(langLabel)
+
+      // Copy button
+      const copyBtn = document.createElement("button")
+      copyBtn.type = "button"
+      copyBtn.className =
+        "inline-flex items-center gap-1.5 rounded border border-border bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+      const copyIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`
+      const checkIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+      copyBtn.innerHTML = `${copyIcon} Copy`
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(code.textContent || "").then(() => {
+          copyBtn.innerHTML = `${checkIcon} Copied!`
+          copyBtn.classList.add("text-primary", "border-primary/50")
+          setTimeout(() => {
+            copyBtn.innerHTML = `${copyIcon} Copy`
+            copyBtn.classList.remove("text-primary", "border-primary/50")
+          }, 2000)
+        })
+      }
+      header.appendChild(copyBtn)
+
+      // Assemble: insert wrapper before pre, move pre inside
+      pre.parentElement?.insertBefore(wrapper, pre)
+      wrapper.appendChild(header)
+      wrapper.appendChild(pre)
+
+      // Reset pre margin/border since wrapper handles it
+      pre.style.marginTop = "0"
+      pre.style.marginBottom = "0"
+      pre.style.borderRadius = "0"
+      pre.style.border = "none"
     })
   }, [project?.caseStudy])
 
