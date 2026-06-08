@@ -233,7 +233,6 @@ export async function getProjectsServer() {
   ).project.findMany({
     orderBy: { order: "asc" },
     include: {
-      cover: true,
       gallery: {
         include: { media: true },
         orderBy: { order: "asc" },
@@ -248,7 +247,6 @@ export async function getProjectBySlugServer(slug: string) {
   ).project.findUnique({
     where: { slug },
     include: {
-      cover: true,
       gallery: {
         include: { media: true },
         orderBy: { order: "asc" },

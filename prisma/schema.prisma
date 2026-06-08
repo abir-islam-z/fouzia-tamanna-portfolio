@@ -55,8 +55,6 @@ model Project {
   title        String
   summary      String
   caseStudy    String           @default("")
-  coverMediaId String?
-  cover        Media?           @relation("ProjectCover", fields: [coverMediaId], references: [id])
   tags         String
   isFeatured   Boolean          @default(false)
   link         String?
@@ -135,7 +133,6 @@ model Media {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   uploadedBy     User?            @relation(fields: [uploadedById], references: [id])
-  projectsAsCover Project[]       @relation("ProjectCover")
   galleryIn      ProjectGallery[]
 
   @@index([folder])

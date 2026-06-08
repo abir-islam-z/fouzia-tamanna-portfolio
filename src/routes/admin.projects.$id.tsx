@@ -3,7 +3,6 @@ import { EditPageShell } from "@/components/admin/edit-page-shell"
 import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import type { MediaItem } from "@/components/ui/media-picker"
-import { MediaPicker } from "@/components/ui/media-picker"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Switch } from "@/components/ui/switch"
 import { getQueryClient, projectsQuery, useUpdateProject } from "@/lib/queries"
@@ -19,13 +18,6 @@ interface ProjectListItem {
   title: string
   summary: string
   caseStudy: string
-  coverMediaId: string | null
-  cover?: {
-    id: string
-    url: string
-    originalName: string
-    alt: string | null
-  } | null
   tags: string
   isFeatured: boolean
   link: string | null
@@ -46,9 +38,6 @@ function AdminProjectsEditComponent() {
   const projects = rawProjects as unknown as Array<ProjectListItem>
   const project = projects.find((p) => p.id === id)
   const updateMutation = useUpdateProject()
-  const [cover, setCover] = useState<MediaItem | null>(
-    (project?.cover as unknown as MediaItem) ?? null
-  )
   const [isSaving, setIsSaving] = useState(false)
 
   const form = useForm({
@@ -57,7 +46,6 @@ function AdminProjectsEditComponent() {
       title: project?.title ?? "",
       summary: project?.summary ?? "",
       caseStudy: project?.caseStudy ?? "",
-      coverMediaId: project?.coverMediaId ?? (null as string | null),
       tags: project?.tags ?? "",
       isFeatured: project?.isFeatured ?? false,
       link: project?.link ?? "",
@@ -163,73 +151,7 @@ function AdminProjectsEditComponent() {
         </div>
 
         <div className="space-y-6">
-          <Card variant="admin" className="space-y-4 p-6">
-            <div>
-              <Label variant="admin">Cover Image</Label>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Used as the project card hero and case-study banner.
-              </p>
-            </div>
-            <form.Field
-              name="coverMediaId"
-              children={(f) =>
-                cover ? (
-                  <div className="space-y-3">
-                    <div className="overflow-hidden rounded-lg border border-border">
-                      <img
-                        src={cover.url}
-                        alt={cover.alt ?? cover.originalName}
-                        className="h-auto w-full object-cover"
-                      />
-                    </div>
-                    <p className="truncate font-mono text-xs text-muted-foreground">
-                      {cover.originalName}
-                    </p>
-                    <div className="flex gap-2">
-                      <MediaPicker
-                        onSelect={(m) => {
-                          setCover(m)
-                          f.handleChange(m.id)
-                        }}
-                        trigger={
-                          <button
-                            type="button"
-                            className="rounded-md border border-border px-3 py-1.5 font-mono text-xs hover:bg-muted"
-                          >
-                            Replace
-                          </button>
-                        }
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setCover(null)
-                          f.handleChange(null)
-                        }}
-                        className="rounded-md border border-destructive/30 px-3 py-1.5 font-mono text-xs text-destructive hover:bg-destructive/10"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <MediaPicker
-                    onSelect={(m) => {
-                      setCover(m)
-                      f.handleChange(m.id)
-                    }}
-                    trigger={
-                      <div className="flex h-40 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/20 text-muted-foreground transition-colors hover:border-primary/50">
-                        <span className="font-mono text-xs">
-                          Choose from media library
-                        </span>
-                      </div>
-                    }
-                  />
-                )
-              }
-            />
-          </Card>
+          <Card variant="admin" className="space-y-4 p-6"></Card>
 
           <Card variant="admin" className="space-y-4 p-6">
             <Label variant="admin">Links</Label>

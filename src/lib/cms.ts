@@ -57,7 +57,6 @@ export const projectSchema = z.object({
   title: z.string().min(1, "Title is required").trim(),
   summary: z.string().default(""),
   caseStudy: z.string().default(""),
-  coverMediaId: z.string().nullable().optional(),
   tags: z.string().default(""),
   isFeatured: z.boolean().default(false),
   link: z.string().nullable().optional(),

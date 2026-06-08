@@ -7,7 +7,6 @@ import {
   RiExternalLinkLine,
   RiEyeLine,
   RiGithubFill,
-  RiShieldKeyholeLine,
 } from "@remixicon/react"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
@@ -29,7 +28,6 @@ interface ProjectDetail {
   isFeatured: boolean
   link: string | null
   github: string | null
-  cover?: MediaItem | null
   gallery?: Array<{
     id: string
     mediaId: string
@@ -86,27 +84,6 @@ function ProjectCaseStudyComponent() {
           </span>
         </div>
       </div>
-
-      {/* Cover */}
-      {project.cover ? (
-        <div className="relative aspect-[21/9] w-full overflow-hidden border-b border-border bg-secondary">
-          <img
-            src={project.cover.url}
-            alt={project.cover.alt ?? project.title}
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-        </div>
-      ) : (
-        <div className="flex aspect-[21/9] w-full items-center justify-center border-b border-border bg-muted/20">
-          <div className="flex flex-col items-center gap-2 text-muted-foreground">
-            <RiShieldKeyholeLine size={48} className="opacity-30" />
-            <span className="font-mono text-xs tracking-widest uppercase">
-              No cover image
-            </span>
-          </div>
-        </div>
-      )}
 
       <article className="mx-auto max-w-4xl space-y-10 px-4 py-12 md:px-6 md:py-16">
         {/* Header */}

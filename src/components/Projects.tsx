@@ -13,7 +13,6 @@ interface ProjectItem {
   isFeatured: boolean
   link?: string | null
   github?: string | null
-  cover?: { url: string; originalName: string; alt: string | null } | null
 }
 
 interface ProjectsProps {
@@ -66,7 +65,7 @@ export default function Projects({ sectionConfig }: ProjectsProps = {}) {
           <Link
             to="/projects/$slug"
             params={{ slug: featuredProject.slug }}
-            className="group hover:neon-glow cyber-chamfer-lg relative grid items-center gap-6 border border-border bg-card/60 p-6 transition-all hover:border-primary md:grid-cols-2 md:gap-8 md:p-8"
+            className="group hover:neon-glow cyber-chamfer-lg relative flex flex-col items-start gap-6 border border-border bg-card/60 p-6 transition-all hover:border-primary md:gap-8 md:p-8"
           >
             {featuredProject.isFeatured && (
               <div className="cyber-chamfer-sm absolute top-4 right-4 z-10 flex items-center gap-2 border border-primary/60 bg-primary/10 px-2.5 py-1 font-mono text-[9px] tracking-[0.2em] text-primary uppercase md:top-6 md:right-6 md:text-[10px]">
@@ -75,7 +74,7 @@ export default function Projects({ sectionConfig }: ProjectsProps = {}) {
               </div>
             )}
 
-            <div className="order-2 space-y-4 md:order-1 md:space-y-6">
+            <div className="space-y-4 md:space-y-6">
               <div className="flex flex-wrap gap-1.5">
                 {(featuredProject.tags || "")
                   .split(",")
@@ -143,27 +142,6 @@ export default function Projects({ sectionConfig }: ProjectsProps = {}) {
                 </div>
               </div>
             </div>
-
-            <div className="cyber-chamfer order-1 aspect-video overflow-hidden border border-border md:order-2">
-              {featuredProject.cover?.url ? (
-                <div className="relative h-full w-full overflow-hidden">
-                  <img
-                    src={featuredProject.cover.url}
-                    alt={featuredProject.cover.alt ?? featuredProject.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60" />
-                  <div className="scan-sweep absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100" />
-                </div>
-              ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-muted/30 text-muted-foreground">
-                  <RiShieldKeyholeLine size={40} className="opacity-30" />
-                  <span className="font-mono text-[10px] tracking-widest uppercase">
-                    No cover
-                  </span>
-                </div>
-              )}
-            </div>
           </Link>
 
           {otherProjects.length > 0 && (
@@ -175,20 +153,6 @@ export default function Projects({ sectionConfig }: ProjectsProps = {}) {
                   params={{ slug: project.slug }}
                   className="group hover:neon-glow cyber-chamfer relative overflow-hidden border border-border bg-card/40 p-4 transition-all hover:border-primary"
                 >
-                  <div className="cyber-chamfer-sm relative aspect-video overflow-hidden border border-border">
-                    {project.cover?.url ? (
-                      <img
-                        src={project.cover.url}
-                        alt={project.cover.alt ?? project.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-muted/30 text-muted-foreground">
-                        <RiShieldKeyholeLine size={32} className="opacity-30" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60" />
-                  </div>
                   <div className="space-y-3 px-1 py-3 md:space-y-4 md:py-4">
                     <div className="flex flex-wrap gap-1.5">
                       {(project.tags || "")

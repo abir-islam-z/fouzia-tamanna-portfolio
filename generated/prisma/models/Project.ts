@@ -40,7 +40,6 @@ export type ProjectMinAggregateOutputType = {
   title: string | null
   summary: string | null
   caseStudy: string | null
-  coverMediaId: string | null
   tags: string | null
   isFeatured: boolean | null
   link: string | null
@@ -55,7 +54,6 @@ export type ProjectMaxAggregateOutputType = {
   title: string | null
   summary: string | null
   caseStudy: string | null
-  coverMediaId: string | null
   tags: string | null
   isFeatured: boolean | null
   link: string | null
@@ -70,7 +68,6 @@ export type ProjectCountAggregateOutputType = {
   title: number
   summary: number
   caseStudy: number
-  coverMediaId: number
   tags: number
   isFeatured: number
   link: number
@@ -95,7 +92,6 @@ export type ProjectMinAggregateInputType = {
   title?: true
   summary?: true
   caseStudy?: true
-  coverMediaId?: true
   tags?: true
   isFeatured?: true
   link?: true
@@ -110,7 +106,6 @@ export type ProjectMaxAggregateInputType = {
   title?: true
   summary?: true
   caseStudy?: true
-  coverMediaId?: true
   tags?: true
   isFeatured?: true
   link?: true
@@ -125,7 +120,6 @@ export type ProjectCountAggregateInputType = {
   title?: true
   summary?: true
   caseStudy?: true
-  coverMediaId?: true
   tags?: true
   isFeatured?: true
   link?: true
@@ -227,7 +221,6 @@ export type ProjectGroupByOutputType = {
   title: string
   summary: string
   caseStudy: string
-  coverMediaId: string | null
   tags: string
   isFeatured: boolean
   link: string | null
@@ -265,14 +258,12 @@ export type ProjectWhereInput = {
   title?: Prisma.StringFilter<"Project"> | string
   summary?: Prisma.StringFilter<"Project"> | string
   caseStudy?: Prisma.StringFilter<"Project"> | string
-  coverMediaId?: Prisma.StringNullableFilter<"Project"> | string | null
   tags?: Prisma.StringFilter<"Project"> | string
   isFeatured?: Prisma.BoolFilter<"Project"> | boolean
   link?: Prisma.StringNullableFilter<"Project"> | string | null
   github?: Prisma.StringNullableFilter<"Project"> | string | null
   order?: Prisma.IntFilter<"Project"> | number
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
-  cover?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
   gallery?: Prisma.ProjectGalleryListRelationFilter
 }
 
@@ -282,14 +273,12 @@ export type ProjectOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   summary?: Prisma.SortOrder
   caseStudy?: Prisma.SortOrder
-  coverMediaId?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   link?: Prisma.SortOrderInput | Prisma.SortOrder
   github?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  cover?: Prisma.MediaOrderByWithRelationInput
   gallery?: Prisma.ProjectGalleryOrderByRelationAggregateInput
 }
 
@@ -302,14 +291,12 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Project"> | string
   summary?: Prisma.StringFilter<"Project"> | string
   caseStudy?: Prisma.StringFilter<"Project"> | string
-  coverMediaId?: Prisma.StringNullableFilter<"Project"> | string | null
   tags?: Prisma.StringFilter<"Project"> | string
   isFeatured?: Prisma.BoolFilter<"Project"> | boolean
   link?: Prisma.StringNullableFilter<"Project"> | string | null
   github?: Prisma.StringNullableFilter<"Project"> | string | null
   order?: Prisma.IntFilter<"Project"> | number
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
-  cover?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
   gallery?: Prisma.ProjectGalleryListRelationFilter
 }, "id" | "slug">
 
@@ -319,7 +306,6 @@ export type ProjectOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   summary?: Prisma.SortOrder
   caseStudy?: Prisma.SortOrder
-  coverMediaId?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   link?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -342,7 +328,6 @@ export type ProjectScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Project"> | string
   summary?: Prisma.StringWithAggregatesFilter<"Project"> | string
   caseStudy?: Prisma.StringWithAggregatesFilter<"Project"> | string
-  coverMediaId?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   tags?: Prisma.StringWithAggregatesFilter<"Project"> | string
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean
   link?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
@@ -363,7 +348,6 @@ export type ProjectCreateInput = {
   github?: string | null
   order?: number
   updatedAt?: Date | string
-  cover?: Prisma.MediaCreateNestedOneWithoutProjectsAsCoverInput
   gallery?: Prisma.ProjectGalleryCreateNestedManyWithoutProjectInput
 }
 
@@ -373,7 +357,6 @@ export type ProjectUncheckedCreateInput = {
   title: string
   summary: string
   caseStudy?: string
-  coverMediaId?: string | null
   tags: string
   isFeatured?: boolean
   link?: string | null
@@ -395,7 +378,6 @@ export type ProjectUpdateInput = {
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cover?: Prisma.MediaUpdateOneWithoutProjectsAsCoverNestedInput
   gallery?: Prisma.ProjectGalleryUpdateManyWithoutProjectNestedInput
 }
 
@@ -405,7 +387,6 @@ export type ProjectUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   caseStudy?: Prisma.StringFieldUpdateOperationsInput | string
-  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -421,7 +402,6 @@ export type ProjectCreateManyInput = {
   title: string
   summary: string
   caseStudy?: string
-  coverMediaId?: string | null
   tags: string
   isFeatured?: boolean
   link?: string | null
@@ -450,7 +430,6 @@ export type ProjectUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   caseStudy?: Prisma.StringFieldUpdateOperationsInput | string
-  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -465,7 +444,6 @@ export type ProjectCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   summary?: Prisma.SortOrder
   caseStudy?: Prisma.SortOrder
-  coverMediaId?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   link?: Prisma.SortOrder
@@ -484,7 +462,6 @@ export type ProjectMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   summary?: Prisma.SortOrder
   caseStudy?: Prisma.SortOrder
-  coverMediaId?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   link?: Prisma.SortOrder
@@ -499,7 +476,6 @@ export type ProjectMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   summary?: Prisma.SortOrder
   caseStudy?: Prisma.SortOrder
-  coverMediaId?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   link?: Prisma.SortOrder
@@ -517,16 +493,6 @@ export type ProjectScalarRelationFilter = {
   isNot?: Prisma.ProjectWhereInput
 }
 
-export type ProjectListRelationFilter = {
-  every?: Prisma.ProjectWhereInput
-  some?: Prisma.ProjectWhereInput
-  none?: Prisma.ProjectWhereInput
-}
-
-export type ProjectOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type ProjectCreateNestedOneWithoutGalleryInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutGalleryInput, Prisma.ProjectUncheckedCreateWithoutGalleryInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutGalleryInput
@@ -541,48 +507,6 @@ export type ProjectUpdateOneRequiredWithoutGalleryNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutGalleryInput, Prisma.ProjectUpdateWithoutGalleryInput>, Prisma.ProjectUncheckedUpdateWithoutGalleryInput>
 }
 
-export type ProjectCreateNestedManyWithoutCoverInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutCoverInput, Prisma.ProjectUncheckedCreateWithoutCoverInput> | Prisma.ProjectCreateWithoutCoverInput[] | Prisma.ProjectUncheckedCreateWithoutCoverInput[]
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutCoverInput | Prisma.ProjectCreateOrConnectWithoutCoverInput[]
-  createMany?: Prisma.ProjectCreateManyCoverInputEnvelope
-  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-}
-
-export type ProjectUncheckedCreateNestedManyWithoutCoverInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutCoverInput, Prisma.ProjectUncheckedCreateWithoutCoverInput> | Prisma.ProjectCreateWithoutCoverInput[] | Prisma.ProjectUncheckedCreateWithoutCoverInput[]
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutCoverInput | Prisma.ProjectCreateOrConnectWithoutCoverInput[]
-  createMany?: Prisma.ProjectCreateManyCoverInputEnvelope
-  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-}
-
-export type ProjectUpdateManyWithoutCoverNestedInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutCoverInput, Prisma.ProjectUncheckedCreateWithoutCoverInput> | Prisma.ProjectCreateWithoutCoverInput[] | Prisma.ProjectUncheckedCreateWithoutCoverInput[]
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutCoverInput | Prisma.ProjectCreateOrConnectWithoutCoverInput[]
-  upsert?: Prisma.ProjectUpsertWithWhereUniqueWithoutCoverInput | Prisma.ProjectUpsertWithWhereUniqueWithoutCoverInput[]
-  createMany?: Prisma.ProjectCreateManyCoverInputEnvelope
-  set?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-  disconnect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-  delete?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-  update?: Prisma.ProjectUpdateWithWhereUniqueWithoutCoverInput | Prisma.ProjectUpdateWithWhereUniqueWithoutCoverInput[]
-  updateMany?: Prisma.ProjectUpdateManyWithWhereWithoutCoverInput | Prisma.ProjectUpdateManyWithWhereWithoutCoverInput[]
-  deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
-}
-
-export type ProjectUncheckedUpdateManyWithoutCoverNestedInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutCoverInput, Prisma.ProjectUncheckedCreateWithoutCoverInput> | Prisma.ProjectCreateWithoutCoverInput[] | Prisma.ProjectUncheckedCreateWithoutCoverInput[]
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutCoverInput | Prisma.ProjectCreateOrConnectWithoutCoverInput[]
-  upsert?: Prisma.ProjectUpsertWithWhereUniqueWithoutCoverInput | Prisma.ProjectUpsertWithWhereUniqueWithoutCoverInput[]
-  createMany?: Prisma.ProjectCreateManyCoverInputEnvelope
-  set?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-  disconnect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-  delete?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
-  update?: Prisma.ProjectUpdateWithWhereUniqueWithoutCoverInput | Prisma.ProjectUpdateWithWhereUniqueWithoutCoverInput[]
-  updateMany?: Prisma.ProjectUpdateManyWithWhereWithoutCoverInput | Prisma.ProjectUpdateManyWithWhereWithoutCoverInput[]
-  deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
-}
-
 export type ProjectCreateWithoutGalleryInput = {
   id?: string
   slug: string
@@ -595,7 +519,6 @@ export type ProjectCreateWithoutGalleryInput = {
   github?: string | null
   order?: number
   updatedAt?: Date | string
-  cover?: Prisma.MediaCreateNestedOneWithoutProjectsAsCoverInput
 }
 
 export type ProjectUncheckedCreateWithoutGalleryInput = {
@@ -604,7 +527,6 @@ export type ProjectUncheckedCreateWithoutGalleryInput = {
   title: string
   summary: string
   caseStudy?: string
-  coverMediaId?: string | null
   tags: string
   isFeatured?: boolean
   link?: string | null
@@ -641,143 +563,9 @@ export type ProjectUpdateWithoutGalleryInput = {
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cover?: Prisma.MediaUpdateOneWithoutProjectsAsCoverNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutGalleryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.StringFieldUpdateOperationsInput | string
-  caseStudy?: Prisma.StringFieldUpdateOperationsInput | string
-  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.StringFieldUpdateOperationsInput | string
-  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type ProjectCreateWithoutCoverInput = {
-  id?: string
-  slug: string
-  title: string
-  summary: string
-  caseStudy?: string
-  tags: string
-  isFeatured?: boolean
-  link?: string | null
-  github?: string | null
-  order?: number
-  updatedAt?: Date | string
-  gallery?: Prisma.ProjectGalleryCreateNestedManyWithoutProjectInput
-}
-
-export type ProjectUncheckedCreateWithoutCoverInput = {
-  id?: string
-  slug: string
-  title: string
-  summary: string
-  caseStudy?: string
-  tags: string
-  isFeatured?: boolean
-  link?: string | null
-  github?: string | null
-  order?: number
-  updatedAt?: Date | string
-  gallery?: Prisma.ProjectGalleryUncheckedCreateNestedManyWithoutProjectInput
-}
-
-export type ProjectCreateOrConnectWithoutCoverInput = {
-  where: Prisma.ProjectWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProjectCreateWithoutCoverInput, Prisma.ProjectUncheckedCreateWithoutCoverInput>
-}
-
-export type ProjectCreateManyCoverInputEnvelope = {
-  data: Prisma.ProjectCreateManyCoverInput | Prisma.ProjectCreateManyCoverInput[]
-  skipDuplicates?: boolean
-}
-
-export type ProjectUpsertWithWhereUniqueWithoutCoverInput = {
-  where: Prisma.ProjectWhereUniqueInput
-  update: Prisma.XOR<Prisma.ProjectUpdateWithoutCoverInput, Prisma.ProjectUncheckedUpdateWithoutCoverInput>
-  create: Prisma.XOR<Prisma.ProjectCreateWithoutCoverInput, Prisma.ProjectUncheckedCreateWithoutCoverInput>
-}
-
-export type ProjectUpdateWithWhereUniqueWithoutCoverInput = {
-  where: Prisma.ProjectWhereUniqueInput
-  data: Prisma.XOR<Prisma.ProjectUpdateWithoutCoverInput, Prisma.ProjectUncheckedUpdateWithoutCoverInput>
-}
-
-export type ProjectUpdateManyWithWhereWithoutCoverInput = {
-  where: Prisma.ProjectScalarWhereInput
-  data: Prisma.XOR<Prisma.ProjectUpdateManyMutationInput, Prisma.ProjectUncheckedUpdateManyWithoutCoverInput>
-}
-
-export type ProjectScalarWhereInput = {
-  AND?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
-  OR?: Prisma.ProjectScalarWhereInput[]
-  NOT?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
-  id?: Prisma.StringFilter<"Project"> | string
-  slug?: Prisma.StringFilter<"Project"> | string
-  title?: Prisma.StringFilter<"Project"> | string
-  summary?: Prisma.StringFilter<"Project"> | string
-  caseStudy?: Prisma.StringFilter<"Project"> | string
-  coverMediaId?: Prisma.StringNullableFilter<"Project"> | string | null
-  tags?: Prisma.StringFilter<"Project"> | string
-  isFeatured?: Prisma.BoolFilter<"Project"> | boolean
-  link?: Prisma.StringNullableFilter<"Project"> | string | null
-  github?: Prisma.StringNullableFilter<"Project"> | string | null
-  order?: Prisma.IntFilter<"Project"> | number
-  updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
-}
-
-export type ProjectCreateManyCoverInput = {
-  id?: string
-  slug: string
-  title: string
-  summary: string
-  caseStudy?: string
-  tags: string
-  isFeatured?: boolean
-  link?: string | null
-  github?: string | null
-  order?: number
-  updatedAt?: Date | string
-}
-
-export type ProjectUpdateWithoutCoverInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.StringFieldUpdateOperationsInput | string
-  caseStudy?: Prisma.StringFieldUpdateOperationsInput | string
-  tags?: Prisma.StringFieldUpdateOperationsInput | string
-  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  gallery?: Prisma.ProjectGalleryUpdateManyWithoutProjectNestedInput
-}
-
-export type ProjectUncheckedUpdateWithoutCoverInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  summary?: Prisma.StringFieldUpdateOperationsInput | string
-  caseStudy?: Prisma.StringFieldUpdateOperationsInput | string
-  tags?: Prisma.StringFieldUpdateOperationsInput | string
-  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  gallery?: Prisma.ProjectGalleryUncheckedUpdateManyWithoutProjectNestedInput
-}
-
-export type ProjectUncheckedUpdateManyWithoutCoverInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
@@ -828,14 +616,12 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   title?: boolean
   summary?: boolean
   caseStudy?: boolean
-  coverMediaId?: boolean
   tags?: boolean
   isFeatured?: boolean
   link?: boolean
   github?: boolean
   order?: boolean
   updatedAt?: boolean
-  cover?: boolean | Prisma.Project$coverArgs<ExtArgs>
   gallery?: boolean | Prisma.Project$galleryArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
@@ -846,14 +632,12 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   title?: boolean
   summary?: boolean
   caseStudy?: boolean
-  coverMediaId?: boolean
   tags?: boolean
   isFeatured?: boolean
   link?: boolean
   github?: boolean
   order?: boolean
   updatedAt?: boolean
-  cover?: boolean | Prisma.Project$coverArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -862,14 +646,12 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   title?: boolean
   summary?: boolean
   caseStudy?: boolean
-  coverMediaId?: boolean
   tags?: boolean
   isFeatured?: boolean
   link?: boolean
   github?: boolean
   order?: boolean
   updatedAt?: boolean
-  cover?: boolean | Prisma.Project$coverArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectScalar = {
@@ -878,7 +660,6 @@ export type ProjectSelectScalar = {
   title?: boolean
   summary?: boolean
   caseStudy?: boolean
-  coverMediaId?: boolean
   tags?: boolean
   isFeatured?: boolean
   link?: boolean
@@ -887,23 +668,17 @@ export type ProjectSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "summary" | "caseStudy" | "coverMediaId" | "tags" | "isFeatured" | "link" | "github" | "order" | "updatedAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "summary" | "caseStudy" | "tags" | "isFeatured" | "link" | "github" | "order" | "updatedAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cover?: boolean | Prisma.Project$coverArgs<ExtArgs>
   gallery?: boolean | Prisma.Project$galleryArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cover?: boolean | Prisma.Project$coverArgs<ExtArgs>
-}
-export type ProjectIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cover?: boolean | Prisma.Project$coverArgs<ExtArgs>
-}
+export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ProjectIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Project"
   objects: {
-    cover: Prisma.$MediaPayload<ExtArgs> | null
     gallery: Prisma.$ProjectGalleryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -912,7 +687,6 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     title: string
     summary: string
     caseStudy: string
-    coverMediaId: string | null
     tags: string
     isFeatured: boolean
     link: string | null
@@ -1313,7 +1087,6 @@ readonly fields: ProjectFieldRefs;
  */
 export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  cover<T extends Prisma.Project$coverArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$coverArgs<ExtArgs>>): Prisma.Prisma__MediaClient<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   gallery<T extends Prisma.Project$galleryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$galleryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectGalleryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1349,7 +1122,6 @@ export interface ProjectFieldRefs {
   readonly title: Prisma.FieldRef<"Project", 'String'>
   readonly summary: Prisma.FieldRef<"Project", 'String'>
   readonly caseStudy: Prisma.FieldRef<"Project", 'String'>
-  readonly coverMediaId: Prisma.FieldRef<"Project", 'String'>
   readonly tags: Prisma.FieldRef<"Project", 'String'>
   readonly isFeatured: Prisma.FieldRef<"Project", 'Boolean'>
   readonly link: Prisma.FieldRef<"Project", 'String'>
@@ -1610,10 +1382,6 @@ export type ProjectCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.ProjectCreateManyInput | Prisma.ProjectCreateManyInput[]
   skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProjectIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1684,10 +1452,6 @@ export type ProjectUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Projects to update.
    */
   limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProjectIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1754,25 +1518,6 @@ export type ProjectDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Projects to delete.
    */
   limit?: number
-}
-
-/**
- * Project.cover
- */
-export type Project$coverArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Media
-   */
-  select?: Prisma.MediaSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Media
-   */
-  omit?: Prisma.MediaOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MediaInclude<ExtArgs> | null
-  where?: Prisma.MediaWhereInput
 }
 
 /**

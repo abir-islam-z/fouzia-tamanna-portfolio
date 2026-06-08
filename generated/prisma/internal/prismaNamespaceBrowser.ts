@@ -142,7 +142,6 @@ export const ProjectScalarFieldEnum = {
   title: 'title',
   summary: 'summary',
   caseStudy: 'caseStudy',
-  coverMediaId: 'coverMediaId',
   tags: 'tags',
   isFeatured: 'isFeatured',
   link: 'link',

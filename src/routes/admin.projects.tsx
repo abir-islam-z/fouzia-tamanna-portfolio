@@ -16,7 +16,6 @@ interface ProjectListItem {
   tags: string
   isFeatured: boolean
   order: number
-  cover?: { url: string; originalName: string } | null
 }
 
 function AdminProjectsComponent() {
@@ -36,23 +35,6 @@ function AdminProjectsComponent() {
   }
 
   const columns: EntityListColumn<ProjectListItem>[] = [
-    {
-      key: "cover",
-      header: "Cover",
-      width: "w-20",
-      render: (item) =>
-        item.cover ? (
-          <img
-            src={item.cover.url}
-            alt={item.cover.originalName}
-            className="h-10 w-16 rounded border border-border object-cover"
-          />
-        ) : (
-          <div className="flex h-10 w-16 items-center justify-center rounded border border-dashed border-border bg-muted/30 text-[9px] text-muted-foreground">
-            none
-          </div>
-        ),
-    },
     {
       key: "title",
       header: "Project",
