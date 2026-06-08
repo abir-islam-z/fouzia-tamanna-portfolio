@@ -321,7 +321,31 @@ export async function deleteProjectServer(id: string) {
 // --- CONTACT ---
 export async function submitContactServer(data: any) {
   try {
-    return await (await getDb()).contactMessage.create({ data })
+    const message = await (await getDb()).contactMessage.create({ data })
+
+    // Best-effort notification email to the site owner
+    try {
+      const { sendContactNotification, isEmailConfigured } =
+        await import("./email.server")
+      if (isEmailConfigured()) {
+        const footer = await (
+          await getDb()
+        ).footer.findUnique({
+          where: { id: "singleton" },
+        })
+        if (footer?.email) {
+          await sendContactNotification(footer.email, {
+            name: data.name,
+            email: data.email,
+            message: data.message,
+          })
+        }
+      }
+    } catch (emailErr) {
+      console.error("[CONTACT] Failed to send notification email:", emailErr)
+    }
+
+    return message
   } catch (error: any) {
     throw new Error(formatZodError(error))
   }
@@ -825,10 +849,9 @@ export async function forgotPasswordServer(data: { email: string }) {
   try {
     const { generatePasswordResetToken, hashPasswordResetToken } =
       await import("./auth")
-    const { Resend } = await import("resend")
+    const { sendPasswordResetEmail, isEmailConfigured } =
+      await import("./email.server")
 
-    const resendApiKey = process.env.RESEND_API_KEY
-    const fromEmail = process.env.RESEND_FROM_EMAIL || "noreply@example.com"
     const appUrl = process.env.APP_URL || "http://localhost:3000"
 
     const db = await getDb()
@@ -866,26 +889,9 @@ export async function forgotPasswordServer(data: { email: string }) {
     })
 
     // Send email via Resend
-    if (resendApiKey) {
-      const resend = new Resend(resendApiKey)
+    if (isEmailConfigured()) {
       const resetUrl = `${appUrl}/reset-password?token=${token}`
-
-      await resend.emails.send({
-        from: fromEmail,
-        to: user.email || data.email,
-        subject: "Password Reset Request",
-        html: `
-          <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 20px;">
-            <h2>Password Reset</h2>
-            <p>You requested a password reset for your portfolio admin account.</p>
-            <p>Click the button below to reset your password. This link expires in 1 hour.</p>
-            <a href="${resetUrl}" style="display: inline-block; background: #22c55e; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin: 16px 0;">
-              Reset Password
-            </a>
-            <p style="color: #666; font-size: 13px;">If you didn't request this, you can safely ignore this email.</p>
-          </div>
-        `,
-      })
+      await sendPasswordResetEmail(user.email || data.email, resetUrl)
     } else {
       console.warn(
         "[CMS.SERVER] RESEND_API_KEY not configured. Password reset email not sent."
