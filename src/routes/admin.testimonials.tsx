@@ -1,6 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
-import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,6 +8,9 @@ import {
   getTestimonials,
   updateTestimonial,
 } from "@/lib/cms"
+import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
+import { createFileRoute } from "@tanstack/react-router"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 interface TestimonialItem {
@@ -75,7 +75,15 @@ function AdminTestimonialsComponent() {
     ])
   }
 
-  if (loading) return <div>Loading...</div>
+  if (loading)
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Loading testimonials…</p>
+        </div>
+      </div>
+    )
 
   return (
     <div className="space-y-8">
@@ -88,7 +96,7 @@ function AdminTestimonialsComponent() {
             Manage client feedback and reviews.
           </p>
         </div>
-        <Button onClick={handleAdd} className="gap-2">
+        <Button variant="admin" onClick={handleAdd} className="gap-2">
           <RiAddLine size={20} />
           Add Testimonial
         </Button>
@@ -97,12 +105,13 @@ function AdminTestimonialsComponent() {
       <div className="grid grid-cols-1 gap-6">
         {testimonials.length > 0 ? (
           testimonials.map((item, i) => (
-            <Card key={i} className="border-border bg-card/30 p-6">
+            <Card key={i} variant="admin" className="p-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Client Name</Label>
+                    <Label variant="admin">Client Name</Label>
                     <Input
+                      variant="admin"
                       value={item.name}
                       onChange={(e) => {
                         const next = [...testimonials]
@@ -113,8 +122,9 @@ function AdminTestimonialsComponent() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Position / Role</Label>
+                      <Label variant="admin">Position / Role</Label>
                       <Input
+                        variant="admin"
                         value={item.role}
                         onChange={(e) => {
                           const next = [...testimonials]
@@ -124,8 +134,9 @@ function AdminTestimonialsComponent() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Order</Label>
+                      <Label variant="admin">Order</Label>
                       <Input
+                        variant="admin"
                         type="number"
                         value={item.order}
                         onChange={(e) => {
@@ -138,8 +149,9 @@ function AdminTestimonialsComponent() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Content</Label>
+                  <Label variant="admin">Content</Label>
                   <Textarea
+                    variant="admin"
                     rows={4}
                     value={item.content}
                     onChange={(e) => {
@@ -160,7 +172,11 @@ function AdminTestimonialsComponent() {
                   <RiDeleteBinLine size={20} className="mr-2" />
                   Remove
                 </Button>
-                <Button onClick={() => handleSave(item)} className="gap-2 px-8">
+                <Button
+                  variant="admin"
+                  onClick={() => handleSave(item)}
+                  className="gap-2 px-8"
+                >
                   <RiSaveLine size={20} />
                   Save Testimonial
                 </Button>

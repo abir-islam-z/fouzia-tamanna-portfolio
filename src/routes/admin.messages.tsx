@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
-import { RiMailLine, RiTimeLine, RiUserLine } from "@remixicon/react"
 import { Card } from "@/components/ui/card"
 import { getContactMessages } from "@/lib/cms"
+import { RiMailLine, RiTimeLine, RiUserLine } from "@remixicon/react"
+import { createFileRoute } from "@tanstack/react-router"
+import { useEffect, useState } from "react"
 
 interface ContactMessage {
   id: number
@@ -25,7 +25,15 @@ function AdminMessagesComponent() {
     loadData()
   }, [])
 
-  if (loading) return <div>Loading...</div>
+  if (loading)
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Loading messages…</p>
+        </div>
+      </div>
+    )
 
   return (
     <div className="space-y-8">
@@ -38,7 +46,7 @@ function AdminMessagesComponent() {
 
       <div className="space-y-4">
         {messages.length === 0 ? (
-          <div className="rounded-3xl border-2 border-dashed border-border py-20 text-center">
+          <div className="rounded-xl border border-dashed border-border py-16 text-center">
             <RiMailLine
               size={48}
               className="mx-auto mb-4 text-muted-foreground opacity-20"
@@ -47,7 +55,7 @@ function AdminMessagesComponent() {
           </div>
         ) : (
           messages.map((msg, i) => (
-            <Card key={i} className="border-border bg-card/30 p-6">
+            <Card key={i} variant="admin" className="p-6">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -63,7 +71,7 @@ function AdminMessagesComponent() {
                   {new Date(msg.createdAt).toLocaleString()}
                 </div>
               </div>
-              <p className="rounded-xl border border-border/50 bg-background/50 p-4 text-sm leading-relaxed text-foreground/80">
+              <p className="rounded-lg border border-border/50 bg-muted/30 p-4 text-sm leading-relaxed text-foreground/80">
                 {msg.message}
               </p>
             </Card>

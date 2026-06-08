@@ -1,12 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
-import {
-  RiAddLine,
-  RiDeleteBinLine,
-  RiExternalLinkLine,
-  RiSaveLine,
-} from "@remixicon/react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -18,6 +9,15 @@ import {
   getPublications,
   updatePublication,
 } from "@/lib/cms"
+import {
+  RiAddLine,
+  RiDeleteBinLine,
+  RiExternalLinkLine,
+  RiSaveLine,
+} from "@remixicon/react"
+import { createFileRoute } from "@tanstack/react-router"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 interface PublicationItem {
   id?: number
@@ -127,12 +127,14 @@ function AdminPublicationsComponent() {
     <div className="space-y-8">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="mb-2 text-3xl font-bold tracking-tight">Publications</h1>
+          <h1 className="mb-2 text-3xl font-bold tracking-tight">
+            Publications
+          </h1>
           <p className="text-muted-foreground">
             Manage your research publications and preprints.
           </p>
         </div>
-        <Button onClick={handleAdd} className="gap-2">
+        <Button variant="admin" onClick={handleAdd} className="gap-2">
           <RiAddLine size={20} />
           Add Publication
         </Button>
@@ -141,14 +143,12 @@ function AdminPublicationsComponent() {
       <div className="space-y-6">
         {pubs.length > 0 ? (
           pubs.map((item, i) => (
-            <Card
-              key={item.id ?? `new-${i}`}
-              className="border-border bg-card/30 p-6"
-            >
+            <Card key={item.id ?? `new-${i}`} variant="admin" className="p-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Title</Label>
+                  <Label variant="admin">Title</Label>
                   <Input
+                    variant="admin"
                     value={item.title}
                     onChange={(e) => {
                       const next = [...pubs]
@@ -160,8 +160,9 @@ function AdminPublicationsComponent() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Authors (comma separated)</Label>
+                  <Label variant="admin">Authors (comma separated)</Label>
                   <Input
+                    variant="admin"
                     value={item.authors}
                     onChange={(e) => {
                       const next = [...pubs]
@@ -172,8 +173,9 @@ function AdminPublicationsComponent() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Venue (Journal / Conference)</Label>
+                  <Label variant="admin">Venue (Journal / Conference)</Label>
                   <Input
+                    variant="admin"
                     value={item.venue}
                     onChange={(e) => {
                       const next = [...pubs]
@@ -185,8 +187,9 @@ function AdminPublicationsComponent() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Year</Label>
+                  <Label variant="admin">Year</Label>
                   <Input
+                    variant="admin"
                     value={item.year}
                     onChange={(e) => {
                       const next = [...pubs]
@@ -197,7 +200,7 @@ function AdminPublicationsComponent() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Type</Label>
+                  <Label variant="admin">Type</Label>
                   <select
                     value={item.type}
                     onChange={(e) => {
@@ -208,19 +211,21 @@ function AdminPublicationsComponent() {
                       }
                       setPubs(next)
                     }}
-                    className="h-9 w-full rounded-md border border-input bg-background/50 px-3 text-sm"
+                    className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground"
                   >
                     {TYPE_OPTIONS.map((t) => (
                       <option key={t} value={t}>
-                        {t.charAt(0).toUpperCase() + t.slice(1).replace("-", " ")}
+                        {t.charAt(0).toUpperCase() +
+                          t.slice(1).replace("-", " ")}
                       </option>
                     ))}
                   </select>
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Abstract</Label>
+                  <Label variant="admin">Abstract</Label>
                   <Textarea
+                    variant="admin"
                     rows={4}
                     value={item.abstract}
                     onChange={(e) => {
@@ -233,8 +238,9 @@ function AdminPublicationsComponent() {
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Tags (comma separated)</Label>
+                  <Label variant="admin">Tags (comma separated)</Label>
                   <Input
+                    variant="admin"
                     value={item.tags}
                     onChange={(e) => {
                       const next = [...pubs]
@@ -246,8 +252,11 @@ function AdminPublicationsComponent() {
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Link (DOI / arXiv / publisher URL)</Label>
+                  <Label variant="admin">
+                    Link (DOI / arXiv / publisher URL)
+                  </Label>
                   <Input
+                    variant="admin"
                     value={item.link ?? ""}
                     onChange={(e) => {
                       const next = [...pubs]
@@ -259,8 +268,9 @@ function AdminPublicationsComponent() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Order (Lower = First)</Label>
+                  <Label variant="admin">Order (Lower = First)</Label>
                   <Input
+                    variant="admin"
                     type="number"
                     value={item.order}
                     onChange={(e) => {
@@ -274,12 +284,10 @@ function AdminPublicationsComponent() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between rounded-xl border border-border bg-background/50 p-4">
+                <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-4">
                   <div className="space-y-0.5">
-                    <Label className="text-sm font-bold tracking-tight">
-                      Published
-                    </Label>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                    <Label variant="admin">Published</Label>
+                    <p className="text-xs text-muted-foreground">
                       Show on public portfolio
                     </p>
                   </div>
@@ -315,7 +323,11 @@ function AdminPublicationsComponent() {
                       <RiExternalLinkLine size={16} />
                     </a>
                   )}
-                  <Button onClick={() => handleSave(item)} className="gap-2">
+                  <Button
+                    variant="admin"
+                    onClick={() => handleSave(item)}
+                    className="gap-2"
+                  >
                     <RiSaveLine size={18} />
                     Save Publication
                   </Button>

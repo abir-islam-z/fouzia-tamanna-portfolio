@@ -1,13 +1,13 @@
-import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
-import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { deleteExperience, getExperience, updateExperience } from "@/lib/cms"
+import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
+import { createFileRoute } from "@tanstack/react-router"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 interface ExperienceItem {
   id?: number
@@ -26,7 +26,7 @@ function AdminExperienceComponent() {
   useEffect(() => {
     async function loadData() {
       const data = await getExperience()
-      setExperience(data as Array<ExperienceItem>)
+      setExperience(data)
       setLoading(false)
     }
     loadData()
@@ -36,7 +36,7 @@ function AdminExperienceComponent() {
     try {
       await updateExperience({ data: item })
       const updated = await getExperience()
-      setExperience(updated as Array<ExperienceItem>)
+      setExperience(updated)
       toast.success("Experience saved!")
     } catch (error: any) {
       console.error("Experience save failed:", error)
@@ -49,7 +49,7 @@ function AdminExperienceComponent() {
       if (id) {
         await deleteExperience({ data: id })
         const updated = await getExperience()
-        setExperience(updated as Array<ExperienceItem>)
+        setExperience(updated)
         toast.success("Experience entry removed.")
       } else {
         setExperience(experience.filter((e) => e.id !== undefined))
@@ -74,7 +74,15 @@ function AdminExperienceComponent() {
     ])
   }
 
-  if (loading) return <div>Loading...</div>
+  if (loading)
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Loading experience…</p>
+        </div>
+      </div>
+    )
 
   return (
     <div className="space-y-8">
@@ -85,7 +93,7 @@ function AdminExperienceComponent() {
             Manage your professional timeline.
           </p>
         </div>
-        <Button onClick={handleAdd} className="gap-2">
+        <Button variant="admin" onClick={handleAdd} className="gap-2">
           <RiAddLine size={20} />
           Add Position
         </Button>
@@ -94,11 +102,12 @@ function AdminExperienceComponent() {
       <div className="space-y-6">
         {experience.length > 0 ? (
           experience.map((item, i) => (
-            <Card key={i} className="border-border bg-card/30 p-6">
+            <Card key={i} variant="admin" className="p-6">
               <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Role</Label>
+                  <Label variant="admin">Role</Label>
                   <Input
+                    variant="admin"
                     value={item.role}
                     onChange={(e) => {
                       const next = [...experience]
@@ -108,8 +117,9 @@ function AdminExperienceComponent() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Company</Label>
+                  <Label variant="admin">Company</Label>
                   <Input
+                    variant="admin"
                     value={item.company}
                     onChange={(e) => {
                       const next = [...experience]
@@ -119,8 +129,9 @@ function AdminExperienceComponent() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Period</Label>
+                  <Label variant="admin">Period</Label>
                   <Input
+                    variant="admin"
                     value={item.period}
                     onChange={(e) => {
                       const next = [...experience]
@@ -130,8 +141,9 @@ function AdminExperienceComponent() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Order (Lower = First)</Label>
+                  <Label variant="admin">Order (Lower = First)</Label>
                   <Input
+                    variant="admin"
                     type="number"
                     value={item.order}
                     onChange={(e) => {
@@ -142,8 +154,9 @@ function AdminExperienceComponent() {
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Skills (Comma separated)</Label>
+                  <Label variant="admin">Skills (Comma separated)</Label>
                   <Input
+                    variant="admin"
                     value={item.skills}
                     onChange={(e) => {
                       const next = [...experience]
@@ -153,8 +166,9 @@ function AdminExperienceComponent() {
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Description</Label>
+                  <Label variant="admin">Description</Label>
                   <Textarea
+                    variant="admin"
                     value={item.description}
                     onChange={(e) => {
                       const next = [...experience]
@@ -174,7 +188,11 @@ function AdminExperienceComponent() {
                   <RiDeleteBinLine size={20} className="mr-2" />
                   Remove
                 </Button>
-                <Button onClick={() => handleSave(item)} className="gap-2">
+                <Button
+                  variant="admin"
+                  onClick={() => handleSave(item)}
+                  className="gap-2"
+                >
                   <RiSaveLine size={20} />
                   Save Position
                 </Button>

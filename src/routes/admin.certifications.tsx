@@ -1,16 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
-import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
   deleteCertification,
   getCertifications,
   updateCertification,
 } from "@/lib/cms"
+import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
+import { createFileRoute } from "@tanstack/react-router"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 interface CertificationItem {
   id?: number
@@ -28,7 +28,7 @@ function AdminCertificationsComponent() {
   useEffect(() => {
     async function loadData() {
       const data = await getCertifications()
-      setCerts(data as Array<CertificationItem>)
+      setCerts(data)
       setLoading(false)
     }
     loadData()
@@ -38,7 +38,7 @@ function AdminCertificationsComponent() {
     try {
       await updateCertification({ data: item })
       const updated = await getCertifications()
-      setCerts(updated as Array<CertificationItem>)
+      setCerts(updated)
       toast.success("Certification saved!")
     } catch (error: any) {
       console.error("Certification save failed:", error)
@@ -51,7 +51,7 @@ function AdminCertificationsComponent() {
       if (id) {
         await deleteCertification({ data: id })
         const updated = await getCertifications()
-        setCerts(updated as Array<CertificationItem>)
+        setCerts(updated)
         toast.success("Certification removed.")
       } else {
         setCerts(certs.filter((c) => c.id !== undefined))
@@ -74,7 +74,17 @@ function AdminCertificationsComponent() {
     ])
   }
 
-  if (loading) return <div>Loading...</div>
+  if (loading)
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">
+            Loading certifications…
+          </p>
+        </div>
+      </div>
+    )
 
   return (
     <div className="space-y-8">
@@ -87,7 +97,7 @@ function AdminCertificationsComponent() {
             Manage your professional credentials.
           </p>
         </div>
-        <Button onClick={handleAdd} className="gap-2">
+        <Button variant="admin" onClick={handleAdd} className="gap-2">
           <RiAddLine size={20} />
           Add Certification
         </Button>
@@ -96,11 +106,12 @@ function AdminCertificationsComponent() {
       <div className="grid grid-cols-1 gap-6">
         {certs.length > 0 ? (
           certs.map((item, i) => (
-            <Card key={i} className="border-border bg-card/30 p-6">
+            <Card key={i} variant="admin" className="p-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
                 <div className="space-y-2 lg:col-span-2">
-                  <Label>Certification Title</Label>
+                  <Label variant="admin">Certification Title</Label>
                   <Input
+                    variant="admin"
                     value={item.title}
                     onChange={(e) => {
                       const next = [...certs]
@@ -110,8 +121,9 @@ function AdminCertificationsComponent() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Issuer</Label>
+                  <Label variant="admin">Issuer</Label>
                   <Input
+                    variant="admin"
                     value={item.issuer}
                     onChange={(e) => {
                       const next = [...certs]
@@ -121,8 +133,9 @@ function AdminCertificationsComponent() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Date</Label>
+                  <Label variant="admin">Date</Label>
                   <Input
+                    variant="admin"
                     value={item.date}
                     onChange={(e) => {
                       const next = [...certs]
@@ -132,8 +145,9 @@ function AdminCertificationsComponent() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Order</Label>
+                  <Label variant="admin">Order</Label>
                   <Input
+                    variant="admin"
                     type="number"
                     value={item.order}
                     onChange={(e) => {
@@ -154,7 +168,11 @@ function AdminCertificationsComponent() {
                   <RiDeleteBinLine size={20} className="mr-2" />
                   Remove
                 </Button>
-                <Button onClick={() => handleSave(item)} className="gap-2 px-8">
+                <Button
+                  variant="admin"
+                  onClick={() => handleSave(item)}
+                  className="gap-2 px-8"
+                >
                   <RiSaveLine size={20} />
                   Save Certification
                 </Button>

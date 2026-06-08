@@ -2,27 +2,27 @@ import { Button } from "@/components/ui/button"
 import { getUser, logout } from "@/lib/cms"
 import { cn } from "@/lib/utils"
 import {
-    RiAwardLine,
-    RiBookOpenLine,
-    RiBriefcaseLine,
-    RiCloseLine,
-    RiCodeBoxLine,
-    RiDashboardLine,
-    RiExternalLinkLine,
-    RiImageLine,
-    RiLogoutBoxLine,
-    RiMenuLine,
-    RiShieldKeyholeLine,
-    RiSidebarFoldLine,
-    RiSidebarUnfoldLine,
-    RiStarLine,
+  RiAwardLine,
+  RiBookOpenLine,
+  RiBriefcaseLine,
+  RiCloseLine,
+  RiCodeBoxLine,
+  RiDashboardLine,
+  RiExternalLinkLine,
+  RiImageLine,
+  RiLogoutBoxLine,
+  RiMenuLine,
+  RiShieldKeyholeLine,
+  RiSidebarFoldLine,
+  RiSidebarUnfoldLine,
+  RiStarLine,
 } from "@remixicon/react"
 import {
-    Link,
-    Outlet,
-    createFileRoute,
-    redirect,
-    useNavigate,
+  Link,
+  Outlet,
+  createFileRoute,
+  redirect,
+  useNavigate,
 } from "@tanstack/react-router"
 import { useState } from "react"
 
@@ -66,19 +66,19 @@ function AdminLayout() {
           "fixed inset-y-0 left-0 z-40 transition-all duration-300 md:sticky md:top-0 md:h-screen",
           isCollapsed ? "w-20" : "w-64",
           isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-          "border-r border-border bg-card/50 p-4 backdrop-blur-xl flex flex-col"
+          "flex flex-col border-r border-border bg-card p-4"
         )}
       >
         <div className="mb-10 flex items-center justify-between px-2">
           {!isCollapsed ? (
-            <div className="flex items-center gap-3 animate-in fade-in duration-300">
+            <div className="flex animate-in items-center gap-3 duration-300 fade-in">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                 <RiShieldKeyholeLine size={18} />
               </div>
-              <span className="font-bold tracking-tight">Fouzia · Admin</span>
+              <span className="text-sm font-semibold">Fouzia · Admin</span>
             </div>
           ) : (
-            <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground animate-in fade-in duration-300">
+            <div className="mx-auto flex h-8 w-8 animate-in items-center justify-center rounded-lg bg-primary text-primary-foreground duration-300 fade-in">
               <RiShieldKeyholeLine size={18} />
             </div>
           )}
@@ -87,7 +87,7 @@ function AdminLayout() {
               variant="ghost"
               size="icon"
               onClick={() => setIsCollapsed(true)}
-              className="hidden md:flex h-8 w-8 rounded-full"
+              className="hidden h-8 w-8 rounded-full md:flex"
             >
               <RiSidebarFoldLine size={18} />
             </Button>
@@ -107,7 +107,7 @@ function AdminLayout() {
           </div>
         )}
 
-        <nav className="space-y-1 flex-1">
+        <nav className="flex-1 space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.to}
@@ -115,36 +115,42 @@ function AdminLayout() {
               onClick={() => setIsMobileOpen(false)}
               activeProps={{ className: "bg-primary/10 text-primary" }}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all hover:bg-secondary group",
-                isCollapsed && "justify-center px-0 mx-auto w-12"
+                "group flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm transition-all hover:bg-muted",
+                isCollapsed && "mx-auto w-12 justify-center px-0"
               )}
               title={isCollapsed ? item.label : undefined}
             >
-              <item.icon size={20} className={cn("shrink-0", isCollapsed && "group-hover:scale-110 transition-transform")} />
+              <item.icon
+                size={20}
+                className={cn(
+                  "shrink-0",
+                  isCollapsed && "transition-transform group-hover:scale-110"
+                )}
+              />
               {!isCollapsed && <span className="truncate">{item.label}</span>}
             </Link>
           ))}
         </nav>
 
-        <div className="mt-auto pt-6 space-y-2">
+        <div className="mt-auto space-y-2 pt-6">
           <Link
             to="/"
             className={cn(
               "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary hover:text-foreground",
-              isCollapsed ? "justify-center px-0 mx-auto w-12" : "justify-start"
+              isCollapsed ? "mx-auto w-12 justify-center px-0" : "justify-start"
             )}
             title={isCollapsed ? "Exit to Site" : undefined}
           >
             <RiExternalLinkLine size={20} className="shrink-0" />
             {!isCollapsed && <span className="truncate">Exit to Site</span>}
           </Link>
-          
+
           <Button
             variant="ghost"
             onClick={handleLogout}
             className={cn(
               "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-destructive transition-all hover:bg-destructive/10 hover:text-destructive",
-              isCollapsed ? "justify-center px-0 mx-auto w-12" : "justify-start"
+              isCollapsed ? "mx-auto w-12 justify-center px-0" : "justify-start"
             )}
             title={isCollapsed ? "Logout" : undefined}
           >

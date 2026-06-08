@@ -328,20 +328,18 @@ function AdminIndexComponent() {
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold">Hero Section</h2>
-          <Button onClick={handleSaveHero} className="gap-2">
+          <Button variant="admin" onClick={handleSaveHero} className="gap-2">
             <RiSaveLine size={18} />
             Save Changes
           </Button>
         </div>
 
-        <Card className="space-y-6 border-border bg-card/30 p-6 backdrop-blur-sm">
+        <Card variant="admin" className="space-y-6 p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="flex items-center justify-between rounded-xl border border-border bg-background/50 p-4 md:col-span-2">
+            <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-4 md:col-span-2">
               <div className="space-y-0.5">
-                <Label className="text-sm font-bold tracking-tight">
-                  Open to Work
-                </Label>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                <Label variant="admin">Open to Work</Label>
+                <p className="text-xs text-muted-foreground">
                   Show availability badge on landing page
                 </p>
               </div>
@@ -352,19 +350,17 @@ function AdminIndexComponent() {
             </div>
 
             {/* Logo Upload */}
-            <div className="space-y-3 rounded-xl border border-border bg-background/50 p-4 md:col-span-2">
+            <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4 md:col-span-2">
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-0.5">
-                  <Label className="text-sm font-bold tracking-tight">
-                    Brand Logo
-                  </Label>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                  <Label variant="admin">Brand Logo</Label>
+                  <p className="text-xs text-muted-foreground">
                     Upload a logo to replace the "Fouzia Tamanna" text in the
                     navbar. Leave empty to keep the text.
                   </p>
                 </div>
                 {r2Ok === false && (
-                  <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[9px] font-bold tracking-widest text-amber-600 uppercase">
+                  <span className="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-600">
                     R2 Not Configured
                   </span>
                 )}
@@ -381,7 +377,7 @@ function AdminIndexComponent() {
                   ) : (
                     <div className="flex flex-col items-center gap-1 text-muted-foreground/50">
                       <RiImageLine size={20} />
-                      <span className="text-[9px] font-bold tracking-widest uppercase">
+                      <span className="text-xs text-muted-foreground">
                         No logo
                       </span>
                     </div>
@@ -427,7 +423,7 @@ function AdminIndexComponent() {
                       Remove Logo (use text instead)
                     </Button>
                   )}
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     PNG, JPG, SVG, or WEBP. Recommended height 32–48px,
                     transparent background.
                   </p>
@@ -435,8 +431,9 @@ function AdminIndexComponent() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Intro Badge Text</Label>
+              <Label variant="admin">Intro Badge Text</Label>
               <Input
+                variant="admin"
                 value={hero.introBadge}
                 onChange={(e) =>
                   setHero({ ...hero, introBadge: e.target.value })
@@ -445,16 +442,20 @@ function AdminIndexComponent() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Subtitle (shown under name)</Label>
+              <Label variant="admin">Subtitle (shown under name)</Label>
               <Input
+                variant="admin"
                 value={hero.subtitle ?? ""}
                 onChange={(e) => setHero({ ...hero, subtitle: e.target.value })}
                 placeholder="MSc Computer Networks & Systems Security"
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label>Resume URL (Google Drive/Dropbox/Direct Link)</Label>
+              <Label variant="admin">
+                Resume URL (Google Drive/Dropbox/Direct Link)
+              </Label>
               <Input
+                variant="admin"
                 value={hero.resumeUrl}
                 onChange={(e) =>
                   setHero({ ...hero, resumeUrl: e.target.value })
@@ -463,16 +464,20 @@ function AdminIndexComponent() {
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label>Main Title (your name as it appears in the brand)</Label>
+              <Label variant="admin">
+                Main Title (your name as it appears in the brand)
+              </Label>
               <Input
+                variant="admin"
                 value={hero.title}
                 onChange={(e) => setHero({ ...hero, title: e.target.value })}
                 placeholder="Fouzia Tamanna"
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label>Description</Label>
+              <Label variant="admin">Description</Label>
               <Textarea
+                variant="admin"
                 value={hero.description}
                 onChange={(e) =>
                   setHero({ ...hero, description: e.target.value })
@@ -480,15 +485,17 @@ function AdminIndexComponent() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Location</Label>
+              <Label variant="admin">Location</Label>
               <Input
+                variant="admin"
                 value={hero.location}
                 onChange={(e) => setHero({ ...hero, location: e.target.value })}
               />
             </div>
             <div className="space-y-2">
-              <Label>Sponsorship Info</Label>
+              <Label variant="admin">Sponsorship Info</Label>
               <Input
+                variant="admin"
                 value={hero.sponsorshipInfo}
                 onChange={(e) =>
                   setHero({ ...hero, sponsorshipInfo: e.target.value })
@@ -503,73 +510,73 @@ function AdminIndexComponent() {
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold">Footer & Socials</h2>
-          <Button onClick={handleSaveFooter} className="gap-2">
+          <Button variant="admin" onClick={handleSaveFooter} className="gap-2">
             <RiSaveLine size={18} />
             Save Footer
           </Button>
         </div>
 
-        <Card className="space-y-6 border-border bg-card/30 p-6 backdrop-blur-sm">
+        <Card variant="admin" className="space-y-6 p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="space-y-2 md:col-span-2">
-              <Label>Footer Bio</Label>
+              <Label variant="admin">Footer Bio</Label>
               <Textarea
+                variant="admin"
                 value={footer.bio}
                 onChange={(e) => setFooter({ ...footer, bio: e.target.value })}
                 rows={3}
-                className="bg-background/50"
               />
             </div>
             <div className="space-y-2">
-              <Label>Public Email</Label>
+              <Label variant="admin">Public Email</Label>
               <Input
+                variant="admin"
                 type="email"
                 value={footer.email}
                 onChange={(e) =>
                   setFooter({ ...footer, email: e.target.value })
                 }
-                className="bg-background/50"
                 placeholder="hello@example.com"
               />
             </div>
             <div className="space-y-2">
-              <Label>Availability Status</Label>
+              <Label variant="admin">Availability Status</Label>
               <Input
+                variant="admin"
                 value={footer.availability}
                 onChange={(e) =>
                   setFooter({ ...footer, availability: e.target.value })
                 }
-                className="bg-background/50"
               />
             </div>
             <div className="space-y-2">
-              <Label>LinkedIn URL</Label>
+              <Label variant="admin">LinkedIn URL</Label>
               <Input
+                variant="admin"
                 value={footer.linkedin}
                 onChange={(e) =>
                   setFooter({ ...footer, linkedin: e.target.value })
                 }
-                className="bg-background/50"
               />
             </div>
             <div className="space-y-2">
-              <Label>GitHub URL</Label>
+              <Label variant="admin">GitHub URL</Label>
               <Input
+                variant="admin"
                 value={footer.github}
                 onChange={(e) =>
                   setFooter({ ...footer, github: e.target.value })
                 }
-                className="bg-background/50"
               />
             </div>
             <div className="space-y-2">
-              <Label>Twitter URL</Label>
+              <Label variant="admin">Twitter URL</Label>
               <Input
+                variant="admin"
                 value={footer.twitter}
                 onChange={(e) =>
                   setFooter({ ...footer, twitter: e.target.value })
                 }
-                className="bg-background/50"
               />
             </div>
           </div>
@@ -580,7 +587,7 @@ function AdminIndexComponent() {
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold">Stats</h2>
-          <Button variant="outline" onClick={handleAddStat} className="gap-2">
+          <Button variant="admin" onClick={handleAddStat} className="gap-2">
             <RiAddLine size={18} />
             Add Stat
           </Button>
@@ -589,13 +596,17 @@ function AdminIndexComponent() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {stats.length > 0 ? (
             stats.map((stat, i) => (
-              <Card key={i} className="space-y-4 border-border bg-card/30 p-4">
+              <Card key={i} variant="admin" className="space-y-4 p-4">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <Label className="text-[10px] font-bold text-muted-foreground uppercase">
+                    <Label
+                      variant="admin"
+                      className="text-xs text-muted-foreground"
+                    >
                       Value
                     </Label>
                     <Input
+                      variant="admin"
                       value={stat.value}
                       onChange={(e) => {
                         const newStats = [...stats]
@@ -605,10 +616,14 @@ function AdminIndexComponent() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-[10px] font-bold text-muted-foreground uppercase">
+                    <Label
+                      variant="admin"
+                      className="text-xs text-muted-foreground"
+                    >
                       Label
                     </Label>
                     <Input
+                      variant="admin"
                       value={stat.label}
                       onChange={(e) => {
                         const newStats = [...stats]
@@ -620,10 +635,14 @@ function AdminIndexComponent() {
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-2">
                   <div className="flex items-center gap-2">
-                    <Label className="text-[10px] font-bold text-muted-foreground uppercase">
+                    <Label
+                      variant="admin"
+                      className="text-xs text-muted-foreground"
+                    >
                       Order
                     </Label>
                     <Input
+                      variant="admin"
                       type="number"
                       className="h-8 w-16 text-xs"
                       value={stat.order}
@@ -644,8 +663,8 @@ function AdminIndexComponent() {
                       <RiDeleteBinLine size={16} />
                     </Button>
                     <Button
+                      variant="admin"
                       size="sm"
-                      variant="secondary"
                       onClick={() => handleSaveStat(stat)}
                       className="h-8 px-4"
                     >

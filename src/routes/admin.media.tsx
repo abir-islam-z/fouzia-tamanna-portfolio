@@ -29,7 +29,7 @@ import {
   RiFolderLine,
   RiImageLine,
   RiLoader4Line,
-  RiUploadCloud2Line
+  RiUploadCloud2Line,
 } from "@remixicon/react"
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -80,9 +80,14 @@ function pickIcon(mime: string) {
   if (mime.startsWith("video/")) return RiFileVideoLine
   if (mime.startsWith("audio/")) return RiFileMusicLine
   if (mime === "application/pdf") return RiFilePdfLine
-  if (mime.includes("json") || mime.includes("javascript") || mime.includes("xml"))
+  if (
+    mime.includes("json") ||
+    mime.includes("javascript") ||
+    mime.includes("xml")
+  )
     return RiFileCodeLine
-  if (mime.includes("zip") || mime.includes("compressed")) return RiFileChartLine
+  if (mime.includes("zip") || mime.includes("compressed"))
+    return RiFileChartLine
   return RiFile3Line
 }
 
@@ -179,7 +184,12 @@ function AdminMediaComponent() {
   const filtered = useMemo(() => {
     return items.filter((i) => {
       if (folder !== "all" && i.folder !== folder) return false
-      if (search && !`${i.originalName} ${i.alt ?? ""}`.toLowerCase().includes(search.toLowerCase()))
+      if (
+        search &&
+        !`${i.originalName} ${i.alt ?? ""}`
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      )
         return false
       return true
     })
@@ -191,7 +201,9 @@ function AdminMediaComponent() {
   )
 
   async function refresh(folderName?: string) {
-    const list = await getMedia({ data: folderName ? { folder: folderName } : undefined })
+    const list = await getMedia({
+      data: folderName ? { folder: folderName } : undefined,
+    })
     setItems(list as Array<MediaItem>)
   }
 
@@ -199,7 +211,9 @@ function AdminMediaComponent() {
     const files = Array.from(fileList)
     if (files.length === 0) return
     if (r2Ok === false) {
-      toast.error("R2 is not configured. Set the required environment variables.")
+      toast.error(
+        "R2 is not configured. Set the required environment variables."
+      )
       return
     }
 
@@ -236,7 +250,9 @@ function AdminMediaComponent() {
           throw new Error(`Unsupported file type: ${file.type || "unknown"}`)
         }
         if (file.size > MAX_BYTES) {
-          throw new Error(`File too large (${formatBytes(file.size)}). Max 25 MB.`)
+          throw new Error(
+            `File too large (${formatBytes(file.size)}). Max 25 MB.`
+          )
         }
 
         // 1) Ask server for a presigned URL
@@ -312,7 +328,8 @@ function AdminMediaComponent() {
   }
 
   async function handleDelete(item: MediaItem) {
-    if (!confirm(`Delete "${item.originalName}"? This cannot be undone.`)) return
+    if (!confirm(`Delete "${item.originalName}"? This cannot be undone.`))
+      return
     try {
       await deleteMedia({ data: item.id })
       setItems((prev) => prev.filter((i) => i.id !== item.id))
@@ -364,26 +381,24 @@ function AdminMediaComponent() {
     <div className="space-y-8">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="mb-2 text-3xl font-bold tracking-tight">Media Library</h1>
+          <h1 className="mb-2 text-3xl font-bold tracking-tight">
+            Media Library
+          </h1>
           <p className="text-muted-foreground">
             Upload, organize, and manage all your media assets.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="secondary" className="gap-1.5">
+          <Badge variant="admin" className="gap-1.5">
             <RiFile3Line size={14} />
             {items.length} files
           </Badge>
-          <Badge variant="secondary" className="gap-1.5">
+          <Badge variant="admin" className="gap-1.5">
             <RiImageLine size={14} />
             {formatBytes(totalSize)}
           </Badge>
         </div>
       </header>
-
-      
-
-     
 
       {/* Upload area */}
       <div
@@ -393,10 +408,10 @@ function AdminMediaComponent() {
         }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={onDrop}
-        className={`relative rounded-2xl border-2 border-dashed p-10 text-center transition-all ${
+        className={`relative rounded-xl border-2 border-dashed p-10 text-center transition-all ${
           isDragging
             ? "border-primary bg-primary/5"
-            : "border-border bg-card/30 hover:border-primary/50"
+            : "border-border bg-muted/20 hover:border-primary/50"
         }`}
       >
         <input
@@ -416,7 +431,7 @@ function AdminMediaComponent() {
               Images, video, audio, PDFs, docs, and archives. Up to 25 MB each.
             </p>
           </div>
-          <Button onClick={onPickFiles} className="mt-2 gap-2">
+          <Button variant="admin" onClick={onPickFiles} className="mt-2 gap-2">
             <RiAddLine size={18} />
             Choose Files
           </Button>
@@ -425,11 +440,12 @@ function AdminMediaComponent() {
 
       {/* Active uploads */}
       {uploading.length > 0 && (
-        <Card className="border-border bg-card/30 p-4">
+        <Card variant="admin" className="p-4">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-sm font-semibold">Uploading</h3>
             <span className="text-xs text-muted-foreground">
-              {uploading.filter((u) => u.status === "done").length} / {uploading.length}
+              {uploading.filter((u) => u.status === "done").length} /{" "}
+              {uploading.length}
             </span>
           </div>
           <div className="space-y-2">
@@ -458,7 +474,9 @@ function AdminMediaComponent() {
                           ? "bg-emerald-500"
                           : "bg-primary"
                     }`}
-                    style={{ width: `${u.status === "done" ? 100 : u.progress}%` }}
+                    style={{
+                      width: `${u.status === "done" ? 100 : u.progress}%`,
+                    }}
                   />
                 </div>
               </div>
@@ -474,7 +492,7 @@ function AdminMediaComponent() {
             <Button
               key={f}
               size="sm"
-              variant={folder === f ? "default" : "outline"}
+              variant={folder === f ? "admin" : "outline"}
               onClick={() => setFolder(f)}
               className="gap-1.5 capitalize"
             >
@@ -485,6 +503,7 @@ function AdminMediaComponent() {
         </div>
         <div className="ml-auto w-full sm:w-64">
           <Input
+            variant="admin"
             placeholder="Search by name or alt text…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -495,12 +514,20 @@ function AdminMediaComponent() {
       {/* Grid */}
       {loading ? (
         <div className="flex h-40 items-center justify-center">
-          <RiLoader4Line size={28} className="animate-spin text-muted-foreground" />
+          <RiLoader4Line
+            size={28}
+            className="animate-spin text-muted-foreground"
+          />
         </div>
       ) : filtered.length === 0 ? (
         <div className="rounded-2xl border-2 border-dashed border-border py-16 text-center">
-          <RiImageLine size={48} className="mx-auto mb-4 text-muted-foreground opacity-20" />
-          <p className="text-muted-foreground">No media found. Upload your first file above.</p>
+          <RiImageLine
+            size={48}
+            className="mx-auto mb-4 text-muted-foreground opacity-20"
+          />
+          <p className="text-muted-foreground">
+            No media found. Upload your first file above.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -510,7 +537,8 @@ function AdminMediaComponent() {
             return (
               <Card
                 key={item.id}
-                className="group overflow-hidden border-border bg-card/30 transition-all hover:border-primary/40"
+                variant="admin"
+                className="group overflow-hidden transition-all hover:border-primary/40"
               >
                 <div className="relative aspect-video w-full overflow-hidden bg-secondary">
                   {isImage ? (
@@ -523,7 +551,7 @@ function AdminMediaComponent() {
                   ) : (
                     <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
                       <Icon size={48} />
-                      <span className="text-[10px] font-bold uppercase tracking-widest">
+                      <span className="text-xs font-medium text-muted-foreground">
                         {item.mimeType.split("/")[1]?.slice(0, 8) ?? "file"}
                       </span>
                     </div>
@@ -556,14 +584,19 @@ function AdminMediaComponent() {
                   </div>
                 </div>
                 <div className="space-y-1.5 p-3">
-                  <p className="truncate text-sm font-semibold" title={item.originalName}>
+                  <p
+                    className="truncate text-sm font-semibold"
+                    title={item.originalName}
+                  >
                     {item.originalName}
                   </p>
                   <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                    <span className="font-medium">{formatBytes(item.size)}</span>
+                    <span className="font-medium">
+                      {formatBytes(item.size)}
+                    </span>
                     <span className="capitalize">{item.folder}</span>
                   </div>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {new Date(item.createdAt).toLocaleString()}
                     {item.uploadedBy ? ` · @${item.uploadedBy.username}` : ""}
                   </p>
@@ -581,7 +614,8 @@ function AdminMediaComponent() {
           onClick={() => setEditingId(null)}
         >
           <Card
-            className="w-full max-w-md space-y-5 border-border bg-card p-6"
+            variant="admin"
+            className="w-full max-w-md space-y-5 p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
@@ -595,8 +629,9 @@ function AdminMediaComponent() {
               </Button>
             </div>
             <div className="space-y-2">
-              <Label>Folder</Label>
+              <Label variant="admin">Folder</Label>
               <Input
+                variant="admin"
                 value={editForm.folder}
                 onChange={(e) =>
                   setEditForm((f) => ({ ...f, folder: e.target.value }))
@@ -605,8 +640,9 @@ function AdminMediaComponent() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Alt text</Label>
+              <Label variant="admin">Alt text</Label>
               <Input
+                variant="admin"
                 value={editForm.alt}
                 onChange={(e) =>
                   setEditForm((f) => ({ ...f, alt: e.target.value }))
@@ -618,7 +654,9 @@ function AdminMediaComponent() {
               <Button variant="ghost" onClick={() => setEditingId(null)}>
                 Cancel
               </Button>
-              <Button onClick={saveEdit}>Save changes</Button>
+              <Button variant="admin" onClick={saveEdit}>
+                Save changes
+              </Button>
             </div>
           </Card>
         </div>

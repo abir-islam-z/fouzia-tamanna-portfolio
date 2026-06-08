@@ -1,5 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { deleteProject, getProjects, updateProject } from "@/lib/cms"
 import {
   RiAddLine,
   RiDeleteBinLine,
@@ -7,13 +11,9 @@ import {
   RiStarFill,
   RiStarLine,
 } from "@remixicon/react"
+import { createFileRoute } from "@tanstack/react-router"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { deleteProject, getProjects, updateProject } from "@/lib/cms"
 
 interface ProjectItem {
   id?: number
@@ -83,7 +83,15 @@ function AdminProjectsComponent() {
     ])
   }
 
-  if (loading) return <div>Loading...</div>
+  if (loading)
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Loading projects…</p>
+        </div>
+      </div>
+    )
 
   return (
     <div className="space-y-8">
@@ -94,7 +102,7 @@ function AdminProjectsComponent() {
             Manage your portfolio showcase.
           </p>
         </div>
-        <Button onClick={handleAdd} className="gap-2">
+        <Button variant="admin" onClick={handleAdd} className="gap-2">
           <RiAddLine size={20} />
           Add Project
         </Button>
@@ -103,11 +111,11 @@ function AdminProjectsComponent() {
       <div className="grid grid-cols-1 gap-6">
         {projects.length > 0 ? (
           projects.map((item, i) => (
-            <Card key={i} className="border-border bg-card/30 p-6">
+            <Card key={i} variant="admin" className="p-6">
               <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                 {/* Preview & Basic Info */}
                 <div className="space-y-4">
-                  <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-border bg-secondary">
+                  <div className="flex aspect-video items-center justify-center overflow-hidden rounded-lg border border-border bg-secondary">
                     {item.image ? (
                       <img
                         src={item.image}
@@ -121,8 +129,9 @@ function AdminProjectsComponent() {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label>Image URL</Label>
+                    <Label variant="admin">Image URL</Label>
                     <Input
+                      variant="admin"
                       value={item.image}
                       onChange={(e) => {
                         const next = [...projects]
@@ -132,8 +141,9 @@ function AdminProjectsComponent() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Order (Lower = First)</Label>
+                    <Label variant="admin">Order (Lower = First)</Label>
                     <Input
+                      variant="admin"
                       type="number"
                       value={item.order}
                       onChange={(e) => {
@@ -149,8 +159,9 @@ function AdminProjectsComponent() {
                 <div className="space-y-4 md:col-span-2">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 space-y-2">
-                      <Label>Project Title</Label>
+                      <Label variant="admin">Project Title</Label>
                       <Input
+                        variant="admin"
                         value={item.title}
                         onChange={(e) => {
                           const next = [...projects]
@@ -182,8 +193,9 @@ function AdminProjectsComponent() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Tags (Comma separated)</Label>
+                    <Label variant="admin">Tags (Comma separated)</Label>
                     <Input
+                      variant="admin"
                       value={item.tags}
                       onChange={(e) => {
                         const next = [...projects]
@@ -194,8 +206,9 @@ function AdminProjectsComponent() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Description</Label>
+                    <Label variant="admin">Description</Label>
                     <Textarea
+                      variant="admin"
                       rows={4}
                       value={item.description}
                       onChange={(e) => {
@@ -208,8 +221,9 @@ function AdminProjectsComponent() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Live Link (Optional)</Label>
+                      <Label variant="admin">Live Link (Optional)</Label>
                       <Input
+                        variant="admin"
                         value={item.link || ""}
                         onChange={(e) => {
                           const next = [...projects]
@@ -219,8 +233,9 @@ function AdminProjectsComponent() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>GitHub Link (Optional)</Label>
+                      <Label variant="admin">GitHub Link (Optional)</Label>
                       <Input
+                        variant="admin"
                         value={item.github || ""}
                         onChange={(e) => {
                           const next = [...projects]
@@ -242,7 +257,11 @@ function AdminProjectsComponent() {
                   <RiDeleteBinLine size={20} className="mr-2" />
                   Delete Project
                 </Button>
-                <Button onClick={() => handleSave(item)} className="gap-2 px-8">
+                <Button
+                  variant="admin"
+                  onClick={() => handleSave(item)}
+                  className="gap-2 px-8"
+                >
                   <RiSaveLine size={20} />
                   Save Project
                 </Button>
