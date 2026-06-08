@@ -27,24 +27,20 @@ export type AggregateProject = {
 }
 
 export type ProjectAvgAggregateOutputType = {
-  id: number | null
-  coverMediaId: number | null
   order: number | null
 }
 
 export type ProjectSumAggregateOutputType = {
-  id: number | null
-  coverMediaId: number | null
   order: number | null
 }
 
 export type ProjectMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   slug: string | null
   title: string | null
   summary: string | null
   caseStudy: string | null
-  coverMediaId: number | null
+  coverMediaId: string | null
   tags: string | null
   isFeatured: boolean | null
   link: string | null
@@ -54,12 +50,12 @@ export type ProjectMinAggregateOutputType = {
 }
 
 export type ProjectMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   slug: string | null
   title: string | null
   summary: string | null
   caseStudy: string | null
-  coverMediaId: number | null
+  coverMediaId: string | null
   tags: string | null
   isFeatured: boolean | null
   link: string | null
@@ -86,14 +82,10 @@ export type ProjectCountAggregateOutputType = {
 
 
 export type ProjectAvgAggregateInputType = {
-  id?: true
-  coverMediaId?: true
   order?: true
 }
 
 export type ProjectSumAggregateInputType = {
-  id?: true
-  coverMediaId?: true
   order?: true
 }
 
@@ -230,12 +222,12 @@ export type ProjectGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 export type ProjectGroupByOutputType = {
-  id: number
+  id: string
   slug: string
   title: string
   summary: string
   caseStudy: string
-  coverMediaId: number | null
+  coverMediaId: string | null
   tags: string
   isFeatured: boolean
   link: string | null
@@ -268,12 +260,12 @@ export type ProjectWhereInput = {
   AND?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   OR?: Prisma.ProjectWhereInput[]
   NOT?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
-  id?: Prisma.IntFilter<"Project"> | number
+  id?: Prisma.StringFilter<"Project"> | string
   slug?: Prisma.StringFilter<"Project"> | string
   title?: Prisma.StringFilter<"Project"> | string
   summary?: Prisma.StringFilter<"Project"> | string
   caseStudy?: Prisma.StringFilter<"Project"> | string
-  coverMediaId?: Prisma.IntNullableFilter<"Project"> | number | null
+  coverMediaId?: Prisma.StringNullableFilter<"Project"> | string | null
   tags?: Prisma.StringFilter<"Project"> | string
   isFeatured?: Prisma.BoolFilter<"Project"> | boolean
   link?: Prisma.StringNullableFilter<"Project"> | string | null
@@ -302,7 +294,7 @@ export type ProjectOrderByWithRelationInput = {
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   slug?: string
   AND?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   OR?: Prisma.ProjectWhereInput[]
@@ -310,7 +302,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Project"> | string
   summary?: Prisma.StringFilter<"Project"> | string
   caseStudy?: Prisma.StringFilter<"Project"> | string
-  coverMediaId?: Prisma.IntNullableFilter<"Project"> | number | null
+  coverMediaId?: Prisma.StringNullableFilter<"Project"> | string | null
   tags?: Prisma.StringFilter<"Project"> | string
   isFeatured?: Prisma.BoolFilter<"Project"> | boolean
   link?: Prisma.StringNullableFilter<"Project"> | string | null
@@ -345,12 +337,12 @@ export type ProjectScalarWhereWithAggregatesInput = {
   AND?: Prisma.ProjectScalarWhereWithAggregatesInput | Prisma.ProjectScalarWhereWithAggregatesInput[]
   OR?: Prisma.ProjectScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProjectScalarWhereWithAggregatesInput | Prisma.ProjectScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Project"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Project"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Project"> | string
   title?: Prisma.StringWithAggregatesFilter<"Project"> | string
   summary?: Prisma.StringWithAggregatesFilter<"Project"> | string
   caseStudy?: Prisma.StringWithAggregatesFilter<"Project"> | string
-  coverMediaId?: Prisma.IntNullableWithAggregatesFilter<"Project"> | number | null
+  coverMediaId?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   tags?: Prisma.StringWithAggregatesFilter<"Project"> | string
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean
   link?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
@@ -360,6 +352,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
 }
 
 export type ProjectCreateInput = {
+  id?: string
   slug: string
   title: string
   summary: string
@@ -375,12 +368,12 @@ export type ProjectCreateInput = {
 }
 
 export type ProjectUncheckedCreateInput = {
-  id?: number
+  id?: string
   slug: string
   title: string
   summary: string
   caseStudy?: string
-  coverMediaId?: number | null
+  coverMediaId?: string | null
   tags: string
   isFeatured?: boolean
   link?: string | null
@@ -391,6 +384,7 @@ export type ProjectUncheckedCreateInput = {
 }
 
 export type ProjectUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
@@ -406,12 +400,12 @@ export type ProjectUpdateInput = {
 }
 
 export type ProjectUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   caseStudy?: Prisma.StringFieldUpdateOperationsInput | string
-  coverMediaId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -422,12 +416,12 @@ export type ProjectUncheckedUpdateInput = {
 }
 
 export type ProjectCreateManyInput = {
-  id?: number
+  id?: string
   slug: string
   title: string
   summary: string
   caseStudy?: string
-  coverMediaId?: number | null
+  coverMediaId?: string | null
   tags: string
   isFeatured?: boolean
   link?: string | null
@@ -437,6 +431,7 @@ export type ProjectCreateManyInput = {
 }
 
 export type ProjectUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
@@ -450,12 +445,12 @@ export type ProjectUpdateManyMutationInput = {
 }
 
 export type ProjectUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   caseStudy?: Prisma.StringFieldUpdateOperationsInput | string
-  coverMediaId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -480,8 +475,6 @@ export type ProjectCountOrderByAggregateInput = {
 }
 
 export type ProjectAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  coverMediaId?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -516,8 +509,6 @@ export type ProjectMinOrderByAggregateInput = {
 }
 
 export type ProjectSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  coverMediaId?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -534,14 +525,6 @@ export type ProjectListRelationFilter = {
 
 export type ProjectOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
-}
-
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type ProjectCreateNestedOneWithoutGalleryInput = {
@@ -601,6 +584,7 @@ export type ProjectUncheckedUpdateManyWithoutCoverNestedInput = {
 }
 
 export type ProjectCreateWithoutGalleryInput = {
+  id?: string
   slug: string
   title: string
   summary: string
@@ -615,12 +599,12 @@ export type ProjectCreateWithoutGalleryInput = {
 }
 
 export type ProjectUncheckedCreateWithoutGalleryInput = {
-  id?: number
+  id?: string
   slug: string
   title: string
   summary: string
   caseStudy?: string
-  coverMediaId?: number | null
+  coverMediaId?: string | null
   tags: string
   isFeatured?: boolean
   link?: string | null
@@ -646,6 +630,7 @@ export type ProjectUpdateToOneWithWhereWithoutGalleryInput = {
 }
 
 export type ProjectUpdateWithoutGalleryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
@@ -660,12 +645,12 @@ export type ProjectUpdateWithoutGalleryInput = {
 }
 
 export type ProjectUncheckedUpdateWithoutGalleryInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   caseStudy?: Prisma.StringFieldUpdateOperationsInput | string
-  coverMediaId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -675,6 +660,7 @@ export type ProjectUncheckedUpdateWithoutGalleryInput = {
 }
 
 export type ProjectCreateWithoutCoverInput = {
+  id?: string
   slug: string
   title: string
   summary: string
@@ -689,7 +675,7 @@ export type ProjectCreateWithoutCoverInput = {
 }
 
 export type ProjectUncheckedCreateWithoutCoverInput = {
-  id?: number
+  id?: string
   slug: string
   title: string
   summary: string
@@ -733,12 +719,12 @@ export type ProjectScalarWhereInput = {
   AND?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
   OR?: Prisma.ProjectScalarWhereInput[]
   NOT?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
-  id?: Prisma.IntFilter<"Project"> | number
+  id?: Prisma.StringFilter<"Project"> | string
   slug?: Prisma.StringFilter<"Project"> | string
   title?: Prisma.StringFilter<"Project"> | string
   summary?: Prisma.StringFilter<"Project"> | string
   caseStudy?: Prisma.StringFilter<"Project"> | string
-  coverMediaId?: Prisma.IntNullableFilter<"Project"> | number | null
+  coverMediaId?: Prisma.StringNullableFilter<"Project"> | string | null
   tags?: Prisma.StringFilter<"Project"> | string
   isFeatured?: Prisma.BoolFilter<"Project"> | boolean
   link?: Prisma.StringNullableFilter<"Project"> | string | null
@@ -748,7 +734,7 @@ export type ProjectScalarWhereInput = {
 }
 
 export type ProjectCreateManyCoverInput = {
-  id?: number
+  id?: string
   slug: string
   title: string
   summary: string
@@ -762,6 +748,7 @@ export type ProjectCreateManyCoverInput = {
 }
 
 export type ProjectUpdateWithoutCoverInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
@@ -776,7 +763,7 @@ export type ProjectUpdateWithoutCoverInput = {
 }
 
 export type ProjectUncheckedUpdateWithoutCoverInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
@@ -791,7 +778,7 @@ export type ProjectUncheckedUpdateWithoutCoverInput = {
 }
 
 export type ProjectUncheckedUpdateManyWithoutCoverInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
@@ -920,12 +907,12 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     gallery: Prisma.$ProjectGalleryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     slug: string
     title: string
     summary: string
     caseStudy: string
-    coverMediaId: number | null
+    coverMediaId: string | null
     tags: string
     isFeatured: boolean
     link: string | null
@@ -1357,12 +1344,12 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
  * Fields of the Project model
  */
 export interface ProjectFieldRefs {
-  readonly id: Prisma.FieldRef<"Project", 'Int'>
+  readonly id: Prisma.FieldRef<"Project", 'String'>
   readonly slug: Prisma.FieldRef<"Project", 'String'>
   readonly title: Prisma.FieldRef<"Project", 'String'>
   readonly summary: Prisma.FieldRef<"Project", 'String'>
   readonly caseStudy: Prisma.FieldRef<"Project", 'String'>
-  readonly coverMediaId: Prisma.FieldRef<"Project", 'Int'>
+  readonly coverMediaId: Prisma.FieldRef<"Project", 'String'>
   readonly tags: Prisma.FieldRef<"Project", 'String'>
   readonly isFeatured: Prisma.FieldRef<"Project", 'Boolean'>
   readonly link: Prisma.FieldRef<"Project", 'String'>

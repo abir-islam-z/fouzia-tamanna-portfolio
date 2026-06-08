@@ -13,14 +13,14 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 
 interface MediaItem {
-  id: number
+  id: string
   url: string
   originalName: string
   alt: string | null
 }
 
 interface ProjectDetail {
-  id: number
+  id: string
   slug: string
   title: string
   summary: string
@@ -31,8 +31,8 @@ interface ProjectDetail {
   github: string | null
   cover?: MediaItem | null
   gallery?: Array<{
-    id: number
-    mediaId: number
+    id: string
+    mediaId: string
     order: number
     media: MediaItem
   }>

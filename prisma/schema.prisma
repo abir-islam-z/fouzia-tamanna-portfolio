@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   username  String   @unique
   password  String
   createdAt DateTime @default(now())
@@ -31,7 +31,7 @@ model Hero {
 }
 
 model Stat {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   value     String
   label     String
   order     Int      @default(0)
@@ -39,7 +39,7 @@ model Stat {
 }
 
 model Experience {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   role        String
   company     String
   period      String
@@ -50,12 +50,12 @@ model Experience {
 }
 
 model Project {
-  id           Int              @id @default(autoincrement())
+  id           String           @id @default(uuid())
   slug         String           @unique
   title        String
   summary      String
   caseStudy    String           @default("")
-  coverMediaId Int?
+  coverMediaId String?
   cover        Media?           @relation("ProjectCover", fields: [coverMediaId], references: [id])
   tags         String
   isFeatured   Boolean          @default(false)
@@ -67,10 +67,10 @@ model Project {
 }
 
 model ProjectGallery {
-  id        Int     @id @default(autoincrement())
-  projectId Int
+  id        String  @id @default(uuid())
+  projectId String
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  mediaId   Int
+  mediaId   String
   media     Media   @relation(fields: [mediaId], references: [id])
   order     Int     @default(0)
 
@@ -78,7 +78,7 @@ model ProjectGallery {
 }
 
 model ContactMessage {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String
   message   String
@@ -86,7 +86,7 @@ model ContactMessage {
 }
 
 model Publication {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   title       String
   authors     String
   venue       String
@@ -101,7 +101,7 @@ model Publication {
 }
 
 model Testimonial {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   role      String
   content   String
@@ -111,7 +111,7 @@ model Testimonial {
 }
 
 model Certification {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   title     String
   issuer    String
   date      String
@@ -121,22 +121,22 @@ model Certification {
 }
 
 model Media {
-  id            Int              @id @default(autoincrement())
-  key           String           @unique
-  url           String
-  originalName  String
-  mimeType      String
-  size          Int
-  width         Int?
-  height        Int?
-  folder        String           @default("general")
-  alt           String?
-  uploadedById  Int?
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  uploadedBy    User?            @relation(fields: [uploadedById], references: [id])
-  projectsAsCover Project[]      @relation("ProjectCover")
-  galleryIn     ProjectGallery[]
+  id             String           @id @default(uuid())
+  key            String           @unique
+  url            String
+  originalName   String
+  mimeType       String
+  size           Int
+  width          Int?
+  height         Int?
+  folder         String           @default("general")
+  alt            String?
+  uploadedById   String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  uploadedBy     User?            @relation(fields: [uploadedById], references: [id])
+  projectsAsCover Project[]       @relation("ProjectCover")
+  galleryIn      ProjectGallery[]
 
   @@index([folder])
   @@index([createdAt])

@@ -27,17 +27,15 @@ export type AggregateStat = {
 }
 
 export type StatAvgAggregateOutputType = {
-  id: number | null
   order: number | null
 }
 
 export type StatSumAggregateOutputType = {
-  id: number | null
   order: number | null
 }
 
 export type StatMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   value: string | null
   label: string | null
   order: number | null
@@ -45,7 +43,7 @@ export type StatMinAggregateOutputType = {
 }
 
 export type StatMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   value: string | null
   label: string | null
   order: number | null
@@ -63,12 +61,10 @@ export type StatCountAggregateOutputType = {
 
 
 export type StatAvgAggregateInputType = {
-  id?: true
   order?: true
 }
 
 export type StatSumAggregateInputType = {
-  id?: true
   order?: true
 }
 
@@ -184,7 +180,7 @@ export type StatGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 }
 
 export type StatGroupByOutputType = {
-  id: number
+  id: string
   value: string
   label: string
   order: number
@@ -215,7 +211,7 @@ export type StatWhereInput = {
   AND?: Prisma.StatWhereInput | Prisma.StatWhereInput[]
   OR?: Prisma.StatWhereInput[]
   NOT?: Prisma.StatWhereInput | Prisma.StatWhereInput[]
-  id?: Prisma.IntFilter<"Stat"> | number
+  id?: Prisma.StringFilter<"Stat"> | string
   value?: Prisma.StringFilter<"Stat"> | string
   label?: Prisma.StringFilter<"Stat"> | string
   order?: Prisma.IntFilter<"Stat"> | number
@@ -231,7 +227,7 @@ export type StatOrderByWithRelationInput = {
 }
 
 export type StatWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.StatWhereInput | Prisma.StatWhereInput[]
   OR?: Prisma.StatWhereInput[]
   NOT?: Prisma.StatWhereInput | Prisma.StatWhereInput[]
@@ -258,7 +254,7 @@ export type StatScalarWhereWithAggregatesInput = {
   AND?: Prisma.StatScalarWhereWithAggregatesInput | Prisma.StatScalarWhereWithAggregatesInput[]
   OR?: Prisma.StatScalarWhereWithAggregatesInput[]
   NOT?: Prisma.StatScalarWhereWithAggregatesInput | Prisma.StatScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Stat"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Stat"> | string
   value?: Prisma.StringWithAggregatesFilter<"Stat"> | string
   label?: Prisma.StringWithAggregatesFilter<"Stat"> | string
   order?: Prisma.IntWithAggregatesFilter<"Stat"> | number
@@ -266,6 +262,7 @@ export type StatScalarWhereWithAggregatesInput = {
 }
 
 export type StatCreateInput = {
+  id?: string
   value: string
   label: string
   order?: number
@@ -273,7 +270,7 @@ export type StatCreateInput = {
 }
 
 export type StatUncheckedCreateInput = {
-  id?: number
+  id?: string
   value: string
   label: string
   order?: number
@@ -281,6 +278,7 @@ export type StatUncheckedCreateInput = {
 }
 
 export type StatUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -288,7 +286,7 @@ export type StatUpdateInput = {
 }
 
 export type StatUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -296,7 +294,7 @@ export type StatUncheckedUpdateInput = {
 }
 
 export type StatCreateManyInput = {
-  id?: number
+  id?: string
   value: string
   label: string
   order?: number
@@ -304,6 +302,7 @@ export type StatCreateManyInput = {
 }
 
 export type StatUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -311,7 +310,7 @@ export type StatUpdateManyMutationInput = {
 }
 
 export type StatUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -327,7 +326,6 @@ export type StatCountOrderByAggregateInput = {
 }
 
 export type StatAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -348,8 +346,15 @@ export type StatMinOrderByAggregateInput = {
 }
 
 export type StatSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   order?: Prisma.SortOrder
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 
@@ -392,7 +397,7 @@ export type $StatPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "Stat"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     value: string
     label: string
     order: number
@@ -820,7 +825,7 @@ export interface Prisma__StatClient<T, Null = never, ExtArgs extends runtime.Typ
  * Fields of the Stat model
  */
 export interface StatFieldRefs {
-  readonly id: Prisma.FieldRef<"Stat", 'Int'>
+  readonly id: Prisma.FieldRef<"Stat", 'String'>
   readonly value: Prisma.FieldRef<"Stat", 'String'>
   readonly label: Prisma.FieldRef<"Stat", 'String'>
   readonly order: Prisma.FieldRef<"Stat", 'Int'>

@@ -9,7 +9,7 @@ import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router"
 import { toast } from "sonner"
 
 interface ProjectListItem {
-  id?: number
+  id?: string
   slug: string
   title: string
   summary: string
@@ -118,7 +118,7 @@ function AdminProjectsComponent() {
         items={projects}
         columns={columns}
         editHref={(item) =>
-          `/admin/projects/${item.id}` as `/admin/projects/${number}`
+          `/admin/projects/${item.id}` as `/admin/projects/${string}`
         }
         onDelete={handleDelete}
         emptyMessage="No projects yet. Add your first one to feature on the landing page."

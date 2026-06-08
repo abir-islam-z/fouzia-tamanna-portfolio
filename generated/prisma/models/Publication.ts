@@ -27,17 +27,15 @@ export type AggregatePublication = {
 }
 
 export type PublicationAvgAggregateOutputType = {
-  id: number | null
   order: number | null
 }
 
 export type PublicationSumAggregateOutputType = {
-  id: number | null
   order: number | null
 }
 
 export type PublicationMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   title: string | null
   authors: string | null
   venue: string | null
@@ -52,7 +50,7 @@ export type PublicationMinAggregateOutputType = {
 }
 
 export type PublicationMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   title: string | null
   authors: string | null
   venue: string | null
@@ -84,12 +82,10 @@ export type PublicationCountAggregateOutputType = {
 
 
 export type PublicationAvgAggregateInputType = {
-  id?: true
   order?: true
 }
 
 export type PublicationSumAggregateInputType = {
-  id?: true
   order?: true
 }
 
@@ -226,7 +222,7 @@ export type PublicationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 export type PublicationGroupByOutputType = {
-  id: number
+  id: string
   title: string
   authors: string
   venue: string
@@ -264,7 +260,7 @@ export type PublicationWhereInput = {
   AND?: Prisma.PublicationWhereInput | Prisma.PublicationWhereInput[]
   OR?: Prisma.PublicationWhereInput[]
   NOT?: Prisma.PublicationWhereInput | Prisma.PublicationWhereInput[]
-  id?: Prisma.IntFilter<"Publication"> | number
+  id?: Prisma.StringFilter<"Publication"> | string
   title?: Prisma.StringFilter<"Publication"> | string
   authors?: Prisma.StringFilter<"Publication"> | string
   venue?: Prisma.StringFilter<"Publication"> | string
@@ -294,7 +290,7 @@ export type PublicationOrderByWithRelationInput = {
 }
 
 export type PublicationWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.PublicationWhereInput | Prisma.PublicationWhereInput[]
   OR?: Prisma.PublicationWhereInput[]
   NOT?: Prisma.PublicationWhereInput | Prisma.PublicationWhereInput[]
@@ -335,7 +331,7 @@ export type PublicationScalarWhereWithAggregatesInput = {
   AND?: Prisma.PublicationScalarWhereWithAggregatesInput | Prisma.PublicationScalarWhereWithAggregatesInput[]
   OR?: Prisma.PublicationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PublicationScalarWhereWithAggregatesInput | Prisma.PublicationScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Publication"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Publication"> | string
   title?: Prisma.StringWithAggregatesFilter<"Publication"> | string
   authors?: Prisma.StringWithAggregatesFilter<"Publication"> | string
   venue?: Prisma.StringWithAggregatesFilter<"Publication"> | string
@@ -350,6 +346,7 @@ export type PublicationScalarWhereWithAggregatesInput = {
 }
 
 export type PublicationCreateInput = {
+  id?: string
   title: string
   authors: string
   venue: string
@@ -364,7 +361,7 @@ export type PublicationCreateInput = {
 }
 
 export type PublicationUncheckedCreateInput = {
-  id?: number
+  id?: string
   title: string
   authors: string
   venue: string
@@ -379,6 +376,7 @@ export type PublicationUncheckedCreateInput = {
 }
 
 export type PublicationUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
   venue?: Prisma.StringFieldUpdateOperationsInput | string
@@ -393,7 +391,7 @@ export type PublicationUpdateInput = {
 }
 
 export type PublicationUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
   venue?: Prisma.StringFieldUpdateOperationsInput | string
@@ -408,7 +406,7 @@ export type PublicationUncheckedUpdateInput = {
 }
 
 export type PublicationCreateManyInput = {
-  id?: number
+  id?: string
   title: string
   authors: string
   venue: string
@@ -423,6 +421,7 @@ export type PublicationCreateManyInput = {
 }
 
 export type PublicationUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
   venue?: Prisma.StringFieldUpdateOperationsInput | string
@@ -437,7 +436,7 @@ export type PublicationUpdateManyMutationInput = {
 }
 
 export type PublicationUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
   venue?: Prisma.StringFieldUpdateOperationsInput | string
@@ -467,7 +466,6 @@ export type PublicationCountOrderByAggregateInput = {
 }
 
 export type PublicationAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -502,7 +500,6 @@ export type PublicationMinOrderByAggregateInput = {
 }
 
 export type PublicationSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -574,7 +571,7 @@ export type $PublicationPayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "Publication"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     title: string
     authors: string
     venue: string
@@ -1009,7 +1006,7 @@ export interface Prisma__PublicationClient<T, Null = never, ExtArgs extends runt
  * Fields of the Publication model
  */
 export interface PublicationFieldRefs {
-  readonly id: Prisma.FieldRef<"Publication", 'Int'>
+  readonly id: Prisma.FieldRef<"Publication", 'String'>
   readonly title: Prisma.FieldRef<"Publication", 'String'>
   readonly authors: Prisma.FieldRef<"Publication", 'String'>
   readonly venue: Prisma.FieldRef<"Publication", 'String'>

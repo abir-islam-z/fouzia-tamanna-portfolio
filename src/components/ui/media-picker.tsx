@@ -15,7 +15,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 
 export interface MediaItem {
-  id: number
+  id: string
   key: string
   url: string
   originalName: string

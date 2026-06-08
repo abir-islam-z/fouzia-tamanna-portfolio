@@ -13,7 +13,7 @@ import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router"
 import { toast } from "sonner"
 
 interface CertificationItem {
-  id?: number
+  id?: string
   title: string
   issuer: string
   date: string
@@ -105,7 +105,7 @@ function AdminCertificationsComponent() {
         items={certs}
         columns={columns}
         editHref={(item) =>
-          `/admin/certifications/${item.id}` as `/admin/certifications/${number}`
+          `/admin/certifications/${item.id}` as `/admin/certifications/${string}`
         }
         onDelete={handleDelete}
         emptyMessage="No certifications yet. Add your first credential."

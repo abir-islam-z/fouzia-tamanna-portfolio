@@ -14,7 +14,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { toast } from "sonner"
 
 interface StatItem {
-  id?: number
+  id?: string
   value: string
   label: string
   order: number
@@ -93,7 +93,7 @@ function AdminStatsComponent() {
         newLabel="Add Stat"
         items={stats}
         columns={columns}
-        editHref={() => "/admin" as `/admin/${number}`}
+        editHref={() => "/admin" as `/admin/${string}`}
         onDelete={handleDelete}
         emptyMessage="No stats yet."
         showOrder={true}

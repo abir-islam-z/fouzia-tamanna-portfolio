@@ -24,7 +24,7 @@ const TYPE_OPTIONS = [
 ] as const
 
 interface PublicationItem {
-  id: number
+  id: string
   title: string
   authors: string
   venue: string
@@ -40,10 +40,9 @@ interface PublicationItem {
 function AdminPublicationsEditComponent() {
   const { id } = Route.useParams()
   const router = useRouter()
-  const pubId = parseInt(id)
   const { data: rawPubs = [] } = useSuspenseQuery(publicationsQuery(true))
   const pubs = rawPubs as unknown as Array<PublicationItem>
-  const pub = pubs.find((p) => p.id === pubId)
+  const pub = pubs.find((p) => p.id === id)
   const updateMutation = useUpdatePublication()
   const [isSaving, setIsSaving] = useState(false)
 

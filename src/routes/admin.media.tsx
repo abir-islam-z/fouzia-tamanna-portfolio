@@ -36,7 +36,7 @@ import { useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 
 interface MediaItem {
-  id: number
+  id: string
   key: string
   url: string
   originalName: string
@@ -47,7 +47,7 @@ interface MediaItem {
   width: number | null
   height: number | null
   createdAt: string | Date
-  uploadedBy?: { id: number; username: string } | null
+  uploadedBy?: { id: string; username: string } | null
 }
 
 const MAX_BYTES = 25 * 1024 * 1024
@@ -113,7 +113,7 @@ function AdminMediaComponent() {
     }>
   >([])
   const [isDragging, setIsDragging] = useState(false)
-  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<{ alt: string; folder: string }>({
     alt: "",
     folder: "general",

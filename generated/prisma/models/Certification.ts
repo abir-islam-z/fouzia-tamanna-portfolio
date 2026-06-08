@@ -27,17 +27,15 @@ export type AggregateCertification = {
 }
 
 export type CertificationAvgAggregateOutputType = {
-  id: number | null
   order: number | null
 }
 
 export type CertificationSumAggregateOutputType = {
-  id: number | null
   order: number | null
 }
 
 export type CertificationMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   title: string | null
   issuer: string | null
   date: string | null
@@ -47,7 +45,7 @@ export type CertificationMinAggregateOutputType = {
 }
 
 export type CertificationMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   title: string | null
   issuer: string | null
   date: string | null
@@ -69,12 +67,10 @@ export type CertificationCountAggregateOutputType = {
 
 
 export type CertificationAvgAggregateInputType = {
-  id?: true
   order?: true
 }
 
 export type CertificationSumAggregateInputType = {
-  id?: true
   order?: true
 }
 
@@ -196,7 +192,7 @@ export type CertificationGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 export type CertificationGroupByOutputType = {
-  id: number
+  id: string
   title: string
   issuer: string
   date: string
@@ -229,7 +225,7 @@ export type CertificationWhereInput = {
   AND?: Prisma.CertificationWhereInput | Prisma.CertificationWhereInput[]
   OR?: Prisma.CertificationWhereInput[]
   NOT?: Prisma.CertificationWhereInput | Prisma.CertificationWhereInput[]
-  id?: Prisma.IntFilter<"Certification"> | number
+  id?: Prisma.StringFilter<"Certification"> | string
   title?: Prisma.StringFilter<"Certification"> | string
   issuer?: Prisma.StringFilter<"Certification"> | string
   date?: Prisma.StringFilter<"Certification"> | string
@@ -249,7 +245,7 @@ export type CertificationOrderByWithRelationInput = {
 }
 
 export type CertificationWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.CertificationWhereInput | Prisma.CertificationWhereInput[]
   OR?: Prisma.CertificationWhereInput[]
   NOT?: Prisma.CertificationWhereInput | Prisma.CertificationWhereInput[]
@@ -280,7 +276,7 @@ export type CertificationScalarWhereWithAggregatesInput = {
   AND?: Prisma.CertificationScalarWhereWithAggregatesInput | Prisma.CertificationScalarWhereWithAggregatesInput[]
   OR?: Prisma.CertificationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CertificationScalarWhereWithAggregatesInput | Prisma.CertificationScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Certification"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Certification"> | string
   title?: Prisma.StringWithAggregatesFilter<"Certification"> | string
   issuer?: Prisma.StringWithAggregatesFilter<"Certification"> | string
   date?: Prisma.StringWithAggregatesFilter<"Certification"> | string
@@ -290,6 +286,7 @@ export type CertificationScalarWhereWithAggregatesInput = {
 }
 
 export type CertificationCreateInput = {
+  id?: string
   title: string
   issuer: string
   date: string
@@ -299,7 +296,7 @@ export type CertificationCreateInput = {
 }
 
 export type CertificationUncheckedCreateInput = {
-  id?: number
+  id?: string
   title: string
   issuer: string
   date: string
@@ -309,6 +306,7 @@ export type CertificationUncheckedCreateInput = {
 }
 
 export type CertificationUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   issuer?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.StringFieldUpdateOperationsInput | string
@@ -318,7 +316,7 @@ export type CertificationUpdateInput = {
 }
 
 export type CertificationUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   issuer?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.StringFieldUpdateOperationsInput | string
@@ -328,7 +326,7 @@ export type CertificationUncheckedUpdateInput = {
 }
 
 export type CertificationCreateManyInput = {
-  id?: number
+  id?: string
   title: string
   issuer: string
   date: string
@@ -338,6 +336,7 @@ export type CertificationCreateManyInput = {
 }
 
 export type CertificationUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   issuer?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.StringFieldUpdateOperationsInput | string
@@ -347,7 +346,7 @@ export type CertificationUpdateManyMutationInput = {
 }
 
 export type CertificationUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   issuer?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.StringFieldUpdateOperationsInput | string
@@ -367,7 +366,6 @@ export type CertificationCountOrderByAggregateInput = {
 }
 
 export type CertificationAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -392,7 +390,6 @@ export type CertificationMinOrderByAggregateInput = {
 }
 
 export type CertificationSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -444,7 +441,7 @@ export type $CertificationPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "Certification"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     title: string
     issuer: string
     date: string
@@ -874,7 +871,7 @@ export interface Prisma__CertificationClient<T, Null = never, ExtArgs extends ru
  * Fields of the Certification model
  */
 export interface CertificationFieldRefs {
-  readonly id: Prisma.FieldRef<"Certification", 'Int'>
+  readonly id: Prisma.FieldRef<"Certification", 'String'>
   readonly title: Prisma.FieldRef<"Certification", 'String'>
   readonly issuer: Prisma.FieldRef<"Certification", 'String'>
   readonly date: Prisma.FieldRef<"Certification", 'String'>

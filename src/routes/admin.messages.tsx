@@ -12,7 +12,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 
 interface ContactMessage {
-  id: number
+  id: string
   name: string
   email: string
   message: string

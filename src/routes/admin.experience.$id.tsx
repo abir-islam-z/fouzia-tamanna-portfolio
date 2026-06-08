@@ -15,7 +15,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 interface ExperienceItem {
-  id: number
+  id: string
   role: string
   company: string
   period: string
@@ -27,10 +27,9 @@ interface ExperienceItem {
 function AdminExperienceEditComponent() {
   const { id } = Route.useParams()
   const router = useRouter()
-  const expId = parseInt(id)
   const { data: rawExp = [] } = useSuspenseQuery(experienceQuery)
   const experience = rawExp as unknown as Array<ExperienceItem>
-  const exp = experience.find((e) => e.id === expId)
+  const exp = experience.find((e) => e.id === id)
   const updateMutation = useUpdateExperience()
   const [isSaving, setIsSaving] = useState(false)
 

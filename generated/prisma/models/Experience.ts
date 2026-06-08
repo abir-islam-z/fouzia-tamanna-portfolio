@@ -27,17 +27,15 @@ export type AggregateExperience = {
 }
 
 export type ExperienceAvgAggregateOutputType = {
-  id: number | null
   order: number | null
 }
 
 export type ExperienceSumAggregateOutputType = {
-  id: number | null
   order: number | null
 }
 
 export type ExperienceMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   role: string | null
   company: string | null
   period: string | null
@@ -48,7 +46,7 @@ export type ExperienceMinAggregateOutputType = {
 }
 
 export type ExperienceMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   role: string | null
   company: string | null
   period: string | null
@@ -72,12 +70,10 @@ export type ExperienceCountAggregateOutputType = {
 
 
 export type ExperienceAvgAggregateInputType = {
-  id?: true
   order?: true
 }
 
 export type ExperienceSumAggregateInputType = {
-  id?: true
   order?: true
 }
 
@@ -202,7 +198,7 @@ export type ExperienceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 export type ExperienceGroupByOutputType = {
-  id: number
+  id: string
   role: string
   company: string
   period: string
@@ -236,7 +232,7 @@ export type ExperienceWhereInput = {
   AND?: Prisma.ExperienceWhereInput | Prisma.ExperienceWhereInput[]
   OR?: Prisma.ExperienceWhereInput[]
   NOT?: Prisma.ExperienceWhereInput | Prisma.ExperienceWhereInput[]
-  id?: Prisma.IntFilter<"Experience"> | number
+  id?: Prisma.StringFilter<"Experience"> | string
   role?: Prisma.StringFilter<"Experience"> | string
   company?: Prisma.StringFilter<"Experience"> | string
   period?: Prisma.StringFilter<"Experience"> | string
@@ -258,7 +254,7 @@ export type ExperienceOrderByWithRelationInput = {
 }
 
 export type ExperienceWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.ExperienceWhereInput | Prisma.ExperienceWhereInput[]
   OR?: Prisma.ExperienceWhereInput[]
   NOT?: Prisma.ExperienceWhereInput | Prisma.ExperienceWhereInput[]
@@ -291,7 +287,7 @@ export type ExperienceScalarWhereWithAggregatesInput = {
   AND?: Prisma.ExperienceScalarWhereWithAggregatesInput | Prisma.ExperienceScalarWhereWithAggregatesInput[]
   OR?: Prisma.ExperienceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ExperienceScalarWhereWithAggregatesInput | Prisma.ExperienceScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Experience"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Experience"> | string
   role?: Prisma.StringWithAggregatesFilter<"Experience"> | string
   company?: Prisma.StringWithAggregatesFilter<"Experience"> | string
   period?: Prisma.StringWithAggregatesFilter<"Experience"> | string
@@ -302,6 +298,7 @@ export type ExperienceScalarWhereWithAggregatesInput = {
 }
 
 export type ExperienceCreateInput = {
+  id?: string
   role: string
   company: string
   period: string
@@ -312,7 +309,7 @@ export type ExperienceCreateInput = {
 }
 
 export type ExperienceUncheckedCreateInput = {
-  id?: number
+  id?: string
   role: string
   company: string
   period: string
@@ -323,6 +320,7 @@ export type ExperienceUncheckedCreateInput = {
 }
 
 export type ExperienceUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   period?: Prisma.StringFieldUpdateOperationsInput | string
@@ -333,7 +331,7 @@ export type ExperienceUpdateInput = {
 }
 
 export type ExperienceUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   period?: Prisma.StringFieldUpdateOperationsInput | string
@@ -344,7 +342,7 @@ export type ExperienceUncheckedUpdateInput = {
 }
 
 export type ExperienceCreateManyInput = {
-  id?: number
+  id?: string
   role: string
   company: string
   period: string
@@ -355,6 +353,7 @@ export type ExperienceCreateManyInput = {
 }
 
 export type ExperienceUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   period?: Prisma.StringFieldUpdateOperationsInput | string
@@ -365,7 +364,7 @@ export type ExperienceUpdateManyMutationInput = {
 }
 
 export type ExperienceUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   period?: Prisma.StringFieldUpdateOperationsInput | string
@@ -387,7 +386,6 @@ export type ExperienceCountOrderByAggregateInput = {
 }
 
 export type ExperienceAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -414,7 +412,6 @@ export type ExperienceMinOrderByAggregateInput = {
 }
 
 export type ExperienceSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -470,7 +467,7 @@ export type $ExperiencePayload<ExtArgs extends runtime.Types.Extensions.Internal
   name: "Experience"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     role: string
     company: string
     period: string
@@ -901,7 +898,7 @@ export interface Prisma__ExperienceClient<T, Null = never, ExtArgs extends runti
  * Fields of the Experience model
  */
 export interface ExperienceFieldRefs {
-  readonly id: Prisma.FieldRef<"Experience", 'Int'>
+  readonly id: Prisma.FieldRef<"Experience", 'String'>
   readonly role: Prisma.FieldRef<"Experience", 'String'>
   readonly company: Prisma.FieldRef<"Experience", 'String'>
   readonly period: Prisma.FieldRef<"Experience", 'String'>

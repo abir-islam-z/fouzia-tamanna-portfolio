@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router"
 import { Button } from "./ui/button"
 
 interface ProjectItem {
-  id: number
+  id: string
   slug: string
   title: string
   summary: string

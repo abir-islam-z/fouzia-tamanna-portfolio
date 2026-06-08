@@ -35,14 +35,14 @@ export const heroSchema = z.object({
 })
 
 export const statSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   value: z.string(),
   label: z.string(),
   order: z.number().default(0),
 })
 
 export const experienceSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   role: z.string(),
   company: z.string(),
   period: z.string(),
@@ -52,24 +52,24 @@ export const experienceSchema = z.object({
 })
 
 export const projectSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   slug: z.string().min(1, "Slug is required").trim(),
   title: z.string().min(1, "Title is required").trim(),
   summary: z.string().default(""),
   caseStudy: z.string().default(""),
-  coverMediaId: z.number().nullable().optional(),
+  coverMediaId: z.string().nullable().optional(),
   tags: z.string().default(""),
   isFeatured: z.boolean().default(false),
   link: z.string().nullable().optional(),
   github: z.string().nullable().optional(),
   order: z.number().default(0),
   gallery: z
-    .array(z.object({ mediaId: z.number(), order: z.number().default(0) }))
+    .array(z.object({ mediaId: z.string(), order: z.number().default(0) }))
     .optional(),
 })
 
 export const testimonialSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   name: z.string(),
   role: z.string(),
   content: z.string(),
@@ -78,7 +78,7 @@ export const testimonialSchema = z.object({
 })
 
 export const certificationSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   title: z.string(),
   issuer: z.string(),
   date: z.string(),
@@ -87,7 +87,7 @@ export const certificationSchema = z.object({
 })
 
 export const publicationSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   title: z.string().min(1, "Title is required").trim(),
   authors: z.string().min(1, "Authors are required").trim(),
   venue: z.string().min(1, "Venue is required").trim(),
@@ -214,7 +214,7 @@ export const updateStat = createServerFn({ method: "POST" })
   })
 
 export const deleteStat = createServerFn({ method: "POST" })
-  .validator(z.number())
+  .validator(z.string())
   .handler(async ({ data: id }) => {
     const { deleteStatServer } = await import("./cms.server")
     return deleteStatServer(id)
@@ -236,7 +236,7 @@ export const updateExperience = createServerFn({ method: "POST" })
   })
 
 export const deleteExperience = createServerFn({ method: "POST" })
-  .validator(z.number())
+  .validator(z.string())
   .handler(async ({ data: id }) => {
     const { deleteExperienceServer } = await import("./cms.server")
     return deleteExperienceServer(id)
@@ -258,7 +258,7 @@ export const updateProject = createServerFn({ method: "POST" })
   })
 
 export const deleteProject = createServerFn({ method: "POST" })
-  .validator(z.number())
+  .validator(z.string())
   .handler(async ({ data: id }) => {
     const { deleteProjectServer } = await import("./cms.server")
     return deleteProjectServer(id)
@@ -295,7 +295,7 @@ export const updateTestimonial = createServerFn({ method: "POST" })
   })
 
 export const deleteTestimonial = createServerFn({ method: "POST" })
-  .validator(z.number())
+  .validator(z.string())
   .handler(async ({ data: id }) => {
     const { deleteTestimonialServer } = await import("./cms.server")
     return deleteTestimonialServer(id)
@@ -317,7 +317,7 @@ export const updateCertification = createServerFn({ method: "POST" })
   })
 
 export const deleteCertification = createServerFn({ method: "POST" })
-  .validator(z.number())
+  .validator(z.string())
   .handler(async ({ data: id }) => {
     const { deleteCertificationServer } = await import("./cms.server")
     return deleteCertificationServer(id)
@@ -341,7 +341,7 @@ export const updatePublication = createServerFn({ method: "POST" })
   })
 
 export const deletePublication = createServerFn({ method: "POST" })
-  .validator(z.number())
+  .validator(z.string())
   .handler(async ({ data: id }) => {
     const { deletePublicationServer } = await import("./cms.server")
     return deletePublicationServer(id)
@@ -357,7 +357,7 @@ export const getMedia = createServerFn({ method: "GET" })
   })
 
 export const getMediaItem = createServerFn({ method: "GET" })
-  .validator(z.number())
+  .validator(z.string())
   .handler(async ({ data: id }) => {
     const { getMediaItemServer } = await import("./cms.server")
     return getMediaItemServer(id)
@@ -418,7 +418,7 @@ export const uploadMedia = createServerFn({ method: "POST" })
 export const updateMedia = createServerFn({ method: "POST" })
   .validator(
     z.object({
-      id: z.number(),
+      id: z.string(),
       alt: z.string().nullable().optional(),
       folder: z.string().optional(),
       originalName: z.string().optional(),
@@ -430,7 +430,7 @@ export const updateMedia = createServerFn({ method: "POST" })
   })
 
 export const deleteMedia = createServerFn({ method: "POST" })
-  .validator(z.number())
+  .validator(z.string())
   .handler(async ({ data: id }) => {
     const { deleteMediaServer } = await import("./cms.server")
     return deleteMediaServer(id)

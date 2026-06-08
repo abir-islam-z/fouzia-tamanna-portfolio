@@ -192,7 +192,7 @@ export async function updateStatServer(data: any) {
   }
 }
 
-export async function deleteStatServer(id: number) {
+export async function deleteStatServer(id: string) {
   await checkAuth()
   return await (await getDb()).stat.delete({ where: { id } })
 }
@@ -221,7 +221,7 @@ export async function updateExperienceServer(data: any) {
   }
 }
 
-export async function deleteExperienceServer(id: number) {
+export async function deleteExperienceServer(id: string) {
   await checkAuth()
   return await (await getDb()).experience.delete({ where: { id } })
 }
@@ -311,7 +311,7 @@ export async function updateProjectServer(data: any) {
   }
 }
 
-export async function deleteProjectServer(id: number) {
+export async function deleteProjectServer(id: string) {
   await checkAuth()
   return await (await getDb()).project.delete({ where: { id } })
 }
@@ -358,7 +358,7 @@ export async function updateTestimonialServer(data: any) {
   }
 }
 
-export async function deleteTestimonialServer(id: number) {
+export async function deleteTestimonialServer(id: string) {
   await checkAuth()
   return await (await getDb()).testimonial.delete({ where: { id } })
 }
@@ -387,7 +387,7 @@ export async function updateCertificationServer(data: any) {
   }
 }
 
-export async function deleteCertificationServer(id: number) {
+export async function deleteCertificationServer(id: string) {
   await checkAuth()
   return await (await getDb()).certification.delete({ where: { id } })
 }
@@ -419,7 +419,7 @@ export async function updatePublicationServer(data: any) {
   }
 }
 
-export async function deletePublicationServer(id: number) {
+export async function deletePublicationServer(id: string) {
   await checkAuth()
   return await (await getDb()).publication.delete({ where: { id } })
 }
@@ -436,7 +436,7 @@ export async function getMediaServer(folder?: string) {
   })
 }
 
-export async function getMediaItemServer(id: number) {
+export async function getMediaItemServer(id: string) {
   return await (await getDb()).media.findUnique({ where: { id } })
 }
 
@@ -501,7 +501,7 @@ export async function uploadMediaServer(input: {
       size: input.size,
       folder: input.folder ?? "general",
       alt: input.alt ?? null,
-      uploadedById: typeof uploadedById === "number" ? uploadedById : null,
+      uploadedById: typeof uploadedById === "string" ? uploadedById : null,
     },
     include: { uploadedBy: { select: { id: true, username: true } } },
   })
@@ -560,14 +560,14 @@ export async function finalizeMediaUpload(input: {
       size: input.size,
       folder: input.folder ?? "general",
       alt: input.alt ?? null,
-      uploadedById: typeof uploadedById === "number" ? uploadedById : null,
+      uploadedById: typeof uploadedById === "string" ? uploadedById : null,
     },
     include: { uploadedBy: { select: { id: true, username: true } } },
   })
 }
 
 export async function updateMediaServer(input: {
-  id: number
+  id: string
   alt?: string | null
   folder?: string
   originalName?: string
@@ -582,7 +582,7 @@ export async function updateMediaServer(input: {
   })
 }
 
-export async function deleteMediaServer(id: number) {
+export async function deleteMediaServer(id: string) {
   await checkAuth()
   const item = await (await getDb()).media.findUnique({ where: { id } })
   if (!item) return { ok: true }

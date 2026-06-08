@@ -27,30 +27,24 @@ export type AggregateProjectGallery = {
 }
 
 export type ProjectGalleryAvgAggregateOutputType = {
-  id: number | null
-  projectId: number | null
-  mediaId: number | null
   order: number | null
 }
 
 export type ProjectGallerySumAggregateOutputType = {
-  id: number | null
-  projectId: number | null
-  mediaId: number | null
   order: number | null
 }
 
 export type ProjectGalleryMinAggregateOutputType = {
-  id: number | null
-  projectId: number | null
-  mediaId: number | null
+  id: string | null
+  projectId: string | null
+  mediaId: string | null
   order: number | null
 }
 
 export type ProjectGalleryMaxAggregateOutputType = {
-  id: number | null
-  projectId: number | null
-  mediaId: number | null
+  id: string | null
+  projectId: string | null
+  mediaId: string | null
   order: number | null
 }
 
@@ -64,16 +58,10 @@ export type ProjectGalleryCountAggregateOutputType = {
 
 
 export type ProjectGalleryAvgAggregateInputType = {
-  id?: true
-  projectId?: true
-  mediaId?: true
   order?: true
 }
 
 export type ProjectGallerySumAggregateInputType = {
-  id?: true
-  projectId?: true
-  mediaId?: true
   order?: true
 }
 
@@ -186,9 +174,9 @@ export type ProjectGalleryGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 export type ProjectGalleryGroupByOutputType = {
-  id: number
-  projectId: number
-  mediaId: number
+  id: string
+  projectId: string
+  mediaId: string
   order: number
   _count: ProjectGalleryCountAggregateOutputType | null
   _avg: ProjectGalleryAvgAggregateOutputType | null
@@ -216,9 +204,9 @@ export type ProjectGalleryWhereInput = {
   AND?: Prisma.ProjectGalleryWhereInput | Prisma.ProjectGalleryWhereInput[]
   OR?: Prisma.ProjectGalleryWhereInput[]
   NOT?: Prisma.ProjectGalleryWhereInput | Prisma.ProjectGalleryWhereInput[]
-  id?: Prisma.IntFilter<"ProjectGallery"> | number
-  projectId?: Prisma.IntFilter<"ProjectGallery"> | number
-  mediaId?: Prisma.IntFilter<"ProjectGallery"> | number
+  id?: Prisma.StringFilter<"ProjectGallery"> | string
+  projectId?: Prisma.StringFilter<"ProjectGallery"> | string
+  mediaId?: Prisma.StringFilter<"ProjectGallery"> | string
   order?: Prisma.IntFilter<"ProjectGallery"> | number
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   media?: Prisma.XOR<Prisma.MediaScalarRelationFilter, Prisma.MediaWhereInput>
@@ -234,12 +222,12 @@ export type ProjectGalleryOrderByWithRelationInput = {
 }
 
 export type ProjectGalleryWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.ProjectGalleryWhereInput | Prisma.ProjectGalleryWhereInput[]
   OR?: Prisma.ProjectGalleryWhereInput[]
   NOT?: Prisma.ProjectGalleryWhereInput | Prisma.ProjectGalleryWhereInput[]
-  projectId?: Prisma.IntFilter<"ProjectGallery"> | number
-  mediaId?: Prisma.IntFilter<"ProjectGallery"> | number
+  projectId?: Prisma.StringFilter<"ProjectGallery"> | string
+  mediaId?: Prisma.StringFilter<"ProjectGallery"> | string
   order?: Prisma.IntFilter<"ProjectGallery"> | number
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   media?: Prisma.XOR<Prisma.MediaScalarRelationFilter, Prisma.MediaWhereInput>
@@ -261,53 +249,56 @@ export type ProjectGalleryScalarWhereWithAggregatesInput = {
   AND?: Prisma.ProjectGalleryScalarWhereWithAggregatesInput | Prisma.ProjectGalleryScalarWhereWithAggregatesInput[]
   OR?: Prisma.ProjectGalleryScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProjectGalleryScalarWhereWithAggregatesInput | Prisma.ProjectGalleryScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"ProjectGallery"> | number
-  projectId?: Prisma.IntWithAggregatesFilter<"ProjectGallery"> | number
-  mediaId?: Prisma.IntWithAggregatesFilter<"ProjectGallery"> | number
+  id?: Prisma.StringWithAggregatesFilter<"ProjectGallery"> | string
+  projectId?: Prisma.StringWithAggregatesFilter<"ProjectGallery"> | string
+  mediaId?: Prisma.StringWithAggregatesFilter<"ProjectGallery"> | string
   order?: Prisma.IntWithAggregatesFilter<"ProjectGallery"> | number
 }
 
 export type ProjectGalleryCreateInput = {
+  id?: string
   order?: number
   project: Prisma.ProjectCreateNestedOneWithoutGalleryInput
   media: Prisma.MediaCreateNestedOneWithoutGalleryInInput
 }
 
 export type ProjectGalleryUncheckedCreateInput = {
-  id?: number
-  projectId: number
-  mediaId: number
+  id?: string
+  projectId: string
+  mediaId: string
   order?: number
 }
 
 export type ProjectGalleryUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   project?: Prisma.ProjectUpdateOneRequiredWithoutGalleryNestedInput
   media?: Prisma.MediaUpdateOneRequiredWithoutGalleryInNestedInput
 }
 
 export type ProjectGalleryUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  projectId?: Prisma.IntFieldUpdateOperationsInput | number
-  mediaId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  mediaId?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ProjectGalleryCreateManyInput = {
-  id?: number
-  projectId: number
-  mediaId: number
+  id?: string
+  projectId: string
+  mediaId: string
   order?: number
 }
 
 export type ProjectGalleryUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ProjectGalleryUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  projectId?: Prisma.IntFieldUpdateOperationsInput | number
-  mediaId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  mediaId?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -329,9 +320,6 @@ export type ProjectGalleryCountOrderByAggregateInput = {
 }
 
 export type ProjectGalleryAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  projectId?: Prisma.SortOrder
-  mediaId?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -350,9 +338,6 @@ export type ProjectGalleryMinOrderByAggregateInput = {
 }
 
 export type ProjectGallerySumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  projectId?: Prisma.SortOrder
-  mediaId?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -441,13 +426,14 @@ export type ProjectGalleryUncheckedUpdateManyWithoutMediaNestedInput = {
 }
 
 export type ProjectGalleryCreateWithoutProjectInput = {
+  id?: string
   order?: number
   media: Prisma.MediaCreateNestedOneWithoutGalleryInInput
 }
 
 export type ProjectGalleryUncheckedCreateWithoutProjectInput = {
-  id?: number
-  mediaId: number
+  id?: string
+  mediaId: string
   order?: number
 }
 
@@ -481,20 +467,21 @@ export type ProjectGalleryScalarWhereInput = {
   AND?: Prisma.ProjectGalleryScalarWhereInput | Prisma.ProjectGalleryScalarWhereInput[]
   OR?: Prisma.ProjectGalleryScalarWhereInput[]
   NOT?: Prisma.ProjectGalleryScalarWhereInput | Prisma.ProjectGalleryScalarWhereInput[]
-  id?: Prisma.IntFilter<"ProjectGallery"> | number
-  projectId?: Prisma.IntFilter<"ProjectGallery"> | number
-  mediaId?: Prisma.IntFilter<"ProjectGallery"> | number
+  id?: Prisma.StringFilter<"ProjectGallery"> | string
+  projectId?: Prisma.StringFilter<"ProjectGallery"> | string
+  mediaId?: Prisma.StringFilter<"ProjectGallery"> | string
   order?: Prisma.IntFilter<"ProjectGallery"> | number
 }
 
 export type ProjectGalleryCreateWithoutMediaInput = {
+  id?: string
   order?: number
   project: Prisma.ProjectCreateNestedOneWithoutGalleryInput
 }
 
 export type ProjectGalleryUncheckedCreateWithoutMediaInput = {
-  id?: number
-  projectId: number
+  id?: string
+  projectId: string
   order?: number
 }
 
@@ -525,48 +512,50 @@ export type ProjectGalleryUpdateManyWithWhereWithoutMediaInput = {
 }
 
 export type ProjectGalleryCreateManyProjectInput = {
-  id?: number
-  mediaId: number
+  id?: string
+  mediaId: string
   order?: number
 }
 
 export type ProjectGalleryUpdateWithoutProjectInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   media?: Prisma.MediaUpdateOneRequiredWithoutGalleryInNestedInput
 }
 
 export type ProjectGalleryUncheckedUpdateWithoutProjectInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  mediaId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  mediaId?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ProjectGalleryUncheckedUpdateManyWithoutProjectInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  mediaId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  mediaId?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ProjectGalleryCreateManyMediaInput = {
-  id?: number
-  projectId: number
+  id?: string
+  projectId: string
   order?: number
 }
 
 export type ProjectGalleryUpdateWithoutMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   project?: Prisma.ProjectUpdateOneRequiredWithoutGalleryNestedInput
 }
 
 export type ProjectGalleryUncheckedUpdateWithoutMediaInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  projectId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ProjectGalleryUncheckedUpdateManyWithoutMediaInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  projectId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -627,9 +616,9 @@ export type $ProjectGalleryPayload<ExtArgs extends runtime.Types.Extensions.Inte
     media: Prisma.$MediaPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    projectId: number
-    mediaId: number
+    id: string
+    projectId: string
+    mediaId: string
     order: number
   }, ExtArgs["result"]["projectGallery"]>
   composites: {}
@@ -1056,9 +1045,9 @@ export interface Prisma__ProjectGalleryClient<T, Null = never, ExtArgs extends r
  * Fields of the ProjectGallery model
  */
 export interface ProjectGalleryFieldRefs {
-  readonly id: Prisma.FieldRef<"ProjectGallery", 'Int'>
-  readonly projectId: Prisma.FieldRef<"ProjectGallery", 'Int'>
-  readonly mediaId: Prisma.FieldRef<"ProjectGallery", 'Int'>
+  readonly id: Prisma.FieldRef<"ProjectGallery", 'String'>
+  readonly projectId: Prisma.FieldRef<"ProjectGallery", 'String'>
+  readonly mediaId: Prisma.FieldRef<"ProjectGallery", 'String'>
   readonly order: Prisma.FieldRef<"ProjectGallery", 'Int'>
 }
     

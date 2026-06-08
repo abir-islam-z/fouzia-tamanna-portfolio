@@ -13,7 +13,7 @@ import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router"
 import { toast } from "sonner"
 
 interface TestimonialItem {
-  id?: number
+  id?: string
   name: string
   role: string
   content: string
@@ -75,7 +75,7 @@ function AdminTestimonialsComponent() {
         items={testimonials}
         columns={columns}
         editHref={(item) =>
-          `/admin/testimonials/${item.id}` as `/admin/testimonials/${number}`
+          `/admin/testimonials/${item.id}` as `/admin/testimonials/${string}`
         }
         onDelete={handleDelete}
         emptyMessage="No testimonials yet. Add your first one."

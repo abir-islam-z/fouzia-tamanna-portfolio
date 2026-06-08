@@ -66,7 +66,7 @@ export const queryKeys = {
     ["publications", { includeUnpublished }] as const,
   contactMessages: ["contactMessages"] as const,
   media: (folder?: string) => ["media", { folder }] as const,
-  mediaItem: (id: number) => ["media", id] as const,
+  mediaItem: (id: string) => ["media", id] as const,
   r2Status: ["r2Status"] as const,
   landingSections: ["landingSections"] as const,
   siteSettings: ["siteSettings"] as const,
@@ -126,7 +126,7 @@ export const mediaQuery = (folder?: string) =>
     queryFn: () => getMedia({ data: folder ? { folder } : undefined }),
   })
 
-export const mediaItemQuery = (id: number) =>
+export const mediaItemQuery = (id: string) =>
   queryOptions({
     queryKey: queryKeys.mediaItem(id),
     queryFn: () => getMediaItem({ data: id }),
@@ -191,7 +191,7 @@ export function useUpdateStat() {
 export function useDeleteStat() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: number) => deleteStat({ data: id }),
+    mutationFn: (id: string) => deleteStat({ data: id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.stats })
     },
@@ -212,7 +212,7 @@ export function useUpdateExperience() {
 export function useDeleteExperience() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: number) => deleteExperience({ data: id }),
+    mutationFn: (id: string) => deleteExperience({ data: id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.experience })
     },
@@ -233,7 +233,7 @@ export function useUpdateProject() {
 export function useDeleteProject() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: number) => deleteProject({ data: id }),
+    mutationFn: (id: string) => deleteProject({ data: id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.projects })
     },
@@ -261,7 +261,7 @@ export function useUpdateTestimonial() {
 export function useDeleteTestimonial() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: number) => deleteTestimonial({ data: id }),
+    mutationFn: (id: string) => deleteTestimonial({ data: id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.testimonials })
     },
@@ -282,7 +282,7 @@ export function useUpdateCertification() {
 export function useDeleteCertification() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: number) => deleteCertification({ data: id }),
+    mutationFn: (id: string) => deleteCertification({ data: id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.certifications })
     },
@@ -304,7 +304,7 @@ export function useUpdatePublication() {
 export function useDeletePublication() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: number) => deletePublication({ data: id }),
+    mutationFn: (id: string) => deletePublication({ data: id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.publications(true) })
       qc.invalidateQueries({ queryKey: queryKeys.publications(false) })
@@ -326,7 +326,7 @@ export function useUpdateMedia() {
 export function useDeleteMedia() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: number) => deleteMedia({ data: id }),
+    mutationFn: (id: string) => deleteMedia({ data: id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.media() })
     },

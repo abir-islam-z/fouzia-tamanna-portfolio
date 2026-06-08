@@ -14,14 +14,14 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 interface ProjectListItem {
-  id: number
+  id: string
   slug: string
   title: string
   summary: string
   caseStudy: string
-  coverMediaId: number | null
+  coverMediaId: string | null
   cover?: {
-    id: number
+    id: string
     url: string
     originalName: string
     alt: string | null
@@ -32,8 +32,8 @@ interface ProjectListItem {
   github: string | null
   order: number
   gallery?: Array<{
-    id: number
-    mediaId: number
+    id: string
+    mediaId: string
     order: number
     media: MediaItem
   }>
@@ -42,10 +42,9 @@ interface ProjectListItem {
 function AdminProjectsEditComponent() {
   const { id } = Route.useParams()
   const router = useRouter()
-  const projectId = parseInt(id)
   const { data: rawProjects = [] } = useSuspenseQuery(projectsQuery)
   const projects = rawProjects as unknown as Array<ProjectListItem>
-  const project = projects.find((p) => p.id === projectId)
+  const project = projects.find((p) => p.id === id)
   const updateMutation = useUpdateProject()
   const [cover, setCover] = useState<MediaItem | null>(
     (project?.cover as unknown as MediaItem) ?? null
@@ -58,7 +57,7 @@ function AdminProjectsEditComponent() {
       title: project?.title ?? "",
       summary: project?.summary ?? "",
       caseStudy: project?.caseStudy ?? "",
-      coverMediaId: project?.coverMediaId ?? (null as number | null),
+      coverMediaId: project?.coverMediaId ?? (null as string | null),
       tags: project?.tags ?? "",
       isFeatured: project?.isFeatured ?? false,
       link: project?.link ?? "",

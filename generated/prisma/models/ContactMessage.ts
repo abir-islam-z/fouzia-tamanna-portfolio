@@ -20,22 +20,12 @@ export type ContactMessageModel = runtime.Types.Result.DefaultSelection<Prisma.$
 
 export type AggregateContactMessage = {
   _count: ContactMessageCountAggregateOutputType | null
-  _avg: ContactMessageAvgAggregateOutputType | null
-  _sum: ContactMessageSumAggregateOutputType | null
   _min: ContactMessageMinAggregateOutputType | null
   _max: ContactMessageMaxAggregateOutputType | null
 }
 
-export type ContactMessageAvgAggregateOutputType = {
-  id: number | null
-}
-
-export type ContactMessageSumAggregateOutputType = {
-  id: number | null
-}
-
 export type ContactMessageMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   name: string | null
   email: string | null
   message: string | null
@@ -43,7 +33,7 @@ export type ContactMessageMinAggregateOutputType = {
 }
 
 export type ContactMessageMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   name: string | null
   email: string | null
   message: string | null
@@ -59,14 +49,6 @@ export type ContactMessageCountAggregateOutputType = {
   _all: number
 }
 
-
-export type ContactMessageAvgAggregateInputType = {
-  id?: true
-}
-
-export type ContactMessageSumAggregateInputType = {
-  id?: true
-}
 
 export type ContactMessageMinAggregateInputType = {
   id?: true
@@ -131,18 +113,6 @@ export type ContactMessageAggregateArgs<ExtArgs extends runtime.Types.Extensions
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: ContactMessageAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: ContactMessageSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: ContactMessageMinAggregateInputType
@@ -173,21 +143,17 @@ export type ContactMessageGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   _count?: ContactMessageCountAggregateInputType | true
-  _avg?: ContactMessageAvgAggregateInputType
-  _sum?: ContactMessageSumAggregateInputType
   _min?: ContactMessageMinAggregateInputType
   _max?: ContactMessageMaxAggregateInputType
 }
 
 export type ContactMessageGroupByOutputType = {
-  id: number
+  id: string
   name: string
   email: string
   message: string
   createdAt: Date
   _count: ContactMessageCountAggregateOutputType | null
-  _avg: ContactMessageAvgAggregateOutputType | null
-  _sum: ContactMessageSumAggregateOutputType | null
   _min: ContactMessageMinAggregateOutputType | null
   _max: ContactMessageMaxAggregateOutputType | null
 }
@@ -211,7 +177,7 @@ export type ContactMessageWhereInput = {
   AND?: Prisma.ContactMessageWhereInput | Prisma.ContactMessageWhereInput[]
   OR?: Prisma.ContactMessageWhereInput[]
   NOT?: Prisma.ContactMessageWhereInput | Prisma.ContactMessageWhereInput[]
-  id?: Prisma.IntFilter<"ContactMessage"> | number
+  id?: Prisma.StringFilter<"ContactMessage"> | string
   name?: Prisma.StringFilter<"ContactMessage"> | string
   email?: Prisma.StringFilter<"ContactMessage"> | string
   message?: Prisma.StringFilter<"ContactMessage"> | string
@@ -227,7 +193,7 @@ export type ContactMessageOrderByWithRelationInput = {
 }
 
 export type ContactMessageWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.ContactMessageWhereInput | Prisma.ContactMessageWhereInput[]
   OR?: Prisma.ContactMessageWhereInput[]
   NOT?: Prisma.ContactMessageWhereInput | Prisma.ContactMessageWhereInput[]
@@ -244,17 +210,15 @@ export type ContactMessageOrderByWithAggregationInput = {
   message?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ContactMessageCountOrderByAggregateInput
-  _avg?: Prisma.ContactMessageAvgOrderByAggregateInput
   _max?: Prisma.ContactMessageMaxOrderByAggregateInput
   _min?: Prisma.ContactMessageMinOrderByAggregateInput
-  _sum?: Prisma.ContactMessageSumOrderByAggregateInput
 }
 
 export type ContactMessageScalarWhereWithAggregatesInput = {
   AND?: Prisma.ContactMessageScalarWhereWithAggregatesInput | Prisma.ContactMessageScalarWhereWithAggregatesInput[]
   OR?: Prisma.ContactMessageScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ContactMessageScalarWhereWithAggregatesInput | Prisma.ContactMessageScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"ContactMessage"> | number
+  id?: Prisma.StringWithAggregatesFilter<"ContactMessage"> | string
   name?: Prisma.StringWithAggregatesFilter<"ContactMessage"> | string
   email?: Prisma.StringWithAggregatesFilter<"ContactMessage"> | string
   message?: Prisma.StringWithAggregatesFilter<"ContactMessage"> | string
@@ -262,6 +226,7 @@ export type ContactMessageScalarWhereWithAggregatesInput = {
 }
 
 export type ContactMessageCreateInput = {
+  id?: string
   name: string
   email: string
   message: string
@@ -269,7 +234,7 @@ export type ContactMessageCreateInput = {
 }
 
 export type ContactMessageUncheckedCreateInput = {
-  id?: number
+  id?: string
   name: string
   email: string
   message: string
@@ -277,6 +242,7 @@ export type ContactMessageUncheckedCreateInput = {
 }
 
 export type ContactMessageUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
@@ -284,7 +250,7 @@ export type ContactMessageUpdateInput = {
 }
 
 export type ContactMessageUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
@@ -292,7 +258,7 @@ export type ContactMessageUncheckedUpdateInput = {
 }
 
 export type ContactMessageCreateManyInput = {
-  id?: number
+  id?: string
   name: string
   email: string
   message: string
@@ -300,6 +266,7 @@ export type ContactMessageCreateManyInput = {
 }
 
 export type ContactMessageUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
@@ -307,7 +274,7 @@ export type ContactMessageUpdateManyMutationInput = {
 }
 
 export type ContactMessageUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
@@ -320,10 +287,6 @@ export type ContactMessageCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   message?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-}
-
-export type ContactMessageAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
 }
 
 export type ContactMessageMaxOrderByAggregateInput = {
@@ -340,10 +303,6 @@ export type ContactMessageMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   message?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-}
-
-export type ContactMessageSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
 }
 
 
@@ -386,7 +345,7 @@ export type $ContactMessagePayload<ExtArgs extends runtime.Types.Extensions.Inte
   name: "ContactMessage"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     name: string
     email: string
     message: string
@@ -814,7 +773,7 @@ export interface Prisma__ContactMessageClient<T, Null = never, ExtArgs extends r
  * Fields of the ContactMessage model
  */
 export interface ContactMessageFieldRefs {
-  readonly id: Prisma.FieldRef<"ContactMessage", 'Int'>
+  readonly id: Prisma.FieldRef<"ContactMessage", 'String'>
   readonly name: Prisma.FieldRef<"ContactMessage", 'String'>
   readonly email: Prisma.FieldRef<"ContactMessage", 'String'>
   readonly message: Prisma.FieldRef<"ContactMessage", 'String'>

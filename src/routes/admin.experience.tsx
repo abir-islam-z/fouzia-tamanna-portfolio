@@ -11,7 +11,7 @@ import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router"
 import { toast } from "sonner"
 
 interface ExperienceItem {
-  id?: number
+  id?: string
   role: string
   company: string
   period: string

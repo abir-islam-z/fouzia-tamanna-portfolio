@@ -13,7 +13,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 interface CertificationItem {
-  id: number
+  id: string
   title: string
   issuer: string
   date: string
@@ -24,10 +24,9 @@ interface CertificationItem {
 function AdminCertificationsEditComponent() {
   const { id } = Route.useParams()
   const router = useRouter()
-  const certId = parseInt(id)
   const { data: rawCerts = [] } = useSuspenseQuery(certificationsQuery)
   const certs = rawCerts as unknown as Array<CertificationItem>
-  const cert = certs.find((c) => c.id === certId)
+  const cert = certs.find((c) => c.id === id)
   const updateMutation = useUpdateCertification()
   const [isSaving, setIsSaving] = useState(false)
 

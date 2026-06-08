@@ -13,7 +13,7 @@ import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router"
 import { toast } from "sonner"
 
 interface PublicationItem {
-  id?: number
+  id?: string
   title: string
   authors: string
   venue: string
@@ -118,7 +118,7 @@ function AdminPublicationsComponent() {
         items={pubs}
         columns={columns}
         editHref={(item) =>
-          `/admin/publications/${item.id}` as `/admin/publications/${number}`
+          `/admin/publications/${item.id}` as `/admin/publications/${string}`
         }
         onDelete={handleDelete}
         emptyMessage="No publications yet. Add your first paper."

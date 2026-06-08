@@ -15,7 +15,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 interface TestimonialItem {
-  id: number
+  id: string
   name: string
   role: string
   content: string
@@ -25,10 +25,9 @@ interface TestimonialItem {
 function AdminTestimonialsEditComponent() {
   const { id } = Route.useParams()
   const router = useRouter()
-  const testId = parseInt(id)
   const { data: rawTest = [] } = useSuspenseQuery(testimonialsQuery)
   const testimonials = rawTest as unknown as Array<TestimonialItem>
-  const test = testimonials.find((t) => t.id === testId)
+  const test = testimonials.find((t) => t.id === id)
   const updateMutation = useUpdateTestimonial()
   const [isSaving, setIsSaving] = useState(false)
 

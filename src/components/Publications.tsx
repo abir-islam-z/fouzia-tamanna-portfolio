@@ -8,7 +8,7 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 interface PublicationItem {
-  id: number
+  id: string
   title: string
   authors: string
   venue: string

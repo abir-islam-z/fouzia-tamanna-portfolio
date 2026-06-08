@@ -25,7 +25,7 @@ function AdminProjectsNewComponent() {
       title: "",
       summary: "",
       caseStudy: "",
-      coverMediaId: null as number | null,
+      coverMediaId: null as string | null,
       tags: "",
       isFeatured: false,
       link: "",
