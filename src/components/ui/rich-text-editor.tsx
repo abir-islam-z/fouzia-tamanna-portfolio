@@ -16,12 +16,17 @@ import {
   RiListUnordered,
   RiStrikethrough,
 } from "@remixicon/react"
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
 import Image from "@tiptap/extension-image"
 import Link from "@tiptap/extension-link"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
+import { common, createLowlight } from "lowlight"
 import { useEffect } from "react"
 import { MediaPicker } from "./media-picker"
+
+// Create a lowlight instance with common languages
+const lowlight = createLowlight(common)
 
 interface RichTextEditorProps {
   value: string
@@ -42,6 +47,11 @@ export function RichTextEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
+        codeBlock: false, // Disable default codeBlock in favor of CodeBlockLowlight
+      }),
+      CodeBlockLowlight.configure({
+        lowlight,
+        defaultLanguage: "plaintext",
       }),
       Link.configure({
         openOnClick: false,
@@ -70,6 +80,8 @@ export function RichTextEditor({
           "prose-ul:font-mono prose-ol:font-mono prose-li:my-1",
           "prose-blockquote:border-l-primary prose-blockquote:font-mono",
           "prose-code:font-mono prose-code:bg-muted prose-code:px-1.5 prose-code:rounded",
+          "prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto",
+          "prose-pre:font-mono prose-pre:text-sm prose-pre:leading-relaxed",
           "focus:outline-none"
         ),
         "data-placeholder": placeholder,
@@ -179,6 +191,26 @@ export function RichTextEditor({
           title="Inline code"
         >
           <RiCodeLine size={16} />
+        </ToolbarButton>
+        <ToolbarButton
+          active={editor.isActive("codeBlock")}
+          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+          title="Code block"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+            <line x1="12" y1="2" x2="12" y2="22" />
+          </svg>
         </ToolbarButton>
 
         <Divider />

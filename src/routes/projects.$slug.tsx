@@ -10,6 +10,34 @@ import {
 } from "@remixicon/react"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
+import highlight from "highlight.js/lib/core"
+import bash from "highlight.js/lib/languages/bash"
+import css from "highlight.js/lib/languages/css"
+import javascript from "highlight.js/lib/languages/javascript"
+import json from "highlight.js/lib/languages/json"
+import python from "highlight.js/lib/languages/python"
+import sql from "highlight.js/lib/languages/sql"
+import typescript from "highlight.js/lib/languages/typescript"
+import xml from "highlight.js/lib/languages/xml"
+import "highlight.js/styles/github-dark-dimmed.min.css"
+import { useEffect, useRef } from "react"
+
+// Register languages for client-side highlighting
+highlight.registerLanguage("javascript", javascript)
+highlight.registerLanguage("js", javascript)
+highlight.registerLanguage("typescript", typescript)
+highlight.registerLanguage("ts", typescript)
+highlight.registerLanguage("jsx", javascript)
+highlight.registerLanguage("tsx", typescript)
+highlight.registerLanguage("python", python)
+highlight.registerLanguage("py", python)
+highlight.registerLanguage("css", css)
+highlight.registerLanguage("html", xml)
+highlight.registerLanguage("xml", xml)
+highlight.registerLanguage("json", json)
+highlight.registerLanguage("bash", bash)
+highlight.registerLanguage("sh", bash)
+highlight.registerLanguage("sql", sql)
 
 interface MediaItem {
   id: string
@@ -46,6 +74,18 @@ function ProjectCaseStudyComponent() {
     linkedin?: string
     github?: string
   } | null
+  const caseStudyRef = useRef<HTMLDivElement>(null)
+
+  // Apply syntax highlighting to code blocks after render
+  useEffect(() => {
+    if (!caseStudyRef.current) return
+    const blocks = caseStudyRef.current.querySelectorAll("pre code")
+    blocks.forEach((block) => {
+      // Skip if already highlighted
+      if (block.classList.contains("hljs")) return
+      highlight.highlightElement(block as HTMLElement)
+    })
+  }, [project?.caseStudy])
 
   if (!project) {
     return (
@@ -146,7 +186,8 @@ function ProjectCaseStudyComponent() {
         {/* Case study body */}
         {project.caseStudy && project.caseStudy.trim() ? (
           <section
-            className="prose prose-invert prose-headings:font-display prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-wide prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-relaxed prose-a:text-primary prose-a:underline prose-strong:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:rounded prose-blockquote:border-l-primary prose-li:my-1 prose-img:my-6 prose-img:rounded-lg prose-img:border prose-img:border-border max-w-none font-mono"
+            ref={caseStudyRef}
+            className="prose prose-invert prose-headings:font-display prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-wide prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-relaxed prose-a:text-primary prose-a:underline prose-strong:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:rounded prose-blockquote:border-l-primary prose-li:my-1 prose-img:my-6 prose-img:rounded-lg prose-img:border prose-img:border-border max-w-none font-mono [&_code]:font-mono [&_pre]:my-6 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:border [&_pre]:border-border [&_pre]:bg-[#1c2128] [&_pre]:p-4 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-sm [&_pre_code]:leading-relaxed"
             dangerouslySetInnerHTML={{ __html: project.caseStudy }}
           />
         ) : (
