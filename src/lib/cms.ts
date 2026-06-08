@@ -32,6 +32,9 @@ export const heroSchema = z.object({
   openToWork: z.boolean().optional(),
   logoUrl: z.string().nullable().optional(),
   logoKey: z.string().nullable().optional(),
+  typedLines: z.string().optional(),
+  cvButtonLabel: z.string().optional(),
+  researchButtonLabel: z.string().optional(),
 })
 
 export const statSchema = z.object({

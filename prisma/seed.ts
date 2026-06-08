@@ -44,6 +44,20 @@ async function main() {
       sponsorshipInfo: "No sponsorship needed",
       resumeUrl: "#",
       openToWork: true,
+      typedLines: [
+        "$ whoami",
+        "fouzia_tamanna",
+        "$ role --current",
+        "SOC Analyst (Tier 2) @ SecureNet Operations",
+        "$ focus --primary",
+        "Threat Detection · Incident Response · SIEM",
+        "$ certs --list",
+        "Security+ · CSA · CCNA · BTL1",
+        "$ status",
+        "[+] All systems nominal. Listening for anomalies...",
+      ].join("\n"),
+      cvButtonLabel: "Download CV",
+      researchButtonLabel: "View Research",
     },
   })
 

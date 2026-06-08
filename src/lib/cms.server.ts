@@ -110,6 +110,10 @@ export async function getHeroServer() {
       logoUrl: null,
       logoKey: null,
       updatedAt: new Date(),
+      typedLines:
+        "$ whoami\nfouzia_tamanna\n$ role --current\nSOC Analyst (Tier 2) @ SecureNet Operations\n$ focus --primary\nThreat Detection · Incident Response · SIEM\n$ certs --list\nSecurity+ · CSA · CCNA · BTL1\n$ status\n[+] All systems nominal. Listening for anomalies...",
+      cvButtonLabel: "Download CV",
+      researchButtonLabel: "View Research",
     }
   }
   return hero

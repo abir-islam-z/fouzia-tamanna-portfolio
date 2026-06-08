@@ -37,6 +37,9 @@ export type HeroMinAggregateOutputType = {
   logoKey: string | null
   logoUrl: string | null
   subtitle: string | null
+  typedLines: string | null
+  cvButtonLabel: string | null
+  researchButtonLabel: string | null
 }
 
 export type HeroMaxAggregateOutputType = {
@@ -52,6 +55,9 @@ export type HeroMaxAggregateOutputType = {
   logoKey: string | null
   logoUrl: string | null
   subtitle: string | null
+  typedLines: string | null
+  cvButtonLabel: string | null
+  researchButtonLabel: string | null
 }
 
 export type HeroCountAggregateOutputType = {
@@ -67,6 +73,9 @@ export type HeroCountAggregateOutputType = {
   logoKey: number
   logoUrl: number
   subtitle: number
+  typedLines: number
+  cvButtonLabel: number
+  researchButtonLabel: number
   _all: number
 }
 
@@ -84,6 +93,9 @@ export type HeroMinAggregateInputType = {
   logoKey?: true
   logoUrl?: true
   subtitle?: true
+  typedLines?: true
+  cvButtonLabel?: true
+  researchButtonLabel?: true
 }
 
 export type HeroMaxAggregateInputType = {
@@ -99,6 +111,9 @@ export type HeroMaxAggregateInputType = {
   logoKey?: true
   logoUrl?: true
   subtitle?: true
+  typedLines?: true
+  cvButtonLabel?: true
+  researchButtonLabel?: true
 }
 
 export type HeroCountAggregateInputType = {
@@ -114,6 +129,9 @@ export type HeroCountAggregateInputType = {
   logoKey?: true
   logoUrl?: true
   subtitle?: true
+  typedLines?: true
+  cvButtonLabel?: true
+  researchButtonLabel?: true
   _all?: true
 }
 
@@ -202,6 +220,9 @@ export type HeroGroupByOutputType = {
   logoKey: string | null
   logoUrl: string | null
   subtitle: string
+  typedLines: string
+  cvButtonLabel: string
+  researchButtonLabel: string
   _count: HeroCountAggregateOutputType | null
   _min: HeroMinAggregateOutputType | null
   _max: HeroMaxAggregateOutputType | null
@@ -238,6 +259,9 @@ export type HeroWhereInput = {
   logoKey?: Prisma.StringNullableFilter<"Hero"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Hero"> | string | null
   subtitle?: Prisma.StringFilter<"Hero"> | string
+  typedLines?: Prisma.StringFilter<"Hero"> | string
+  cvButtonLabel?: Prisma.StringFilter<"Hero"> | string
+  researchButtonLabel?: Prisma.StringFilter<"Hero"> | string
 }
 
 export type HeroOrderByWithRelationInput = {
@@ -253,6 +277,9 @@ export type HeroOrderByWithRelationInput = {
   logoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   subtitle?: Prisma.SortOrder
+  typedLines?: Prisma.SortOrder
+  cvButtonLabel?: Prisma.SortOrder
+  researchButtonLabel?: Prisma.SortOrder
 }
 
 export type HeroWhereUniqueInput = Prisma.AtLeast<{
@@ -271,6 +298,9 @@ export type HeroWhereUniqueInput = Prisma.AtLeast<{
   logoKey?: Prisma.StringNullableFilter<"Hero"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Hero"> | string | null
   subtitle?: Prisma.StringFilter<"Hero"> | string
+  typedLines?: Prisma.StringFilter<"Hero"> | string
+  cvButtonLabel?: Prisma.StringFilter<"Hero"> | string
+  researchButtonLabel?: Prisma.StringFilter<"Hero"> | string
 }, "id">
 
 export type HeroOrderByWithAggregationInput = {
@@ -286,6 +316,9 @@ export type HeroOrderByWithAggregationInput = {
   logoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   subtitle?: Prisma.SortOrder
+  typedLines?: Prisma.SortOrder
+  cvButtonLabel?: Prisma.SortOrder
+  researchButtonLabel?: Prisma.SortOrder
   _count?: Prisma.HeroCountOrderByAggregateInput
   _max?: Prisma.HeroMaxOrderByAggregateInput
   _min?: Prisma.HeroMinOrderByAggregateInput
@@ -307,6 +340,9 @@ export type HeroScalarWhereWithAggregatesInput = {
   logoKey?: Prisma.StringNullableWithAggregatesFilter<"Hero"> | string | null
   logoUrl?: Prisma.StringNullableWithAggregatesFilter<"Hero"> | string | null
   subtitle?: Prisma.StringWithAggregatesFilter<"Hero"> | string
+  typedLines?: Prisma.StringWithAggregatesFilter<"Hero"> | string
+  cvButtonLabel?: Prisma.StringWithAggregatesFilter<"Hero"> | string
+  researchButtonLabel?: Prisma.StringWithAggregatesFilter<"Hero"> | string
 }
 
 export type HeroCreateInput = {
@@ -322,6 +358,9 @@ export type HeroCreateInput = {
   logoKey?: string | null
   logoUrl?: string | null
   subtitle?: string
+  typedLines?: string
+  cvButtonLabel?: string
+  researchButtonLabel?: string
 }
 
 export type HeroUncheckedCreateInput = {
@@ -337,6 +376,9 @@ export type HeroUncheckedCreateInput = {
   logoKey?: string | null
   logoUrl?: string | null
   subtitle?: string
+  typedLines?: string
+  cvButtonLabel?: string
+  researchButtonLabel?: string
 }
 
 export type HeroUpdateInput = {
@@ -352,6 +394,9 @@ export type HeroUpdateInput = {
   logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtitle?: Prisma.StringFieldUpdateOperationsInput | string
+  typedLines?: Prisma.StringFieldUpdateOperationsInput | string
+  cvButtonLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  researchButtonLabel?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type HeroUncheckedUpdateInput = {
@@ -367,6 +412,9 @@ export type HeroUncheckedUpdateInput = {
   logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtitle?: Prisma.StringFieldUpdateOperationsInput | string
+  typedLines?: Prisma.StringFieldUpdateOperationsInput | string
+  cvButtonLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  researchButtonLabel?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type HeroCreateManyInput = {
@@ -382,6 +430,9 @@ export type HeroCreateManyInput = {
   logoKey?: string | null
   logoUrl?: string | null
   subtitle?: string
+  typedLines?: string
+  cvButtonLabel?: string
+  researchButtonLabel?: string
 }
 
 export type HeroUpdateManyMutationInput = {
@@ -397,6 +448,9 @@ export type HeroUpdateManyMutationInput = {
   logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtitle?: Prisma.StringFieldUpdateOperationsInput | string
+  typedLines?: Prisma.StringFieldUpdateOperationsInput | string
+  cvButtonLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  researchButtonLabel?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type HeroUncheckedUpdateManyInput = {
@@ -412,6 +466,9 @@ export type HeroUncheckedUpdateManyInput = {
   logoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtitle?: Prisma.StringFieldUpdateOperationsInput | string
+  typedLines?: Prisma.StringFieldUpdateOperationsInput | string
+  cvButtonLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  researchButtonLabel?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type HeroCountOrderByAggregateInput = {
@@ -427,6 +484,9 @@ export type HeroCountOrderByAggregateInput = {
   logoKey?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   subtitle?: Prisma.SortOrder
+  typedLines?: Prisma.SortOrder
+  cvButtonLabel?: Prisma.SortOrder
+  researchButtonLabel?: Prisma.SortOrder
 }
 
 export type HeroMaxOrderByAggregateInput = {
@@ -442,6 +502,9 @@ export type HeroMaxOrderByAggregateInput = {
   logoKey?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   subtitle?: Prisma.SortOrder
+  typedLines?: Prisma.SortOrder
+  cvButtonLabel?: Prisma.SortOrder
+  researchButtonLabel?: Prisma.SortOrder
 }
 
 export type HeroMinOrderByAggregateInput = {
@@ -457,6 +520,9 @@ export type HeroMinOrderByAggregateInput = {
   logoKey?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   subtitle?: Prisma.SortOrder
+  typedLines?: Prisma.SortOrder
+  cvButtonLabel?: Prisma.SortOrder
+  researchButtonLabel?: Prisma.SortOrder
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -482,6 +548,9 @@ export type HeroSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   logoKey?: boolean
   logoUrl?: boolean
   subtitle?: boolean
+  typedLines?: boolean
+  cvButtonLabel?: boolean
+  researchButtonLabel?: boolean
 }, ExtArgs["result"]["hero"]>
 
 export type HeroSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -497,6 +566,9 @@ export type HeroSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   logoKey?: boolean
   logoUrl?: boolean
   subtitle?: boolean
+  typedLines?: boolean
+  cvButtonLabel?: boolean
+  researchButtonLabel?: boolean
 }, ExtArgs["result"]["hero"]>
 
 export type HeroSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -512,6 +584,9 @@ export type HeroSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   logoKey?: boolean
   logoUrl?: boolean
   subtitle?: boolean
+  typedLines?: boolean
+  cvButtonLabel?: boolean
+  researchButtonLabel?: boolean
 }, ExtArgs["result"]["hero"]>
 
 export type HeroSelectScalar = {
@@ -527,9 +602,12 @@ export type HeroSelectScalar = {
   logoKey?: boolean
   logoUrl?: boolean
   subtitle?: boolean
+  typedLines?: boolean
+  cvButtonLabel?: boolean
+  researchButtonLabel?: boolean
 }
 
-export type HeroOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "introBadge" | "title" | "description" | "openToWork" | "location" | "sponsorshipInfo" | "updatedAt" | "resumeUrl" | "logoKey" | "logoUrl" | "subtitle", ExtArgs["result"]["hero"]>
+export type HeroOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "introBadge" | "title" | "description" | "openToWork" | "location" | "sponsorshipInfo" | "updatedAt" | "resumeUrl" | "logoKey" | "logoUrl" | "subtitle" | "typedLines" | "cvButtonLabel" | "researchButtonLabel", ExtArgs["result"]["hero"]>
 
 export type $HeroPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Hero"
@@ -547,6 +625,9 @@ export type $HeroPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     logoKey: string | null
     logoUrl: string | null
     subtitle: string
+    typedLines: string
+    cvButtonLabel: string
+    researchButtonLabel: string
   }, ExtArgs["result"]["hero"]>
   composites: {}
 }
@@ -982,6 +1063,9 @@ export interface HeroFieldRefs {
   readonly logoKey: Prisma.FieldRef<"Hero", 'String'>
   readonly logoUrl: Prisma.FieldRef<"Hero", 'String'>
   readonly subtitle: Prisma.FieldRef<"Hero", 'String'>
+  readonly typedLines: Prisma.FieldRef<"Hero", 'String'>
+  readonly cvButtonLabel: Prisma.FieldRef<"Hero", 'String'>
+  readonly researchButtonLabel: Prisma.FieldRef<"Hero", 'String'>
 }
     
 

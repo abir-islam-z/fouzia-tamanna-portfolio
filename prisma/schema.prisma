@@ -28,6 +28,9 @@ model Hero {
   logoKey         String?
   logoUrl         String?
   subtitle        String   @default("MSc Computer Networks & Systems Security")
+  typedLines      String   @default("$ whoami\nfouzia_tamanna\n$ role --current\nSOC Analyst (Tier 2) @ SecureNet Operations\n$ focus --primary\nThreat Detection \u00b7 Incident Response \u00b7 SIEM\n$ certs --list\nSecurity+ \u00b7 CSA \u00b7 CCNA \u00b7 BTL1\n$ status\n[+] All systems nominal. Listening for anomalies...")
+  cvButtonLabel   String   @default("Download CV")
+  researchButtonLabel String @default("View Research")
 }
 
 model Stat {

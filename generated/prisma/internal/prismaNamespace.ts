@@ -1514,7 +1514,10 @@ export const HeroScalarFieldEnum = {
   resumeUrl: 'resumeUrl',
   logoKey: 'logoKey',
   logoUrl: 'logoUrl',
-  subtitle: 'subtitle'
+  subtitle: 'subtitle',
+  typedLines: 'typedLines',
+  cvButtonLabel: 'cvButtonLabel',
+  researchButtonLabel: 'researchButtonLabel'
 } as const
 
 export type HeroScalarFieldEnum = (typeof HeroScalarFieldEnum)[keyof typeof HeroScalarFieldEnum]

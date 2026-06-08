@@ -19,9 +19,12 @@ interface HeroData {
   openToWork: boolean
   resumeUrl: string
   logoUrl?: string | null
+  typedLines?: string
+  cvButtonLabel?: string
+  researchButtonLabel?: string
 }
 
-const TYPED_LINES = [
+const DEFAULT_TYPED_LINES = [
   "$ whoami",
   "fouzia_tamanna",
   "$ role --current",
@@ -48,7 +51,14 @@ export default function Hero() {
     openToWork: h?.openToWork ?? true,
     resumeUrl: h?.resumeUrl ?? "#",
     logoUrl: h?.logoUrl ?? null,
+    typedLines: h?.typedLines ?? "",
+    cvButtonLabel: h?.cvButtonLabel ?? "Download CV",
+    researchButtonLabel: h?.researchButtonLabel ?? "View Research",
   }
+
+  const TYPED_LINES = data.typedLines
+    ? data.typedLines.split("\n").filter((l) => l.length > 0)
+    : DEFAULT_TYPED_LINES
 
   const hasContent = Boolean(data.title || data.description || data.introBadge)
   if (!hasContent) return null
@@ -109,7 +119,9 @@ export default function Hero() {
             <span className="h-3 w-3 rounded-full bg-[#febc2e] shadow-[0_0_6px_#febc2e]" />
             <span className="h-3 w-3 rounded-full bg-[#28c840] shadow-[0_0_6px_#28c840]" />
             <span className="ml-3 hidden font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase md:inline">
-              ~/fouzia-portfolio — bash
+              {data.title
+                ? `~/${data.title.toLowerCase().replace(/\s+/g, "-")} — bash`
+                : "~/portfolio — bash"}
             </span>
           </div>
           <div className="cyber-chamfer-sm flex items-center gap-2 border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-[9px] tracking-[0.2em] text-primary uppercase md:text-[10px]">
@@ -179,13 +191,13 @@ export default function Hero() {
                   >
                     <Button variant="glitch" size="lg">
                       <RiDownloadLine size={16} />
-                      Download CV
+                      {data.cvButtonLabel ?? "Download CV"}
                     </Button>
                   </a>
                 )}
                 <a href="#publications">
                   <Button variant="outline" size="lg">
-                    View Research
+                    {data.researchButtonLabel ?? "View Research"}
                     <RiArrowRightUpLine size={16} />
                   </Button>
                 </a>

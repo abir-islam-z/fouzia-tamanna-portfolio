@@ -61,6 +61,9 @@ interface HeroData {
   openToWork: boolean
   logoUrl?: string | null
   logoKey?: string | null
+  typedLines?: string
+  cvButtonLabel?: string
+  researchButtonLabel?: string
 }
 
 interface FooterData {
@@ -552,6 +555,48 @@ function AdminSettingsComponent() {
                 onChange={(e) =>
                   setHeroState({ ...heroState, description: e.target.value })
                 }
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label variant="admin">Download CV Button</Label>
+              <Input
+                variant="admin"
+                value={heroState.cvButtonLabel ?? "Download CV"}
+                onChange={(e) =>
+                  setHeroState({ ...heroState, cvButtonLabel: e.target.value })
+                }
+                placeholder="Download CV"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label variant="admin">View Research Button</Label>
+              <Input
+                variant="admin"
+                value={heroState.researchButtonLabel ?? "View Research"}
+                onChange={(e) =>
+                  setHeroState({
+                    ...heroState,
+                    researchButtonLabel: e.target.value,
+                  })
+                }
+                placeholder="View Research"
+              />
+            </div>
+            <div className="space-y-1.5 md:col-span-2">
+              <Label variant="admin">Terminal Lines</Label>
+              <p className="text-xs text-muted-foreground">
+                One line per row. Lines starting with &quot;$ &quot; appear as
+                commands, others as output. Leave empty for defaults.
+              </p>
+              <Textarea
+                variant="admin"
+                rows={8}
+                value={heroState.typedLines ?? ""}
+                onChange={(e) =>
+                  setHeroState({ ...heroState, typedLines: e.target.value })
+                }
+                placeholder="$ whoami\nfouzia_tamanna\n$ role --current\nSOC Analyst (Tier 2)..."
+                className="font-mono text-xs"
               />
             </div>
           </div>
