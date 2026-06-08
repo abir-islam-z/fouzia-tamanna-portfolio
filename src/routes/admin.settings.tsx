@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { finalizeMediaUploadFn, getPresignedUpload } from "@/lib/cms"
 import {
   footerQuery,
   getQueryClient,
@@ -18,7 +19,6 @@ import {
   useUpdateLandingSection,
   useUpdateSiteSettings,
 } from "@/lib/queries"
-import { finalizeMediaUploadFn, getPresignedUpload } from "@/lib/cms"
 import { cn } from "@/lib/utils"
 import {
   closestCenter,

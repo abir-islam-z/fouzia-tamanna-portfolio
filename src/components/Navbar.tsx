@@ -27,8 +27,7 @@ export function Navbar() {
   ]
 
   const logoUrl = hero?.logoUrl
-  const brandName =
-    settings?.navbarBrand || hero?.title || "Fouzia Tamanna"
+  const brandName = settings?.navbarBrand || hero?.title || "Fouzia Tamanna"
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/60 bg-background/85 px-4 py-4 backdrop-blur-md md:px-6">

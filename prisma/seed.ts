@@ -26,8 +26,8 @@ async function main() {
   await prisma.user.create({
     data: {
       username: "admin",
-      password: hashedPassword
-    }
+      password: hashedPassword,
+    },
   })
   console.log("User 'admin' with password 'password123' created.")
 
@@ -38,12 +38,13 @@ async function main() {
       introBadge: "OPEN TO WORK — SOC ANALYST",
       subtitle: "MSc Computer Networks & Systems Security",
       title: "Fouzia Tamanna",
-      description: "Network Security & SOC Analyst specializing in threat detection, incident response, and systems security.",
+      description:
+        "Network Security & SOC Analyst specializing in threat detection, incident response, and systems security.",
       location: "London, UK",
       sponsorshipInfo: "No sponsorship needed",
       resumeUrl: "#",
-      openToWork: true
-    }
+      openToWork: true,
+    },
   })
 
   // --- Stats ---
@@ -51,7 +52,7 @@ async function main() {
     { label: "Threats Triaged", value: "2K+", order: 1 },
     { label: "Incidents Resolved", value: "150+", order: 2 },
     { label: "Network Uptime", value: "99.9%", order: 3 },
-    { label: "Years in IT Security", value: "4+", order: 4 }
+    { label: "Years in IT Security", value: "4+", order: 4 },
   ]
   for (const stat of stats) {
     await prisma.stat.create({ data: stat })
@@ -63,26 +64,29 @@ async function main() {
       company: "SecureNet Operations",
       role: "SOC Analyst (Tier 2)",
       period: "2023 - Present",
-      description: "Monitor SIEM dashboards, investigate security alerts, and coordinate incident response for enterprise clients. Developed automated playbooks reducing MTTR by 35%.",
+      description:
+        "Monitor SIEM dashboards, investigate security alerts, and coordinate incident response for enterprise clients. Developed automated playbooks reducing MTTR by 35%.",
       skills: "SIEM, Splunk, Splunk SOAR, Wireshark, MITRE ATT&CK",
-      order: 1
+      order: 1,
     },
     {
       company: "CyberDefence Group",
       role: "Network Security Engineer",
       period: "2021 - 2023",
-      description: "Deployed and tuned firewalls, IDS/IPS, and VPN solutions. Led network segmentation project for a financial services client (PCI-DSS compliance).",
+      description:
+        "Deployed and tuned firewalls, IDS/IPS, and VPN solutions. Led network segmentation project for a financial services client (PCI-DSS compliance).",
       skills: "Palo Alto, Cisco ASA, Suricata, Snort, VPN/IPSec, Nessus",
-      order: 2
+      order: 2,
     },
     {
       company: "IT Infrastructure Team",
       role: "Junior Network Administrator",
       period: "2019 - 2021",
-      description: "Managed Active Directory, DNS, DHCP, and group policies across a 500-user environment. Assisted with vulnerability scans and patch cycles.",
+      description:
+        "Managed Active Directory, DNS, DHCP, and group policies across a 500-user environment. Assisted with vulnerability scans and patch cycles.",
       skills: "Active Directory, Windows Server, PowerShell, PRTG, pfSense",
-      order: 3
-    }
+      order: 3,
+    },
   ]
   for (const exp of experiences) {
     await prisma.experience.create({ data: exp })
@@ -137,41 +141,49 @@ async function main() {
   // --- Publications ---
   const publications = [
     {
-      title: "A Survey of Machine-Learning Approaches for Encrypted Traffic Classification in Zero-Trust Networks",
+      title:
+        "A Survey of Machine-Learning Approaches for Encrypted Traffic Classification in Zero-Trust Networks",
       authors: "F. Tamanna, M. Rahman, A. Hossain",
       venue: "IEEE Transactions on Information Forensics and Security",
       year: "2025",
-      abstract: "We survey recent ML-based techniques for classifying encrypted network traffic in zero-trust architectures, compare feature-engineering vs. deep-packet approaches, and propose a hybrid pipeline that achieves 96.4% F1-score on the CIC-IDS-2017 and USTC-TFC2016 datasets while preserving user privacy.",
+      abstract:
+        "We survey recent ML-based techniques for classifying encrypted network traffic in zero-trust architectures, compare feature-engineering vs. deep-packet approaches, and propose a hybrid pipeline that achieves 96.4% F1-score on the CIC-IDS-2017 and USTC-TFC2016 datasets while preserving user privacy.",
       link: "https://doi.org/10.1109/TIFS.2025.0000000",
       tags: "Encrypted Traffic, Machine Learning, Zero Trust, Network Security",
       type: "journal",
       isPublished: true,
-      order: 1
+      order: 1,
     },
     {
-      title: "Detecting Lateral Movement Using Graph Neural Networks on Authentication Logs",
+      title:
+        "Detecting Lateral Movement Using Graph Neural Networks on Authentication Logs",
       authors: "F. Tamanna, S. Khan",
-      venue: "Proceedings of the ACM Conference on Computer and Communications Security (CCS)",
+      venue:
+        "Proceedings of the ACM Conference on Computer and Communications Security (CCS)",
       year: "2024",
-      abstract: "We present GNN-LMD, a graph-neural-network detector that models authentication events as a temporal graph and identifies lateral-movement attack chains with 0.91 AUC. Evaluated against the LANL and OpTC datasets, GNN-LMD detects attacks on average 2.3 hours earlier than baseline rule-based SIEM correlations.",
+      abstract:
+        "We present GNN-LMD, a graph-neural-network detector that models authentication events as a temporal graph and identifies lateral-movement attack chains with 0.91 AUC. Evaluated against the LANL and OpTC datasets, GNN-LMD detects attacks on average 2.3 hours earlier than baseline rule-based SIEM correlations.",
       link: "https://doi.org/10.1145/0000000",
       tags: "Lateral Movement, GNN, SOC, Anomaly Detection",
       type: "conference",
       isPublished: true,
-      order: 2
+      order: 2,
     },
     {
-      title: "Hardening Consumer IoT Devices Against Mirai-Style Botnet Recruitment",
+      title:
+        "Hardening Consumer IoT Devices Against Mirai-Style Botnet Recruitment",
       authors: "F. Tamanna",
-      venue: "Workshop on Security and Privacy of Cyber-Physical Systems (SPCPS)",
+      venue:
+        "Workshop on Security and Privacy of Cyber-Physical Systems (SPCPS)",
       year: "2023",
-      abstract: "We analyse 14 default-credential scanning campaigns against consumer IoT devices and propose a lightweight firmware-level hardening framework that blocks 98.7% of Mirai-style brute-force attempts with under 2% performance overhead on a Raspberry Pi 4B.",
+      abstract:
+        "We analyse 14 default-credential scanning campaigns against consumer IoT devices and propose a lightweight firmware-level hardening framework that blocks 98.7% of Mirai-style brute-force attempts with under 2% performance overhead on a Raspberry Pi 4B.",
       link: "https://arxiv.org/abs/0000.00000",
       tags: "IoT Security, Botnets, Firmware Hardening, Embedded Systems",
       type: "workshop",
       isPublished: true,
-      order: 3
-    }
+      order: 3,
+    },
   ]
   for (const pub of publications) {
     await prisma.publication.create({ data: pub })
@@ -182,15 +194,17 @@ async function main() {
     {
       name: "Daniel Okafor",
       role: "SOC Lead at SecureNet Operations",
-      content: "Fouzia is one of the sharpest analysts I've worked with. Her detection-engineering work cut our false-positive rate in half and her runbooks are now team-standard.",
-      order: 1
+      content:
+        "Fouzia is one of the sharpest analysts I've worked with. Her detection-engineering work cut our false-positive rate in half and her runbooks are now team-standard.",
+      order: 1,
     },
     {
       name: "Priya Mehta",
       role: "CISO at FinSecure Ltd",
-      content: "During our PCI-DSS audit, Fouzia's network segmentation design and documentation passed on the first review. Rare to see that level of rigour from someone so early in their career.",
-      order: 2
-    }
+      content:
+        "During our PCI-DSS audit, Fouzia's network segmentation design and documentation passed on the first review. Rare to see that level of rigour from someone so early in their career.",
+      order: 2,
+    },
   ]
   for (const testimonial of testimonials) {
     await prisma.testimonial.create({ data: testimonial })
@@ -203,29 +217,29 @@ async function main() {
       issuer: "CompTIA",
       date: "2024",
       link: "https://www.comptia.org/certifications/security",
-      order: 1
+      order: 1,
     },
     {
       title: "Certified SOC Analyst (CSA)",
       issuer: "EC-Council",
       date: "2023",
       link: "https://www.eccouncil.org/programs/certified-soc-analyst-csa/",
-      order: 2
+      order: 2,
     },
     {
       title: "Cisco Certified Network Associate (CCNA)",
       issuer: "Cisco",
       date: "2022",
       link: "https://www.cisco.com/site/us/en/learn/training-certification/certifications/associate/ccna/index.html",
-      order: 3
+      order: 3,
     },
     {
       title: "BTL1 (Blue Team Level 1)",
       issuer: "Security Blue Team",
       date: "2023",
       link: "https://securityblue.team/certifications/btl1-blue-team-level-1/",
-      order: 4
-    }
+      order: 4,
+    },
   ]
   for (const cert of certifications) {
     await prisma.certification.create({ data: cert })
@@ -240,21 +254,69 @@ async function main() {
       linkedin: "https://linkedin.com/in/fouzia-tamanna",
       github: "https://github.com/fouzia-tamanna",
       twitter: "#",
-      availability: "Open for SOC Analyst & Network Security Roles"
-    }
+      availability: "Open for SOC Analyst & Network Security Roles",
+    },
   })
   console.log("Footer seeded.")
 
   // --- Landing Sections ---
   const sections = [
-    { id: "hero", label: "Hero", badge: "// SECURE_SESSION.0001", order: 1, enabled: true },
-    { id: "stats", label: "Stats / Profile", badge: "// PROFILE.SYS", order: 2, enabled: true },
-    { id: "experience", label: "Experience", badge: "// TIMELINE.LOG", order: 3, enabled: true },
-    { id: "projects", label: "Projects", badge: "// PROJECTS.MKD", order: 4, enabled: true },
-    { id: "testimonials", label: "Testimonials", badge: "// PEER_REVIEWS.LOG", order: 5, enabled: true },
-    { id: "certifications", label: "Certifications", badge: "// CREDENTIALS.CRT", order: 6, enabled: true },
-    { id: "publications", label: "Publications", badge: "// RESEARCH · PUBLICATIONS", order: 7, enabled: true },
-    { id: "contact", label: "Contact", badge: "// CONTACT.SH", order: 8, enabled: true },
+    {
+      id: "hero",
+      label: "Hero",
+      badge: "// SECURE_SESSION.0001",
+      order: 1,
+      enabled: true,
+    },
+    {
+      id: "stats",
+      label: "Stats / Profile",
+      badge: "// PROFILE.SYS",
+      order: 2,
+      enabled: true,
+    },
+    {
+      id: "experience",
+      label: "Experience",
+      badge: "// TIMELINE.LOG",
+      order: 3,
+      enabled: true,
+    },
+    {
+      id: "projects",
+      label: "Projects",
+      badge: "// PROJECTS.MKD",
+      order: 4,
+      enabled: true,
+    },
+    {
+      id: "testimonials",
+      label: "Testimonials",
+      badge: "// PEER_REVIEWS.LOG",
+      order: 5,
+      enabled: true,
+    },
+    {
+      id: "certifications",
+      label: "Certifications",
+      badge: "// CREDENTIALS.CRT",
+      order: 6,
+      enabled: true,
+    },
+    {
+      id: "publications",
+      label: "Publications",
+      badge: "// RESEARCH · PUBLICATIONS",
+      order: 7,
+      enabled: true,
+    },
+    {
+      id: "contact",
+      label: "Contact",
+      badge: "// CONTACT.SH",
+      order: 8,
+      enabled: true,
+    },
   ]
   for (const s of sections) {
     await prisma.landingSection.create({
@@ -283,8 +345,7 @@ async function main() {
   console.log("Seeding complete!")
 }
 
-main()
-  .catch((e) => {
-    console.error("Seeding failed:", e)
-    process.exit(1)
-  })
+main().catch((e) => {
+  console.error("Seeding failed:", e)
+  process.exit(1)
+})
