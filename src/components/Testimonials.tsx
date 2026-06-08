@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
+import { testimonialsQuery } from "@/lib/queries"
 import { RiDoubleQuotesL } from "@remixicon/react"
-import { getTestimonials } from "@/lib/cms"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 interface TestimonialItem {
     name: string
@@ -8,27 +8,9 @@ interface TestimonialItem {
     content: string
 }
 
-/**
- * Cyberpunk Testimonials.
- *
- * - 3-column grid of chamfered cards (stacks on mobile).
- * - Each card has a terminal ">>" prompt leading into the quote.
- * - Author block uses a chamfered monogram instead of a round avatar.
- */
 export default function Testimonials() {
-    const [testimonials, setTestimonials] = useState<TestimonialItem[]>([])
-
-    useEffect(() => {
-        async function loadData() {
-            try {
-                const data = await getTestimonials()
-                if (data && data.length > 0) setTestimonials(data as TestimonialItem[])
-            } catch (error) {
-                console.error("Failed to fetch testimonials.", error)
-            }
-        }
-        loadData()
-    }, [])
+    const { data: rawTestimonials } = useSuspenseQuery(testimonialsQuery)
+    const testimonials = (rawTestimonials ?? []) as TestimonialItem[]
 
     if (testimonials.length === 0) return null
 
@@ -52,11 +34,9 @@ export default function Testimonials() {
                             key={i}
                             className="group relative border border-border bg-card/60 p-6 transition-all hover:border-primary hover:neon-glow-sm cyber-chamfer md:p-8"
                         >
-                            {/* Quote mark, terminal style */}
                             <RiDoubleQuotesL
                                 className="absolute right-6 top-6 size-10 text-primary/15 transition-colors group-hover:text-primary/30 md:size-12"
                             />
-                            {/* Top corner index */}
                             <div className="absolute left-4 top-4 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40">
                                 SIG_0{i + 1}
                             </div>

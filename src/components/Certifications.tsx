@@ -1,6 +1,6 @@
-import { getCertifications } from "@/lib/cms"
+import { certificationsQuery } from "@/lib/queries"
 import { RiShieldCheckLine, RiExternalLinkLine } from "@remixicon/react"
-import { useEffect, useState } from "react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 interface CertificationItem {
     title: string
@@ -9,27 +9,9 @@ interface CertificationItem {
     link?: string | null
 }
 
-/**
- * Cyberpunk Certifications.
- *
- * - Terminal-style list — each cert is a row in a monospace log.
- * - Date appears as a "[YYYY]" tag, like a commit timestamp.
- * - Hover reveals an external link chevron.
- */
 export default function Certifications() {
-    const [certs, setCerts] = useState<Array<CertificationItem>>([])
-
-    useEffect(() => {
-        async function loadData() {
-            try {
-                const data = await getCertifications()
-                if (data && data.length > 0) setCerts(data as Array<CertificationItem>)
-            } catch (error) {
-                console.error("Failed to fetch certifications.", error)
-            }
-        }
-        loadData()
-    }, [])
+    const { data: rawCerts } = useSuspenseQuery(certificationsQuery)
+    const certs = (rawCerts ?? []) as CertificationItem[]
 
     if (certs.length === 0) return null
 

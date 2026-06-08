@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Table,
   TableBody,
@@ -10,7 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { deleteProject, getProjects, updateProject } from "@/lib/cms"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  getQueryClient,
+  projectsQuery,
+  useDeleteProject,
+  useUpdateProject,
+} from "@/lib/queries"
 import {
   RiAddLine,
   RiDeleteBinLine,
@@ -18,8 +23,9 @@ import {
   RiStarFill,
   RiStarLine,
 } from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 interface ProjectItem {
@@ -35,23 +41,21 @@ interface ProjectItem {
 }
 
 function AdminProjectsComponent() {
-  const [projects, setProjects] = useState<Array<ProjectItem>>([])
-  const [loading, setLoading] = useState(true)
+  const { data: rawProjects = [] } = useSuspenseQuery(projectsQuery)
+  const projects = rawProjects as unknown as Array<ProjectItem>
 
-  useEffect(() => {
-    async function loadData() {
-      const data = await getProjects()
-      setProjects(data as Array<ProjectItem>)
-      setLoading(false)
-    }
-    loadData()
-  }, [])
+  const updateMutation = useUpdateProject()
+  const deleteMutation = useDeleteProject()
+
+  const [localProjects, setLocalProjects] = useState<Array<ProjectItem> | null>(
+    null
+  )
+  const displayItems = localProjects ?? projects
 
   const handleSave = async (item: ProjectItem) => {
     try {
-      await updateProject({ data: item })
-      const updated = await getProjects()
-      setProjects(updated as Array<ProjectItem>)
+      await updateMutation.mutateAsync(item)
+      setLocalProjects(null)
       toast.success(`Project "${item.title}" saved!`)
     } catch (error: any) {
       console.error("Project save failed:", error)
@@ -62,12 +66,9 @@ function AdminProjectsComponent() {
   const handleDelete = async (id?: number) => {
     try {
       if (id) {
-        await deleteProject({ data: id })
-        const updated = await getProjects()
-        setProjects(updated as Array<ProjectItem>)
+        await deleteMutation.mutateAsync(id)
+        setLocalProjects(null)
         toast.success("Project deleted.")
-      } else {
-        setProjects(projects.filter((p) => p.id !== undefined))
       }
     } catch (error: any) {
       console.error("Project delete failed:", error)
@@ -76,35 +77,23 @@ function AdminProjectsComponent() {
   }
 
   const handleAdd = () => {
-    setProjects([
-      {
-        title: "New Project",
-        description: "Brief summary...",
-        image:
-          "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
-        tags: "React, AI",
-        isFeatured: false,
-        order: projects.length,
-      },
-      ...projects,
-    ])
+    const newItem: ProjectItem = {
+      title: "New Project",
+      description: "Brief summary...",
+      image:
+        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      tags: "React, AI",
+      isFeatured: false,
+      order: displayItems.length,
+    }
+    setLocalProjects([newItem, ...displayItems])
   }
 
   const update = (i: number, patch: Partial<ProjectItem>) => {
-    const next = [...projects]
+    const next = [...displayItems]
     next[i] = { ...next[i], ...patch }
-    setProjects(next)
+    setLocalProjects(next)
   }
-
-  if (loading)
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Loading projects…</p>
-        </div>
-      </div>
-    )
 
   return (
     <div className="space-y-8">
@@ -121,11 +110,11 @@ function AdminProjectsComponent() {
         </Button>
       </header>
 
-      {projects.length > 0 ? (
+      {displayItems.length > 0 ? (
         <div className="space-y-6">
-          {projects.map((item, i) => (
+          {displayItems.map((item, i) => (
             <div
-              key={i}
+              key={item.id ?? `new-${i}`}
               className="rounded-lg border border-border bg-card p-4"
             >
               <div className="mb-3 flex items-center gap-3">
@@ -280,5 +269,9 @@ function AdminProjectsComponent() {
 }
 
 export const Route = createFileRoute("/admin/projects")({
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    await queryClient.ensureQueryData(projectsQuery)
+  },
   component: AdminProjectsComponent,
 })

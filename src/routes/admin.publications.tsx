@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Table,
   TableBody,
@@ -10,19 +9,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Textarea } from "@/components/ui/textarea"
 import {
-  deletePublication,
-  getPublications,
-  updatePublication,
-} from "@/lib/cms"
+  getQueryClient,
+  publicationsQuery,
+  useDeletePublication,
+  useUpdatePublication,
+} from "@/lib/queries"
 import {
   RiAddLine,
   RiDeleteBinLine,
   RiExternalLinkLine,
   RiSaveLine,
 } from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 interface PublicationItem {
@@ -48,33 +50,21 @@ const TYPE_OPTIONS: PublicationItem["type"][] = [
 ]
 
 function AdminPublicationsComponent() {
-  const [pubs, setPubs] = useState<Array<PublicationItem>>([])
-  const [loading, setLoading] = useState(true)
+  const { data: rawPubs = [] } = useSuspenseQuery(publicationsQuery(true))
+  const pubs = rawPubs as unknown as Array<PublicationItem>
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = (await getPublications({
-          data: { includeUnpublished: true },
-        })) as PublicationItem[]
-        setPubs(data ?? [])
-      } catch (err) {
-        console.error("Failed to load publications.", err)
-        toast.error("Failed to load publications")
-      } finally {
-        setLoading(false)
-      }
-    }
-    loadData()
-  }, [])
+  const updateMutation = useUpdatePublication()
+  const deleteMutation = useDeletePublication()
+
+  const [localPubs, setLocalPubs] = useState<Array<PublicationItem> | null>(
+    null
+  )
+  const displayItems = localPubs ?? pubs
 
   const handleSave = async (item: PublicationItem) => {
     try {
-      await updatePublication({ data: item })
-      const updated = (await getPublications({
-        data: { includeUnpublished: true },
-      })) as PublicationItem[]
-      setPubs(updated ?? [])
+      await updateMutation.mutateAsync(item)
+      setLocalPubs(null)
       toast.success("Publication saved!")
     } catch (error: any) {
       console.error("Publication save failed:", error)
@@ -85,56 +75,36 @@ function AdminPublicationsComponent() {
   const handleDelete = async (id?: number) => {
     if (id) {
       try {
-        await deletePublication({ data: id })
-        const updated = (await getPublications({
-          data: { includeUnpublished: true },
-        })) as PublicationItem[]
-        setPubs(updated ?? [])
+        await deleteMutation.mutateAsync(id)
+        setLocalPubs(null)
         toast.success("Publication removed.")
       } catch (error: any) {
         console.error("Publication delete failed:", error)
         toast.error(error?.message || "Failed to remove publication")
       }
-    } else {
-      setPubs(pubs.filter((p) => p.id !== undefined))
     }
   }
 
   const handleAdd = () => {
-    setPubs([
-      {
-        title: "New Publication Title",
-        authors: "F. Tamanna",
-        venue: "Conference / Journal Name",
-        year: new Date().getFullYear().toString(),
-        abstract: "Short abstract describing the contribution…",
-        link: "",
-        tags: "Network Security, SOC",
-        type: "journal",
-        isPublished: true,
-        order: pubs.length,
-      },
-      ...pubs,
-    ])
+    const newItem: PublicationItem = {
+      title: "New Publication Title",
+      authors: "F. Tamanna",
+      venue: "Conference / Journal Name",
+      year: new Date().getFullYear().toString(),
+      abstract: "Short abstract describing the contribution…",
+      link: "",
+      tags: "Network Security, SOC",
+      type: "journal",
+      isPublished: true,
+      order: displayItems.length,
+    }
+    setLocalPubs([newItem, ...displayItems])
   }
 
   const update = (i: number, patch: Partial<PublicationItem>) => {
-    const next = [...pubs]
+    const next = [...displayItems]
     next[i] = { ...next[i], ...patch }
-    setPubs(next)
-  }
-
-  if (loading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">
-            Loading publications…
-          </p>
-        </div>
-      </div>
-    )
+    setLocalPubs(next)
   }
 
   return (
@@ -154,9 +124,9 @@ function AdminPublicationsComponent() {
         </Button>
       </header>
 
-      {pubs.length > 0 ? (
+      {displayItems.length > 0 ? (
         <div className="space-y-6">
-          {pubs.map((item, i) => (
+          {displayItems.map((item, i) => (
             <div
               key={item.id ?? `new-${i}`}
               className="rounded-lg border border-border bg-card p-4"
@@ -202,9 +172,7 @@ function AdminPublicationsComponent() {
                       <Input
                         variant="admin"
                         value={item.authors}
-                        onChange={(e) =>
-                          update(i, { authors: e.target.value })
-                        }
+                        onChange={(e) => update(i, { authors: e.target.value })}
                         className="h-9"
                         placeholder="F. Tamanna, M. Rahman"
                       />
@@ -338,7 +306,8 @@ function AdminPublicationsComponent() {
         </div>
       ) : (
         <div className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-          No publications yet. Click "Add Publication" to create your first.
+          No publications yet. Click &quot;Add Publication&quot; to create your
+          first.
         </div>
       )}
     </div>
@@ -346,5 +315,9 @@ function AdminPublicationsComponent() {
 }
 
 export const Route = createFileRoute("/admin/publications")({
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    await queryClient.ensureQueryData(publicationsQuery(true))
+  },
   component: AdminPublicationsComponent,
 })

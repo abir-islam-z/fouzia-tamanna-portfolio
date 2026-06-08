@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import {
     RiGithubFill,
     RiLinkedinBoxFill,
@@ -6,11 +5,13 @@ import {
     RiMailLine,
     RiTwitterXFill,
 } from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { useState } from "react"
+import { toast } from "sonner"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Textarea } from "./ui/textarea"
-import { getFooter, submitContact } from "@/lib/cms"
-import { toast } from "sonner"
+import { footerQuery, useSubmitContact } from "@/lib/queries"
 
 interface FooterData {
     bio: string
@@ -30,52 +31,39 @@ const FALLBACK_FOOTER: FooterData = {
     availability: "Open for Opportunities",
 }
 
-/**
- * Cyberpunk Contact section.
- *
- * - Left: glitched headline with terminal "ls" listing of contact links.
- * - Right: terminal-form card with traffic-light header, chamfered inputs.
- */
 export default function Contact() {
-    const [pending, setPending] = useState(false)
-    const [success, setSuccess] = useState(false)
-    const [footer, setFooter] = useState<FooterData>(FALLBACK_FOOTER)
+    const { data: rawFooter } = useSuspenseQuery(footerQuery)
+    const f = rawFooter as any
+    const footer: FooterData = {
+        bio: f?.bio || FALLBACK_FOOTER.bio,
+        email: f?.email || FALLBACK_FOOTER.email,
+        linkedin: f?.linkedin || FALLBACK_FOOTER.linkedin,
+        github: f?.github || FALLBACK_FOOTER.github,
+        twitter: f?.twitter || FALLBACK_FOOTER.twitter,
+        availability: f?.availability || FALLBACK_FOOTER.availability,
+    }
 
-    useEffect(() => {
-        async function loadFooter() {
-            try {
-                const data = await getFooter()
-                setFooter(data)
-            } catch (err) {
-                console.error("Failed to fetch footer data.", err)
-            }
-        }
-        loadFooter()
-    }, [])
+    const submitMutation = useSubmitContact()
+    const [success, setSuccess] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setPending(true)
         const formData = new FormData(e.currentTarget)
         const data = Object.fromEntries(formData.entries())
 
         try {
-            const payload = {
+            await submitMutation.mutateAsync({
                 name: String(data.name || ""),
                 email: String(data.email || ""),
                 message: String(data.message || ""),
-            }
-            await submitContact({ data: payload })
+            })
             setSuccess(true)
             e.currentTarget.reset()
             toast.success("Message sent! I'll get back to you soon.")
         } catch (err: any) {
-            console.error("Submission error:", err)
             const errorMessage =
                 err?.message || "Something went wrong. Please try again later."
             toast.error(errorMessage)
-        } finally {
-            setPending(false)
         }
     }
 
@@ -142,7 +130,6 @@ export default function Contact() {
 
                 {/* Right Side - Terminal Form */}
                 <div className="relative border border-border bg-card/70 transition-all hover:border-primary hover:neon-glow cyber-chamfer-lg">
-                    {/* Traffic-light header */}
                     <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-4 py-3">
                         <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57] shadow-[0_0_6px_#ff5f57]" />
                         <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e] shadow-[0_0_6px_#febc2e]" />
@@ -223,12 +210,12 @@ export default function Contact() {
                                 </div>
                                 <Button
                                     type="submit"
-                                    disabled={pending}
+                                    disabled={submitMutation.isPending}
                                     variant="glitch"
                                     size="lg"
                                     className="h-12 w-full md:h-14"
                                 >
-                                    {pending ? (
+                                    {submitMutation.isPending ? (
                                         <span className="flex items-center gap-2">
                                             <span className="caret h-3 w-3" />
                                             TRANSMITTING...
@@ -250,7 +237,7 @@ export default function Contact() {
                         <div className="font-display text-2xl font-black uppercase tracking-wide italic md:justify-start">
                             FT
                         </div>
-                        <p className="mx-auto max-w-[250px] font-mono text-sm leading-relaxed text-muted-foreground md:mx-0">
+                        <p className="mx-auto max-w-62.5 font-mono text-sm leading-relaxed text-muted-foreground md:mx-0">
                             {footer.bio}
                         </p>
                     </div>

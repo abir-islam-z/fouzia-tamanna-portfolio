@@ -1,3 +1,14 @@
+import {
+  certificationsQuery,
+  experienceQuery,
+  footerQuery,
+  getQueryClient,
+  heroQuery,
+  projectsQuery,
+  publicationsQuery,
+  statsQuery,
+  testimonialsQuery,
+} from "@/lib/queries"
 import { createFileRoute } from "@tanstack/react-router"
 import { Suspense, lazy } from "react"
 
@@ -34,5 +45,18 @@ function IndexComponent() {
 }
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    await Promise.all([
+      queryClient.ensureQueryData(heroQuery),
+      queryClient.ensureQueryData(statsQuery),
+      queryClient.ensureQueryData(experienceQuery),
+      queryClient.ensureQueryData(projectsQuery),
+      queryClient.ensureQueryData(testimonialsQuery),
+      queryClient.ensureQueryData(certificationsQuery),
+      queryClient.ensureQueryData(publicationsQuery()),
+      queryClient.ensureQueryData(footerQuery),
+    ])
+  },
   component: IndexComponent,
 })

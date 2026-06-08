@@ -1,6 +1,6 @@
-import { getProjects } from "@/lib/cms"
+import { projectsQuery } from "@/lib/queries"
 import { RiArrowRightUpLine, RiShieldKeyholeLine } from "@remixicon/react"
-import { useEffect, useState } from "react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { Button } from "./ui/button"
 
 interface ProjectItem {
@@ -49,28 +49,12 @@ const FALLBACK_PROJECTS: Array<ProjectItem> = [
   },
 ]
 
-/**
- * Cyberpunk Projects section.
- *
- * - Featured project is a wide terminal-card with image + meta + CTAs.
- * - Other projects are smaller chamfered cards in a 2-column grid.
- * - "LIVE" status dot on featured, image scan-sweep on hover.
- */
 export default function Projects() {
-  const [projects, setProjects] =
-    useState<Array<ProjectItem>>(FALLBACK_PROJECTS)
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await getProjects()
-        if (data && data.length > 0) setProjects(data)
-      } catch (error) {
-        console.error("Failed to fetch projects, using fallback.", error)
-      }
-    }
-    loadData()
-  }, [])
+  const { data: rawProjects } = useSuspenseQuery(projectsQuery)
+  const projects =
+    rawProjects && rawProjects.length > 0
+      ? (rawProjects as Array<ProjectItem>)
+      : FALLBACK_PROJECTS
 
   const featuredProject = projects.find((p) => p.isFeatured) || projects[0]
   const otherProjects = projects.filter((p) => p !== featuredProject)
@@ -100,7 +84,6 @@ export default function Projects() {
           {/* Featured Project */}
           {featuredProject && (
             <div className="group hover:neon-glow cyber-chamfer-lg relative grid items-center gap-6 border border-border bg-card/60 p-6 transition-all hover:border-primary md:grid-cols-2 md:gap-8 md:p-8">
-              {/* Top-left status badge */}
               <div className="cyber-chamfer-sm absolute top-4 right-4 z-10 flex items-center gap-2 border border-primary/60 bg-primary/10 px-2.5 py-1 font-mono text-[9px] tracking-[0.2em] text-primary uppercase md:top-6 md:right-6 md:text-[10px]">
                 <span className="status-dot h-1.5 w-1.5" />
                 FEATURED
@@ -161,8 +144,7 @@ export default function Projects() {
                     alt={featuredProject.title}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  {/* Scan sweep on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60" />
+                  <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-60" />
                   <div className="scan-sweep absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100" />
                 </div>
               </div>
@@ -183,7 +165,7 @@ export default function Projects() {
                       alt={project.title}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60" />
+                    <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-60" />
                   </div>
                   <div className="space-y-3 px-1 py-3 md:space-y-4 md:py-4">
                     <div className="flex flex-wrap gap-1.5">

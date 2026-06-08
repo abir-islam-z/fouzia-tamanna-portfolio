@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { finalizeMediaUploadFn, getPresignedUpload } from "@/lib/cms"
 import {
-  deleteMedia,
-  finalizeMediaUploadFn,
-  getMedia,
-  getPresignedUpload,
-  getR2Status,
-  updateMedia,
-} from "@/lib/cms"
+  getQueryClient,
+  mediaQuery,
+  queryKeys,
+  r2StatusQuery,
+  useDeleteMedia,
+  useUpdateMedia,
+} from "@/lib/queries"
 import {
   RiAddLine,
   RiCheckLine,
@@ -26,12 +27,12 @@ import {
   RiFileVideoLine,
   RiFolderLine,
   RiImageLine,
-  RiLoader4Line,
   RiPencilLine,
   RiUploadCloud2Line,
 } from "@remixicon/react"
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 
 interface MediaItem {
@@ -91,11 +92,17 @@ function pickIcon(mime: string) {
 }
 
 function AdminMediaComponent() {
-  const [items, setItems] = useState<Array<MediaItem>>([])
-  const [loading, setLoading] = useState(true)
+  const { data: rawItems = [] } = useSuspenseQuery(mediaQuery())
+  const { data: r2Status } = useSuspenseQuery(r2StatusQuery)
+  const items = rawItems as unknown as Array<MediaItem>
+  const r2Ok = r2Status?.ok ?? false
+
+  const deleteMutation = useDeleteMedia()
+  const updateMutation = useUpdateMedia()
+  const queryClient = useQueryClient()
+
   const [folder, setFolder] = useState<string>("all")
   const [search, setSearch] = useState("")
-  const [r2Ok, setR2Ok] = useState<boolean | null>(null)
   const [uploading, setUploading] = useState<
     Array<{
       id: number
@@ -112,23 +119,6 @@ function AdminMediaComponent() {
     folder: "general",
   })
   const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    void (async () => {
-      try {
-        const [list, status] = await Promise.all([
-          getMedia({ data: undefined }),
-          getR2Status(),
-        ])
-        setItems(list)
-        setR2Ok(status.ok)
-      } catch (err: any) {
-        toast.error(err?.message || "Failed to load media")
-      } finally {
-        setLoading(false)
-      }
-    })()
-  }, [])
 
   const folders = useMemo(() => {
     const set = new Set<string>()
@@ -155,13 +145,6 @@ function AdminMediaComponent() {
     [filtered]
   )
 
-  async function refresh(folderName?: string) {
-    const list = await getMedia({
-      data: folderName ? { folder: folderName } : undefined,
-    })
-    setItems(list)
-  }
-
   async function uploadFiles(fileList: FileList | Array<File>) {
     const files = Array.from(fileList)
     if (files.length === 0) return
@@ -172,8 +155,6 @@ function AdminMediaComponent() {
       return
     }
 
-    // Track uploads by a stable id so progress updates always target the
-    // correct entry, even when multiple files share a name.
     let nextId = Date.now()
     type UploadEntry = {
       id: number
@@ -210,7 +191,6 @@ function AdminMediaComponent() {
           )
         }
 
-        // 1) Ask server for a presigned URL
         const { key, uploadUrl, publicUrl } = await getPresignedUpload({
           data: {
             fileName: file.name,
@@ -219,7 +199,6 @@ function AdminMediaComponent() {
           },
         })
 
-        // 2) Upload directly to R2 with XHR for progress
         await new Promise<void>((resolve, reject) => {
           const xhr = new XMLHttpRequest()
           xhr.open("PUT", uploadUrl, true)
@@ -246,7 +225,6 @@ function AdminMediaComponent() {
           xhr.send(file)
         })
 
-        // 3) Persist DB record
         await finalizeMediaUploadFn({
           data: {
             key,
@@ -266,7 +244,9 @@ function AdminMediaComponent() {
       }
     }
 
-    await refresh()
+    // Refresh by invalidating the query
+    void queryClient.invalidateQueries({ queryKey: queryKeys.media() })
+
     setTimeout(() => {
       setUploading((prev) => prev.filter((q) => q.status === "uploading"))
     }, 1500)
@@ -284,8 +264,7 @@ function AdminMediaComponent() {
     if (!confirm(`Delete "${item.originalName}"? This cannot be undone.`))
       return
     try {
-      await deleteMedia({ data: item.id })
-      setItems((prev) => prev.filter((i) => i.id !== item.id))
+      await deleteMutation.mutateAsync(item.id)
       toast.success("File deleted")
     } catch (err: any) {
       toast.error(err?.message || "Failed to delete file")
@@ -309,16 +288,11 @@ function AdminMediaComponent() {
   async function saveEdit() {
     if (editingId == null) return
     try {
-      await updateMedia({
-        data: { id: editingId, alt: editForm.alt, folder: editForm.folder },
+      await updateMutation.mutateAsync({
+        id: editingId,
+        alt: editForm.alt,
+        folder: editForm.folder,
       })
-      setItems((prev) =>
-        prev.map((i) =>
-          i.id === editingId
-            ? { ...i, alt: editForm.alt, folder: editForm.folder }
-            : i
-        )
-      )
       toast.success("Updated")
       setEditingId(null)
     } catch (err: any) {
@@ -465,14 +439,7 @@ function AdminMediaComponent() {
       </div>
 
       {/* Grid */}
-      {loading ? (
-        <div className="flex h-40 items-center justify-center">
-          <RiLoader4Line
-            size={28}
-            className="animate-spin text-muted-foreground"
-          />
-        </div>
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <div className="rounded-2xl border-2 border-dashed border-border py-16 text-center">
           <RiImageLine
             size={48}
@@ -604,5 +571,12 @@ function AdminMediaComponent() {
 }
 
 export const Route = createFileRoute("/admin/media")({
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    await Promise.all([
+      queryClient.ensureQueryData(mediaQuery()),
+      queryClient.ensureQueryData(r2StatusQuery),
+    ])
+  },
   component: AdminMediaComponent,
 })

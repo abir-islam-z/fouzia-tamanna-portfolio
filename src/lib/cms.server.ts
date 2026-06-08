@@ -1,7 +1,7 @@
 import {
-    deleteCookie,
-    getCookie,
-    setCookie,
+  deleteCookie,
+  getCookie,
+  setCookie,
 } from "@tanstack/react-start/server"
 import bcrypt from "bcryptjs"
 import { ZodError } from "zod"
@@ -9,15 +9,12 @@ import { decrypt, encrypt } from "./auth"
 import type { LoginSchema } from "./cms"
 import { getDb } from "./db.server"
 import {
-    buildDefaultCorsRules,
-    buildObjectKey,
-    checkR2Config,
-    deleteFromR2,
-    getPresignedPutUrl,
-    getPublicUrl,
-    getR2CorsStatus,
-    setR2CorsRules,
-    uploadToR2,
+  buildObjectKey,
+  checkR2Config,
+  deleteFromR2,
+  getPresignedPutUrl,
+  getPublicUrl,
+  uploadToR2,
 } from "./r2.server"
 
 // --- UTILS ---
@@ -104,7 +101,8 @@ export async function getHeroServer() {
       introBadge: "OPEN TO WORK — SOC ANALYST",
       subtitle: "MSc Computer Networks & Systems Security",
       title: "Fouzia Tamanna",
-      description: "Network Security & SOC Analyst specializing in threat detection, incident response, and systems security.",
+      description:
+        "Network Security & SOC Analyst specializing in threat detection, incident response, and systems security.",
       location: "London, UK",
       sponsorshipInfo: "No sponsorship needed",
       resumeUrl: "#",
@@ -376,9 +374,7 @@ export async function getMediaServer(folder?: string) {
 }
 
 export async function getMediaItemServer(id: number) {
-  return await (
-    await getDb()
-  ).media.findUnique({ where: { id } })
+  return await (await getDb()).media.findUnique({ where: { id } })
 }
 
 /**
@@ -515,7 +511,9 @@ export async function updateMediaServer(input: {
 }) {
   await checkAuth()
   const { id, ...rest } = input
-  return await (await getDb()).media.update({
+  return await (
+    await getDb()
+  ).media.update({
     where: { id },
     data: rest,
   })
@@ -532,20 +530,4 @@ export async function deleteMediaServer(id: number) {
 export async function getR2StatusServer() {
   await checkAuth()
   return checkR2Config()
-}
-
-// --- CORS management ---
-
-export async function getR2CorsStatusServer() {
-  await checkAuth()
-  return getR2CorsStatus()
-}
-
-export async function applyR2CorsServer(input: { origins: string[] }) {
-  await checkAuth()
-  const origins = (input?.origins ?? []).filter(
-    (o) => typeof o === "string" && o.trim().length > 0
-  )
-  const rules = buildDefaultCorsRules(origins)
-  return setR2CorsRules(rules)
 }

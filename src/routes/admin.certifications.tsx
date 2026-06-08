@@ -9,13 +9,15 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {
-  deleteCertification,
-  getCertifications,
-  updateCertification,
-} from "@/lib/cms"
+  certificationsQuery,
+  getQueryClient,
+  useDeleteCertification,
+  useUpdateCertification,
+} from "@/lib/queries"
 import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 interface CertificationItem {
@@ -28,23 +30,21 @@ interface CertificationItem {
 }
 
 function AdminCertificationsComponent() {
-  const [certs, setCerts] = useState<Array<CertificationItem>>([])
-  const [loading, setLoading] = useState(true)
+  const { data: rawCerts = [] } = useSuspenseQuery(certificationsQuery)
+  const certs = rawCerts as unknown as Array<CertificationItem>
 
-  useEffect(() => {
-    async function loadData() {
-      const data = await getCertifications()
-      setCerts(data)
-      setLoading(false)
-    }
-    loadData()
-  }, [])
+  const updateMutation = useUpdateCertification()
+  const deleteMutation = useDeleteCertification()
+
+  const [localCerts, setLocalCerts] = useState<Array<CertificationItem> | null>(
+    null
+  )
+  const displayItems = localCerts ?? certs
 
   const handleSave = async (item: CertificationItem) => {
     try {
-      await updateCertification({ data: item })
-      const updated = await getCertifications()
-      setCerts(updated)
+      await updateMutation.mutateAsync(item)
+      setLocalCerts(null)
       toast.success("Certification saved!")
     } catch (error: any) {
       console.error("Certification save failed:", error)
@@ -55,12 +55,9 @@ function AdminCertificationsComponent() {
   const handleDelete = async (id?: number) => {
     try {
       if (id) {
-        await deleteCertification({ data: id })
-        const updated = await getCertifications()
-        setCerts(updated)
+        await deleteMutation.mutateAsync(id)
+        setLocalCerts(null)
         toast.success("Certification removed.")
-      } else {
-        setCerts(certs.filter((c) => c.id !== undefined))
       }
     } catch (error: any) {
       console.error("Certification delete failed:", error)
@@ -69,34 +66,20 @@ function AdminCertificationsComponent() {
   }
 
   const handleAdd = () => {
-    setCerts([
-      {
-        title: "New Certification",
-        issuer: "Issuing Organization",
-        date: "Month, Year",
-        order: certs.length,
-      },
-      ...certs,
-    ])
+    const newItem: CertificationItem = {
+      title: "New Certification",
+      issuer: "Issuing Organization",
+      date: "Month, Year",
+      order: displayItems.length,
+    }
+    setLocalCerts([newItem, ...displayItems])
   }
 
   const update = (i: number, patch: Partial<CertificationItem>) => {
-    const next = [...certs]
+    const next = [...displayItems]
     next[i] = { ...next[i], ...patch }
-    setCerts(next)
+    setLocalCerts(next)
   }
-
-  if (loading)
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">
-            Loading certifications…
-          </p>
-        </div>
-      </div>
-    )
 
   return (
     <div className="space-y-8">
@@ -115,7 +98,7 @@ function AdminCertificationsComponent() {
         </Button>
       </header>
 
-      {certs.length > 0 ? (
+      {displayItems.length > 0 ? (
         <div className="rounded-lg border border-border">
           <Table>
             <TableHeader>
@@ -129,8 +112,8 @@ function AdminCertificationsComponent() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {certs.map((item, i) => (
-                <TableRow key={i}>
+              {displayItems.map((item, i) => (
+                <TableRow key={item.id ?? `new-${i}`}>
                   <TableCell>
                     <Input
                       variant="admin"
@@ -213,5 +196,9 @@ function AdminCertificationsComponent() {
 }
 
 export const Route = createFileRoute("/admin/certifications")({
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    await queryClient.ensureQueryData(certificationsQuery)
+  },
   component: AdminCertificationsComponent,
 })

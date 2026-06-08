@@ -1,10 +1,11 @@
-import { getHero } from "@/lib/cms"
+import { heroQuery } from "@/lib/queries"
 import {
     RiArrowRightUpLine,
     RiDownloadLine,
     RiShieldCheckLine,
     RiTerminalBoxLine,
 } from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { Button } from "./ui/button"
 
@@ -46,18 +47,25 @@ const TYPED_LINES = [
     "[+] All systems nominal. Listening for anomalies...",
 ]
 
-/**
- * Cyberpunk Hero.
- *
- * - Massive glitched headline with chromatic aberration + animated glitch.
- * - 60/40 split: identity left, terminal output right.
- * - Terminal panel has traffic-light header, particles, tech grid, scan sweep.
- */
 export default function Hero() {
+    const { data: rawHero } = useSuspenseQuery(heroQuery)
+    const h = rawHero as any
+
+    const data: HeroData = {
+        title: h.title || FALLBACK_HERO.title,
+        subtitle: h.subtitle || FALLBACK_HERO.subtitle,
+        description: h.description || FALLBACK_HERO.description,
+        introBadge: h.introBadge || FALLBACK_HERO.introBadge,
+        location: h.location || FALLBACK_HERO.location,
+        sponsorshipInfo: h.sponsorshipInfo || FALLBACK_HERO.sponsorshipInfo,
+        openToWork: h.openToWork ?? true,
+        resumeUrl: h.resumeUrl || "#",
+        logoUrl: h.logoUrl ?? null,
+    }
+
     const [particles, setParticles] = useState<
         Array<{ left: string; top: string; delay: string; duration: string }>
     >([])
-    const [data, setData] = useState<HeroData>(FALLBACK_HERO)
     const [typed, setTyped] = useState("")
     const [lineIndex, setLineIndex] = useState(0)
     const [charIndex, setCharIndex] = useState(0)
@@ -70,26 +78,6 @@ export default function Hero() {
             duration: `${5 + Math.random() * 10}s`,
         }))
         setParticles(p)
-
-        async function loadHero() {
-            try {
-                const h = await getHero()
-                setData({
-                    title: h.title || FALLBACK_HERO.title,
-                    subtitle: h.subtitle || FALLBACK_HERO.subtitle,
-                    description: h.description || FALLBACK_HERO.description,
-                    introBadge: h.introBadge || FALLBACK_HERO.introBadge,
-                    location: h.location || FALLBACK_HERO.location,
-                    sponsorshipInfo: h.sponsorshipInfo || FALLBACK_HERO.sponsorshipInfo,
-                    openToWork: h.openToWork ?? true,
-                    resumeUrl: h.resumeUrl || "#",
-                    logoUrl: h.logoUrl ?? null,
-                })
-            } catch (error) {
-                console.error("Failed to fetch hero data, using fallback.", error)
-            }
-        }
-        loadHero()
     }, [])
 
     // Terminal typing effect
@@ -117,7 +105,7 @@ export default function Hero() {
             id="about"
             className="relative overflow-hidden px-4 pt-24 pb-16 md:px-6 md:pt-32 md:pb-20"
         >
-            {/* HUD floating labels — top-left and top-right */}
+            {/* HUD floating labels */}
             <div className="pointer-events-none absolute top-20 left-4 z-10 hidden font-label text-[10px] uppercase tracking-[0.3em] text-primary/60 lg:block md:left-8">
                 // SECURE_SESSION.0001
             </div>
@@ -162,14 +150,12 @@ export default function Hero() {
                             />
                         ))}
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
-                    {/* Scanline sweep */}
+                    <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-transparent to-transparent" />
                     <div className="absolute inset-0 scan-sweep opacity-50" />
 
                     <div className="relative grid gap-6 px-5 py-10 md:grid-cols-2 md:gap-8 md:px-10 md:py-14">
                         {/* Left: Identity */}
                         <div className="space-y-5 md:space-y-6">
-                            {/* Status badge */}
                             <div className="inline-flex items-center gap-2 border border-primary/40 bg-primary/5 px-2.5 py-1 cyber-chamfer-sm">
                                 <span className="status-dot" />
                                 <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary md:text-xs">
@@ -177,7 +163,6 @@ export default function Hero() {
                                 </span>
                             </div>
 
-                            {/* Glitched H1 */}
                             <h1
                                 className="cyber-glitch cyber-glitch-anim font-display text-4xl font-black uppercase leading-[0.95] tracking-tight text-white md:text-6xl lg:text-7xl"
                                 data-text={data.title}
@@ -195,7 +180,6 @@ export default function Hero() {
                                 {data.description}
                             </p>
 
-                            {/* CTAs */}
                             <div className="flex flex-wrap gap-3 pt-2">
                                 <a
                                     href={data.resumeUrl}
@@ -215,7 +199,6 @@ export default function Hero() {
                                 </a>
                             </div>
 
-                            {/* Meta row */}
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground md:text-xs">
                                 <span className="flex items-center gap-1.5">
                                     <RiShieldCheckLine size={12} className="text-primary" />
@@ -228,7 +211,6 @@ export default function Hero() {
 
                         {/* Right: Terminal Output */}
                         <div className="relative border border-primary/30 bg-background/80 cyber-chamfer">
-                            {/* Header bar */}
                             <div className="flex items-center justify-between border-b border-border/60 bg-muted/30 px-3 py-2">
                                 <span className="font-label text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
                                     OUT
@@ -239,7 +221,7 @@ export default function Hero() {
                                 </span>
                             </div>
                             <div className="relative p-4 font-mono text-[11px] leading-relaxed text-primary/90 md:p-5 md:text-xs">
-                                <pre className="m-0 max-h-72 overflow-hidden whitespace-pre-wrap break-words">
+                                <pre className="m-0 max-h-72 overflow-hidden whitespace-pre-wrap wrap-break-word">
                                     {typed}
                                     <span className="caret" />
                                 </pre>

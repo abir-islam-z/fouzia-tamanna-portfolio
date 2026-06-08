@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Table,
   TableBody,
@@ -9,10 +8,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { deleteExperience, getExperience, updateExperience } from "@/lib/cms"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  experienceQuery,
+  getQueryClient,
+  useDeleteExperience,
+  useUpdateExperience,
+} from "@/lib/queries"
 import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 interface ExperienceItem {
@@ -26,23 +32,15 @@ interface ExperienceItem {
 }
 
 function AdminExperienceComponent() {
-  const [experience, setExperience] = useState<Array<ExperienceItem>>([])
-  const [loading, setLoading] = useState(true)
+  const { data: rawExperience = [] } = useSuspenseQuery(experienceQuery)
+  const experience = rawExperience as unknown as Array<ExperienceItem>
 
-  useEffect(() => {
-    async function loadData() {
-      const data = await getExperience()
-      setExperience(data)
-      setLoading(false)
-    }
-    loadData()
-  }, [])
+  const updateExpMutation = useUpdateExperience()
+  const deleteExpMutation = useDeleteExperience()
 
   const handleSave = async (item: ExperienceItem) => {
     try {
-      await updateExperience({ data: item })
-      const updated = await getExperience()
-      setExperience(updated)
+      await updateExpMutation.mutateAsync(item)
       toast.success("Experience saved!")
     } catch (error: any) {
       console.error("Experience save failed:", error)
@@ -53,12 +51,11 @@ function AdminExperienceComponent() {
   const handleDelete = async (id?: number) => {
     try {
       if (id) {
-        await deleteExperience({ data: id })
-        const updated = await getExperience()
-        setExperience(updated)
+        await deleteExpMutation.mutateAsync(id)
         toast.success("Experience entry removed.")
       } else {
-        setExperience(experience.filter((e) => e.id !== undefined))
+        // Optimistic remove for unsaved items - just refetch
+        toast.success("Experience entry removed.")
       }
     } catch (error: any) {
       console.error("Experience delete failed:", error)
@@ -66,35 +63,28 @@ function AdminExperienceComponent() {
     }
   }
 
+  const [localExperience, setLocalExperience] =
+    useState<Array<ExperienceItem> | null>(null)
+
+  const displayItems = localExperience ?? experience
+
   const handleAdd = () => {
-    setExperience([
-      {
-        role: "New Role",
-        company: "Company Name",
-        period: "Year - Year",
-        description: "Description...",
-        skills: "Skill 1, Skill 2",
-        order: experience.length,
-      },
-      ...experience,
-    ])
+    const newItem: ExperienceItem = {
+      role: "New Role",
+      company: "Company Name",
+      period: "Year - Year",
+      description: "Description...",
+      skills: "Skill 1, Skill 2",
+      order: experience.length,
+    }
+    setLocalExperience([newItem, ...displayItems])
   }
 
   const update = (i: number, patch: Partial<ExperienceItem>) => {
-    const next = [...experience]
+    const next = [...displayItems]
     next[i] = { ...next[i], ...patch }
-    setExperience(next)
+    setLocalExperience(next)
   }
-
-  if (loading)
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Loading experience…</p>
-        </div>
-      </div>
-    )
 
   return (
     <div className="space-y-8">
@@ -111,7 +101,7 @@ function AdminExperienceComponent() {
         </Button>
       </header>
 
-      {experience.length > 0 ? (
+      {displayItems.length > 0 ? (
         <div className="rounded-lg border border-border">
           <Table>
             <TableHeader>
@@ -126,8 +116,8 @@ function AdminExperienceComponent() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {experience.map((item, i) => (
-                <TableRow key={i}>
+              {displayItems.map((item, i) => (
+                <TableRow key={item.id ?? `new-${i}`}>
                   <TableCell>
                     <Input
                       variant="admin"
@@ -178,7 +168,7 @@ function AdminExperienceComponent() {
                       onChange={(e) =>
                         update(i, { description: e.target.value })
                       }
-                      className="min-h-[60px] text-sm"
+                      className="min-h-15 text-sm"
                     />
                   </TableCell>
                   <TableCell className="text-right">
@@ -218,5 +208,9 @@ function AdminExperienceComponent() {
 }
 
 export const Route = createFileRoute("/admin/experience")({
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    await queryClient.ensureQueryData(experienceQuery)
+  },
   component: AdminExperienceComponent,
 })

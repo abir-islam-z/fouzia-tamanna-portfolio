@@ -6,10 +6,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { getContactMessages } from "@/lib/cms"
+import { contactMessagesQuery, getQueryClient } from "@/lib/queries"
 import { RiMailLine } from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
 
 interface ContactMessage {
   id: number
@@ -20,27 +20,7 @@ interface ContactMessage {
 }
 
 function AdminMessagesComponent() {
-  const [messages, setMessages] = useState<Array<ContactMessage>>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function loadData() {
-      const data = await getContactMessages()
-      setMessages(data as Array<ContactMessage>)
-      setLoading(false)
-    }
-    loadData()
-  }, [])
-
-  if (loading)
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Loading messages…</p>
-        </div>
-      </div>
-    )
+  const { data: messages = [] } = useSuspenseQuery(contactMessagesQuery)
 
   return (
     <div className="space-y-8">
@@ -71,7 +51,7 @@ function AdminMessagesComponent() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {messages.map((msg) => (
+              {(messages as unknown as Array<ContactMessage>).map((msg) => (
                 <TableRow key={msg.id}>
                   <TableCell className="font-medium">{msg.name}</TableCell>
                   <TableCell>
@@ -87,7 +67,7 @@ function AdminMessagesComponent() {
                       {msg.message}
                     </p>
                   </TableCell>
-                  <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
+                  <TableCell className="text-xs whitespace-nowrap text-muted-foreground">
                     {new Date(msg.createdAt).toLocaleString()}
                   </TableCell>
                 </TableRow>
@@ -101,5 +81,9 @@ function AdminMessagesComponent() {
 }
 
 export const Route = createFileRoute("/admin/messages")({
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    await queryClient.ensureQueryData(contactMessagesQuery)
+  },
   component: AdminMessagesComponent,
 })

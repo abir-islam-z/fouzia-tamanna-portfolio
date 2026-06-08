@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Table,
   TableBody,
@@ -9,14 +8,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Textarea } from "@/components/ui/textarea"
 import {
-  deleteTestimonial,
-  getTestimonials,
-  updateTestimonial,
-} from "@/lib/cms"
+  getQueryClient,
+  testimonialsQuery,
+  useDeleteTestimonial,
+  useUpdateTestimonial,
+} from "@/lib/queries"
 import { RiAddLine, RiDeleteBinLine, RiSaveLine } from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 interface TestimonialItem {
@@ -29,23 +31,20 @@ interface TestimonialItem {
 }
 
 function AdminTestimonialsComponent() {
-  const [testimonials, setTestimonials] = useState<TestimonialItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data: rawTestimonials = [] } = useSuspenseQuery(testimonialsQuery)
+  const testimonials = rawTestimonials as unknown as Array<TestimonialItem>
 
-  useEffect(() => {
-    async function loadData() {
-      const data = await getTestimonials()
-      setTestimonials(data as TestimonialItem[])
-      setLoading(false)
-    }
-    loadData()
-  }, [])
+  const updateMutation = useUpdateTestimonial()
+  const deleteMutation = useDeleteTestimonial()
+
+  const [localTestimonials, setLocalTestimonials] =
+    useState<Array<TestimonialItem> | null>(null)
+  const displayItems = localTestimonials ?? testimonials
 
   const handleSave = async (item: TestimonialItem) => {
     try {
-      await updateTestimonial({ data: item })
-      const updated = await getTestimonials()
-      setTestimonials(updated as TestimonialItem[])
+      await updateMutation.mutateAsync(item)
+      setLocalTestimonials(null) // clear local state since server state is updated
       toast.success("Testimonial saved!")
     } catch (error: any) {
       console.error("Testimonial save failed:", error)
@@ -56,48 +55,31 @@ function AdminTestimonialsComponent() {
   const handleDelete = async (id?: number) => {
     if (id) {
       try {
-        await deleteTestimonial({ data: id })
-        const updated = await getTestimonials()
-        setTestimonials(updated as TestimonialItem[])
+        await deleteMutation.mutateAsync(id)
+        setLocalTestimonials(null)
         toast.success("Testimonial removed.")
       } catch (error: any) {
         console.error("Testimonial delete failed:", error)
         toast.error(error?.message || "Failed to remove testimonial")
       }
-    } else {
-      setTestimonials(testimonials.filter((t) => t.id !== undefined))
     }
   }
 
   const handleAdd = () => {
-    setTestimonials([
-      {
-        name: "Client Name",
-        role: "Position, Company",
-        content: "Kind words...",
-        order: testimonials.length,
-      },
-      ...testimonials,
-    ])
+    const newItem: TestimonialItem = {
+      name: "Client Name",
+      role: "Position, Company",
+      content: "Kind words...",
+      order: displayItems.length,
+    }
+    setLocalTestimonials([newItem, ...displayItems])
   }
 
   const update = (i: number, patch: Partial<TestimonialItem>) => {
-    const next = [...testimonials]
+    const next = [...displayItems]
     next[i] = { ...next[i], ...patch }
-    setTestimonials(next)
+    setLocalTestimonials(next)
   }
-
-  if (loading)
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">
-            Loading testimonials…
-          </p>
-        </div>
-      </div>
-    )
 
   return (
     <div className="space-y-8">
@@ -116,7 +98,7 @@ function AdminTestimonialsComponent() {
         </Button>
       </header>
 
-      {testimonials.length > 0 ? (
+      {displayItems.length > 0 ? (
         <div className="rounded-lg border border-border">
           <Table>
             <TableHeader>
@@ -129,8 +111,8 @@ function AdminTestimonialsComponent() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {testimonials.map((item, i) => (
-                <TableRow key={i}>
+              {displayItems.map((item, i) => (
+                <TableRow key={item.id ?? `new-${i}`}>
                   <TableCell>
                     <Input
                       variant="admin"
@@ -164,7 +146,7 @@ function AdminTestimonialsComponent() {
                       rows={2}
                       value={item.content}
                       onChange={(e) => update(i, { content: e.target.value })}
-                      className="min-h-[48px] text-sm"
+                      className="min-h-12 text-sm"
                     />
                   </TableCell>
                   <TableCell className="text-right">
@@ -204,5 +186,9 @@ function AdminTestimonialsComponent() {
 }
 
 export const Route = createFileRoute("/admin/testimonials")({
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    await queryClient.ensureQueryData(testimonialsQuery)
+  },
   component: AdminTestimonialsComponent,
 })

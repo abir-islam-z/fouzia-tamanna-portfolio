@@ -401,19 +401,3 @@ export const deleteMedia = createServerFn({ method: "POST" })
     const { deleteMediaServer } = await import("./cms.server")
     return deleteMediaServer(id)
   })
-
-// --- CORS management ---
-
-export const getR2CorsStatus = createServerFn({ method: "GET" }).handler(
-  async () => {
-    const { getR2CorsStatusServer } = await import("./cms.server")
-    return getR2CorsStatusServer()
-  }
-)
-
-export const applyR2Cors = createServerFn({ method: "POST" })
-  .validator(z.object({ origins: z.array(z.string()).default([]) }))
-  .handler(async ({ data }) => {
-    const { applyR2CorsServer } = await import("./cms.server")
-    return applyR2CorsServer(data)
-  })

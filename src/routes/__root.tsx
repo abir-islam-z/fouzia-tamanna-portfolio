@@ -1,12 +1,13 @@
 import { Navbar } from "@/components/Navbar"
-import { getHero, getUser } from "@/lib/cms"
+import { getUser } from "@/lib/cms"
+import { getQueryClient, heroQuery } from "@/lib/queries"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import {
-    HeadContent,
-    Outlet,
-    Scripts,
-    createRootRoute,
-    useLocation,
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRoute,
+  useLocation,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { Toaster } from "sonner"
@@ -19,8 +20,9 @@ export const Route = createRootRoute({
       user,
     }
   },
-  loader: async () => {
-    const hero = await getHero()
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    const hero = await queryClient.ensureQueryData(heroQuery)
     return {
       hero,
     }

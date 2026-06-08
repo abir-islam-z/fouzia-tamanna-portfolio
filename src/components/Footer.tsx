@@ -1,4 +1,4 @@
-import { getFooter } from "@/lib/cms"
+import { footerQuery } from "@/lib/queries"
 import {
     RiGithubFill,
     RiLinkedinBoxFill,
@@ -6,7 +6,8 @@ import {
     RiShieldKeyholeLine,
     RiTwitterXFill,
 } from "@remixicon/react"
-import { useEffect, useState } from "react"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { useState } from "react"
 import { Button } from "./ui/button"
 
 interface FooterData {
@@ -27,38 +28,20 @@ const FALLBACK_FOOTER: FooterData = {
     availability: "Open for SOC Analyst & Network Security Roles",
 }
 
-/**
- * Cyberpunk Footer.
- *
- * - Top section: brand, contact, social, availability.
- * - Marquee strip: scrolling terminal text (signature cyberpunk touch).
- * - Bottom bar: monospace legal/links.
- */
 export default function Footer() {
-    const [footer, setFooter] = useState<FooterData>(FALLBACK_FOOTER)
-    const [year, setYear] = useState<number>(new Date().getFullYear())
+    const { data: rawFooter } = useSuspenseQuery(footerQuery)
+    const f = rawFooter as any
 
-    useEffect(() => {
-        async function loadFooter() {
-            try {
-                const data = await getFooter()
-                if (data) {
-                    setFooter({
-                        bio: data.bio || FALLBACK_FOOTER.bio,
-                        email: data.email || FALLBACK_FOOTER.email,
-                        linkedin: data.linkedin || FALLBACK_FOOTER.linkedin,
-                        github: data.github || FALLBACK_FOOTER.github,
-                        twitter: data.twitter || FALLBACK_FOOTER.twitter,
-                        availability: data.availability || FALLBACK_FOOTER.availability,
-                    })
-                }
-            } catch (err) {
-                console.error("Failed to fetch footer data.", err)
-            }
-        }
-        loadFooter()
-        setYear(new Date().getFullYear())
-    }, [])
+    const footer: FooterData = {
+        bio: f?.bio || FALLBACK_FOOTER.bio,
+        email: f?.email || FALLBACK_FOOTER.email,
+        linkedin: f?.linkedin || FALLBACK_FOOTER.linkedin,
+        github: f?.github || FALLBACK_FOOTER.github,
+        twitter: f?.twitter || FALLBACK_FOOTER.twitter,
+        availability: f?.availability || FALLBACK_FOOTER.availability,
+    }
+
+    const [year] = useState<number>(new Date().getFullYear())
 
     return (
         <footer className="relative border-t border-border/60">
@@ -80,7 +63,6 @@ export default function Footer() {
 
             <div className="px-4 py-16 md:px-6 md:py-20">
                 <div className="mx-auto max-w-7xl">
-                    {/* Footer Grid */}
                     <div className="grid gap-12 pt-4 text-center md:grid-cols-2 md:gap-10 md:text-left lg:grid-cols-4">
                         {/* Brand */}
                         <div className="space-y-5 md:space-y-6">
@@ -93,7 +75,7 @@ export default function Footer() {
                                     <span className="text-foreground"> Tamanna</span>
                                 </span>
                             </div>
-                            <p className="mx-auto max-w-[250px] font-mono text-sm leading-relaxed text-muted-foreground md:mx-0">
+                            <p className="mx-auto max-w-62.5 font-mono text-sm leading-relaxed text-muted-foreground md:mx-0">
                                 {footer.bio}
                             </p>
                         </div>
