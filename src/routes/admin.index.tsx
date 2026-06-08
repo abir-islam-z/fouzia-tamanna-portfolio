@@ -5,25 +5,24 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import {
-    deleteMedia,
-    deleteStat,
-    finalizeMediaUploadFn,
-    getFooter,
-    getHero,
-    getPresignedUpload,
-    getR2Status,
-    getStats,
-    updateFooter,
-    updateHero,
-    updateStat,
+  deleteStat,
+  finalizeMediaUploadFn,
+  getFooter,
+  getHero,
+  getPresignedUpload,
+  getR2Status,
+  getStats,
+  updateFooter,
+  updateHero,
+  updateStat,
 } from "@/lib/cms"
 import {
-    RiAddLine,
-    RiDeleteBinLine,
-    RiImageLine,
-    RiLoader4Line,
-    RiSaveLine,
-    RiUploadCloud2Line,
+  RiAddLine,
+  RiDeleteBinLine,
+  RiImageLine,
+  RiLoader4Line,
+  RiSaveLine,
+  RiUploadCloud2Line,
 } from "@remixicon/react"
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
@@ -187,7 +186,9 @@ function AdminIndexComponent() {
 
     const MAX_BYTES = 5 * 1024 * 1024 // 5 MB
     if (file.size > MAX_BYTES) {
-      toast.error(`Logo too large (${(file.size / 1024 / 1024).toFixed(2)} MB). Max 5 MB.`)
+      toast.error(
+        `Logo too large (${(file.size / 1024 / 1024).toFixed(2)} MB). Max 5 MB.`
+      )
       return
     }
     if (!file.type.startsWith("image/")) {
@@ -247,25 +248,10 @@ function AdminIndexComponent() {
         },
       })
 
-      // 4) delete the old logo from R2 (if any) to avoid orphaned files
-      if (hero.logoKey && hero.logoKey !== key) {
-        try {
-          await deleteMedia({
-            data: (
-              await import("@/lib/db.server").catch(() => null as any)
-            )
-              ? // Fall back to using the media delete via direct id lookup is non-trivial here.
-                // Simpler: just call deleteMediaServer via a public wrapper. We expose
-                // only the public list/get on the client; do best-effort and ignore failures.
-                0
-              : 0,
-          }).catch(() => null)
-        } catch {
-          // best-effort cleanup
-        }
-      }
-
-      // 5) update local state (and persist via a delayed saveHero on user action)
+      // 4) update local state (and persist via a delayed saveHero on user action)
+      //    Old logo cleanup is best-effort and handled server-side on next
+      //    updateHero call (cms.server prunes orphaned R2 objects).
+      void hero.logoKey // referenced for parity with future cleanup hook
       setHero((prev) => ({ ...prev, logoUrl: publicUrl, logoKey: key }))
       toast.success("Logo uploaded — don't forget to click Save Changes.")
     } catch (err: any) {
@@ -373,7 +359,8 @@ function AdminIndexComponent() {
                     Brand Logo
                   </Label>
                   <p className="text-[10px] font-bold text-muted-foreground uppercase">
-                    Upload a logo to replace the "Fouzia Tamanna" text in the navbar. Leave empty to keep the text.
+                    Upload a logo to replace the "Fouzia Tamanna" text in the
+                    navbar. Leave empty to keep the text.
                   </p>
                 </div>
                 {r2Ok === false && (
@@ -441,7 +428,8 @@ function AdminIndexComponent() {
                     </Button>
                   )}
                   <p className="text-[10px] text-muted-foreground">
-                    PNG, JPG, SVG, or WEBP. Recommended height 32–48px, transparent background.
+                    PNG, JPG, SVG, or WEBP. Recommended height 32–48px,
+                    transparent background.
                   </p>
                 </div>
               </div>
@@ -460,9 +448,7 @@ function AdminIndexComponent() {
               <Label>Subtitle (shown under name)</Label>
               <Input
                 value={hero.subtitle ?? ""}
-                onChange={(e) =>
-                  setHero({ ...hero, subtitle: e.target.value })
-                }
+                onChange={(e) => setHero({ ...hero, subtitle: e.target.value })}
                 placeholder="MSc Computer Networks & Systems Security"
               />
             </div>
@@ -470,7 +456,9 @@ function AdminIndexComponent() {
               <Label>Resume URL (Google Drive/Dropbox/Direct Link)</Label>
               <Input
                 value={hero.resumeUrl}
-                onChange={(e) => setHero({ ...hero, resumeUrl: e.target.value })}
+                onChange={(e) =>
+                  setHero({ ...hero, resumeUrl: e.target.value })
+                }
                 placeholder="https://drive.google.com/..."
               />
             </div>
