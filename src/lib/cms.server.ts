@@ -101,15 +101,16 @@ export async function getHeroServer() {
   if (!hero) {
     hero = {
       id: "singleton",
-      introBadge: "INTRO",
-      title: "Meet John",
-      description: "60 second intro",
-      videoDuration: "0:60",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      introBadge: "OPEN TO WORK — SOC ANALYST",
+      subtitle: "MSc Computer Networks & Systems Security",
+      title: "Fouzia Tamanna",
+      description: "Network Security & SOC Analyst specializing in threat detection, incident response, and systems security.",
       location: "London, UK",
       sponsorshipInfo: "No sponsorship needed",
       resumeUrl: "#",
       openToWork: true,
+      logoUrl: null,
+      logoKey: null,
       updatedAt: new Date(),
     }
   }
@@ -142,12 +143,12 @@ export async function getFooterServer() {
   if (!footer) {
     footer = {
       id: "singleton",
-      bio: "Full Stack Developer specializing in modern web technologies. Based in Silicon Valley, CA.",
-      email: "hello@johndoe.com",
+      bio: "Network Security & SOC Analyst focused on threat detection, incident response, and systems security. Based in London, UK.",
+      email: "hello@example.com",
       linkedin: "#",
       github: "#",
       twitter: "#",
-      availability: "Open for Opportunities",
+      availability: "Open for SOC Analyst & Network Security Roles",
       updatedAt: new Date(),
     }
   }
@@ -328,6 +329,38 @@ export async function updateCertificationServer(data: any) {
 export async function deleteCertificationServer(id: number) {
   await checkAuth()
   return await (await getDb()).certification.delete({ where: { id } })
+}
+
+// --- PUBLICATIONS ---
+export async function getPublicationsServer(includeUnpublished = false) {
+  return await (
+    await getDb()
+  ).publication.findMany({
+    where: includeUnpublished ? undefined : { isPublished: true },
+    orderBy: [{ order: "asc" }, { year: "desc" }],
+  })
+}
+
+export async function updatePublicationServer(data: any) {
+  try {
+    await checkAuth()
+    const { id, ...rest } = data
+    // Normalize empty link to null
+    if (rest.link === "") rest.link = null
+    if (id) {
+      return await (
+        await getDb()
+      ).publication.update({ where: { id }, data: rest })
+    }
+    return await (await getDb()).publication.create({ data: rest })
+  } catch (error: any) {
+    throw new Error(formatZodError(error))
+  }
+}
+
+export async function deletePublicationServer(id: number) {
+  await checkAuth()
+  return await (await getDb()).publication.delete({ where: { id } })
 }
 
 // --- MEDIA LIBRARY ---

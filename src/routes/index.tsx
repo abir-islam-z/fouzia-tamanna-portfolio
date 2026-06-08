@@ -7,7 +7,8 @@ const Experience = lazy(() => import("@/components/Experience"))
 const Projects = lazy(() => import("@/components/Projects"))
 const Testimonials = lazy(() => import("@/components/Testimonials"))
 const Certifications = lazy(() => import("@/components/Certifications"))
-const Contact = lazy(() => import("@/components/Contact"))
+const Publications = lazy(() => import("@/components/Publications"))
+const Footer = lazy(() => import("@/components/Footer"))
 
 function IndexComponent() {
   return (
@@ -25,7 +26,8 @@ function IndexComponent() {
         <Projects />
         <Testimonials />
         <Certifications />
-        <Contact />
+        <Publications />
+        <Footer />
       </Suspense>
     </main>
   )

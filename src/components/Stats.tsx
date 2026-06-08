@@ -8,10 +8,10 @@ interface StatItem {
 }
 
 const FALLBACK_STATS: StatItem[] = [
-  { value: "4+", label: "Years of Experience" },
-  { value: "25+", label: "Projects Completed" },
-  { value: "10+", label: "Global Clients" },
-  { value: "9K+", label: "LinkedIn Following" }
+  { value: "2K+", label: "Threats Triaged" },
+  { value: "150+", label: "Incidents Resolved" },
+  { value: "99.9%", label: "Network Uptime" },
+  { value: "4+", label: "Years in IT Security" }
 ]
 
 export default function Stats() {
@@ -34,13 +34,14 @@ export default function Stats() {
       <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-start">
         <div className="max-w-xl text-center lg:text-left">
           <h2 className="text-2xl md:text-4xl font-extrabold mb-4 md:mb-6 leading-tight">
-            Hello, I&apos;m John — <br className="hidden md:block" />
-            <span className="text-primary">Full Stack Developer</span> & Designer.
+            Hello, I&apos;m Fouzia — <br className="hidden md:block" />
+            <span className="text-primary">SOC Analyst</span> &amp; Network Security Specialist.
           </h2>
           <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-            I specialize in building modern web applications that provide exceptional user 
-            experiences. My focus lies in React, TypeScript, and scalable cloud 
-            architectures.
+            I hold an <strong>MSc in Computer Networks and Systems Security</strong> and
+            work at the intersection of threat detection, incident response, and
+            systems hardening — protecting enterprise infrastructure from evolving
+            cyber threats.
           </p>
         </div>
 

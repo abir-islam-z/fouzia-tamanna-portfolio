@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
 import { Card } from "./ui/card"
-import { RiGithubFill, RiExternalLinkLine } from "@remixicon/react"
+import { RiShieldKeyholeLine } from "@remixicon/react"
 import { getProjects } from "@/lib/cms"
 
 interface ProjectItem {
@@ -17,19 +17,28 @@ interface ProjectItem {
 
 const FALLBACK_PROJECTS: ProjectItem[] = [
   {
-    title: "Self-Correction in LLMs",
-    description: "Researching and implementing iterative refinement techniques for large language models to improve factual accuracy and reasoning.",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-    tags: "Research, LLM, Python",
+    title: "Threat-Hunting Lab (ELK + Caldera)",
+    description: "Home SOC lab using Elastic Stack and MITRE Caldera to emulate APT techniques, detect them, and build detection rules. Full ATT&CK coverage.",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
+    tags: "ELK, MITRE Caldera, Detection Engineering",
     isFeatured: true,
     link: "#",
     github: "#"
   },
   {
-    title: "RAG Optimizer",
-    description: "A tool to optimize vector database retrieval using reranking and hybrid search methods.",
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
-    tags: "NLP, LangChain, Pinecone",
+    title: "Network Forensics Toolkit",
+    description: "Python-based toolkit that parses PCAP files, extracts IOCs (IPs, domains, hashes), and exports to STIX 2.1 for threat-intel platforms.",
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=800",
+    tags: "Python, Scapy, STIX 2.1, PCAP Analysis",
+    isFeatured: true,
+    link: "#",
+    github: "#"
+  },
+  {
+    title: "Zero-Trust VPN Deployment",
+    description: "Designed and deployed a WireGuard-based zero-trust mesh VPN with mutual TLS, device posture checks, and per-app access policies.",
+    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=800",
+    tags: "WireGuard, mTLS, Zero Trust, OpenWRT",
     isFeatured: false,
     link: "#",
     github: "#"
@@ -60,10 +69,10 @@ export default function Projects() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16 text-center md:text-left">
           <div>
             <Badge variant="outline" className="mb-4 text-primary border-primary/20 bg-primary/5 px-3 py-1 uppercase tracking-widest text-[10px] font-bold">MY WORK</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Case Studies & Projects</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Security Projects &amp; Case Studies</h2>
           </div>
           <p className="text-muted-foreground max-w-md mx-auto md:mx-0 text-sm md:text-base">
-            A selection of my recent work in data science, specializing in large language models and RAG systems.
+            Hands-on projects in threat detection, network forensics, and zero-trust infrastructure.
           </p>
         </div>
 
@@ -88,10 +97,14 @@ export default function Projects() {
                   <Button className="rounded-full px-8 w-full sm:w-auto">View Case Study</Button>
                   <div className="flex items-center gap-2">
                     {featuredProject.github && (
-                      <Button variant="ghost" size="icon" className="rounded-full hover:bg-background"><RiGithubFill size={20} /></Button>
+                      <Button variant="ghost" size="icon" className="rounded-full hover:bg-background">
+                        <RiShieldKeyholeLine size={20} />
+                      </Button>
                     )}
                     {featuredProject.link && (
-                      <Button variant="ghost" size="icon" className="rounded-full hover:bg-background"><RiExternalLinkLine size={20} /></Button>
+                      <Button variant="ghost" size="icon" className="rounded-full hover:bg-background">
+                        <span className="font-mono text-xs">↗</span>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -123,8 +136,8 @@ export default function Projects() {
                     <div className="flex items-center justify-between pt-2 md:pt-4">
                       <Button variant="link" className="p-0 h-auto text-primary font-bold text-xs md:text-sm">Read More</Button>
                       <div className="flex items-center gap-1">
-                        {project.github && <Button variant="ghost" size="icon" className="h-8 w-8"><RiGithubFill size={18} /></Button>}
-                        {project.link && <Button variant="ghost" size="icon" className="h-8 w-8"><RiExternalLinkLine size={18} /></Button>}
+                        {project.github && <Button variant="ghost" size="icon" className="h-8 w-8"><RiShieldKeyholeLine size={18} /></Button>}
+                        {project.link && <Button variant="ghost" size="icon" className="h-8 w-8"><span className="font-mono text-xs">↗</span></Button>}
                       </div>
                     </div>
                   </div>

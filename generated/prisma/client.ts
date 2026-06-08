@@ -72,6 +72,11 @@ export type Project = Prisma.ProjectModel
  */
 export type ContactMessage = Prisma.ContactMessageModel
 /**
+ * Model Publication
+ * 
+ */
+export type Publication = Prisma.PublicationModel
+/**
  * Model Testimonial
  * 
  */

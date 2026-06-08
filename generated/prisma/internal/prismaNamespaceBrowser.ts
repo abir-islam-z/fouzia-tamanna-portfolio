@@ -57,6 +57,7 @@ export const ModelName = {
   Experience: 'Experience',
   Project: 'Project',
   ContactMessage: 'ContactMessage',
+  Publication: 'Publication',
   Testimonial: 'Testimonial',
   Certification: 'Certification',
   Media: 'Media',
@@ -92,14 +93,15 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const HeroScalarFieldEnum = {
   id: 'id',
   introBadge: 'introBadge',
-  videoDuration: 'videoDuration',
-  videoUrl: 'videoUrl',
+  subtitle: 'subtitle',
   title: 'title',
   description: 'description',
   openToWork: 'openToWork',
   location: 'location',
   sponsorshipInfo: 'sponsorshipInfo',
   resumeUrl: 'resumeUrl',
+  logoUrl: 'logoUrl',
+  logoKey: 'logoKey',
   updatedAt: 'updatedAt'
 } as const
 
@@ -156,6 +158,24 @@ export const ContactMessageScalarFieldEnum = {
 } as const
 
 export type ContactMessageScalarFieldEnum = (typeof ContactMessageScalarFieldEnum)[keyof typeof ContactMessageScalarFieldEnum]
+
+
+export const PublicationScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  authors: 'authors',
+  venue: 'venue',
+  year: 'year',
+  abstract: 'abstract',
+  link: 'link',
+  tags: 'tags',
+  type: 'type',
+  isPublished: 'isPublished',
+  order: 'order',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PublicationScalarFieldEnum = (typeof PublicationScalarFieldEnum)[keyof typeof PublicationScalarFieldEnum]
 
 
 export const TestimonialScalarFieldEnum = {

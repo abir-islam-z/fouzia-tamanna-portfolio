@@ -1,0 +1,35 @@
+{
+  "chat.mcp.serverSampling": {
+    "fouzia-tamanna-portfolio/.vscode/mcp.json: supabase": {
+      "allowedModels": [
+        "copilot/auto",
+        "copilotcli/claude-haiku-4.5",
+        "claude-code/claude-haiku-4.5",
+        "copilot/claude-haiku-4.5",
+        "customendpoint/OpenCode GO AI/deepseek-v4-flash",
+        "customendpoint/OpenCode GO AI/deepseek-v4-pro",
+        "selfagency-opilot/ollama:glm-4.6:cloud",
+        "selfagency-opilot/ollama:glm-5.1:cloud",
+        "customendpoint/OpenCode GO AI/glm-5",
+        "customendpoint/OpenCode GO AI/glm-5.1",
+        "copilotcli/gpt-4.1",
+        "copilotcli/gpt-5-mini",
+        "copilot/gpt-5-mini",
+        "customendpoint/OpenCode GO AI/kimi-k2.5",
+        "customendpoint/OpenCode GO AI/kimi-k2.6",
+        "selfagency-opilot/ollama:kimi-k2.6:cloud",
+        "customendpoint/OpenCode GO AI/mimo-v2.5",
+        "customendpoint/OpenCode GO AI/mimo-v2.5-pro",
+        "customendpoint/OpenCode Go Anthropic/minimax-m2.5",
+        "customendpoint/OpenCode Go Anthropic/minimax-m2.7",
+        "selfagency-opilot/ollama:minimax-m2.7:cloud",
+        "customendpoint/OpenCode Go Anthropic/minimax-m3",
+        "selfagency-opilot/ollama:minimax-m3:cloud",
+        "customendpoint/OpenCode Go Anthropic/qwen3.6-plus",
+        "customendpoint/OpenCode Go Anthropic/qwen3.7-max",
+        "customendpoint/OpenCode Go Anthropic/qwen3.7-plus",
+        "copilot/oswe-vscode-prime"
+      ]
+    }
+  }
+}

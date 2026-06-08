@@ -1,40 +1,43 @@
 import { createServerFn } from "@tanstack/react-start"
 import { z } from "zod"
 import {
-  applyR2CorsServer,
-  deleteCertificationServer,
-  deleteExperienceServer,
-  deleteMediaServer,
-  deleteProjectServer,
-  deleteStatServer,
-  deleteTestimonialServer,
-  finalizeMediaUpload,
-  getCertificationsServer,
-  getContactMessagesServer,
-  getExperienceServer,
-  getFooterServer,
-  getHeroServer,
-  getMediaItemServer,
-  getMediaServer,
-  getPresignedUploadServer,
-  getProjectsServer,
-  getR2CorsStatusServer,
-  getR2StatusServer,
-  getStatsServer,
-  getTestimonialsServer,
-  getUserServer,
-  loginServer,
-  logoutServer,
-  submitContactServer,
-  updateCertificationServer,
-  updateExperienceServer,
-  updateFooterServer,
-  updateHeroServer,
-  updateMediaServer,
-  updateProjectServer,
-  updateStatServer,
-  updateTestimonialServer,
-  uploadMediaServer,
+    applyR2CorsServer,
+    deleteCertificationServer,
+    deleteExperienceServer,
+    deleteMediaServer,
+    deleteProjectServer,
+    deletePublicationServer,
+    deleteStatServer,
+    deleteTestimonialServer,
+    finalizeMediaUpload,
+    getCertificationsServer,
+    getContactMessagesServer,
+    getExperienceServer,
+    getFooterServer,
+    getHeroServer,
+    getMediaItemServer,
+    getMediaServer,
+    getPresignedUploadServer,
+    getProjectsServer,
+    getPublicationsServer,
+    getR2CorsStatusServer,
+    getR2StatusServer,
+    getStatsServer,
+    getTestimonialsServer,
+    getUserServer,
+    loginServer,
+    logoutServer,
+    submitContactServer,
+    updateCertificationServer,
+    updateExperienceServer,
+    updateFooterServer,
+    updateHeroServer,
+    updateMediaServer,
+    updateProjectServer,
+    updatePublicationServer,
+    updateStatServer,
+    updateTestimonialServer,
+    uploadMediaServer,
 } from "./cms.server"
 
 // --- SCHEMAS (Shared) ---
@@ -46,14 +49,15 @@ export type LoginSchema = z.infer<typeof loginSchema>
 
 export const heroSchema = z.object({
   introBadge: z.string().optional(),
-  videoDuration: z.string().optional(),
-  videoUrl: z.string().optional(),
+  subtitle: z.string().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
   location: z.string().optional(),
   sponsorshipInfo: z.string().optional(),
   resumeUrl: z.string().optional(),
   openToWork: z.boolean().optional(),
+  logoUrl: z.string().nullable().optional(),
+  logoKey: z.string().nullable().optional(),
 })
 
 export const statSchema = z.object({
@@ -102,6 +106,21 @@ export const certificationSchema = z.object({
   link: z.string().nullable().optional(),
   order: z.number().default(0),
 })
+
+export const publicationSchema = z.object({
+  id: z.number().optional(),
+  title: z.string().min(1, "Title is required").trim(),
+  authors: z.string().min(1, "Authors are required").trim(),
+  venue: z.string().min(1, "Venue is required").trim(),
+  year: z.string().min(1, "Year is required").trim(),
+  abstract: z.string().min(1, "Abstract is required").trim(),
+  link: z.string().url("Must be a valid URL").or(z.literal("")).nullable().optional(),
+  tags: z.string().default(""),
+  type: z.enum(["journal", "conference", "preprint", "workshop", "book-chapter"]).default("journal"),
+  isPublished: z.boolean().default(true),
+  order: z.number().default(0),
+})
+export type PublicationSchema = z.infer<typeof publicationSchema>
 
 export const contactSchema = z.object({
   name: z.string().min(1, "Name is required").trim(),
@@ -263,6 +282,29 @@ export const deleteCertification = createServerFn({ method: "POST" })
   .validator(z.number())
   .handler(async ({ data: id }) => {
     return deleteCertificationServer(id)
+  })
+
+// --- PUBLICATIONS ---
+export const getPublications = createServerFn({ method: "GET" })
+  .validator(
+    z
+      .object({ includeUnpublished: z.boolean().optional() })
+      .optional()
+  )
+  .handler(async ({ data }) => {
+    return getPublicationsServer(data?.includeUnpublished ?? false)
+  })
+
+export const updatePublication = createServerFn({ method: "POST" })
+  .validator(publicationSchema)
+  .handler(async ({ data }) => {
+    return updatePublicationServer(data)
+  })
+
+export const deletePublication = createServerFn({ method: "POST" })
+  .validator(z.number())
+  .handler(async ({ data: id }) => {
+    return deletePublicationServer(id)
   })
 
 // --- MEDIA LIBRARY ---

@@ -1,5 +1,5 @@
 import { getExperience } from "@/lib/cms"
-import { RiBuilding4Line, RiCalendarLine, RiStackLine } from "@remixicon/react"
+import { RiBuilding4Line, RiCalendarLine, RiShieldKeyholeLine, RiStackLine } from "@remixicon/react"
 import { useEffect, useState } from "react"
 import { Badge } from "./ui/badge"
 
@@ -13,25 +13,25 @@ interface ExperienceItem {
 
 const FALLBACK_EXPERIENCE: ExperienceItem[] = [
   {
-    role: "Senior Data Scientist",
-    company: "TechNova Solutions",
-    period: "2022 - Present",
-    description: "Leading the development of generative AI models and RAG pipelines for enterprise clients. Optimizing LLM performance and cost-efficiency.",
-    skills: "Python, PyTorch, LangChain, Azure"
+    role: "SOC Analyst (Tier 2)",
+    company: "SecureNet Operations",
+    period: "2023 - Present",
+    description: "Monitor SIEM dashboards, investigate security alerts, and coordinate incident response for enterprise clients. Developed automated playbooks reducing MTTR by 35%.",
+    skills: "SIEM, Splunk, Splunk SOAR, Wireshark, MITRE ATT&CK"
   },
   {
-    role: "Data Scientist",
-    company: "Insight Data Systems",
-    period: "2020 - 2022",
-    description: "Built predictive models for customer churn and demand forecasting. Implemented automated data pipelines using Airflow.",
-    skills: "Pandas, Scikit-Learn, SQL, Airflow"
+    role: "Network Security Engineer",
+    company: "CyberDefence Group",
+    period: "2021 - 2023",
+    description: "Deployed and tuned firewalls, IDS/IPS, and VPN solutions. Led network segmentation project for a financial services client (PCI-DSS compliance).",
+    skills: "Palo Alto, Cisco ASA, Suricata, Snort, VPN/IPSec, Nessus"
   },
   {
-    role: "Junior Machine Learning Engineer",
-    company: "StartUp Hub",
-    period: "2019 - 2020",
-    description: "Assisted in training computer vision models for retail analytics. Developed REST APIs for model serving.",
-    skills: "Flask, OpenCV, Docker"
+    role: "Junior Network Administrator",
+    company: "IT Infrastructure Team",
+    period: "2019 - 2021",
+    description: "Managed Active Directory, DNS, DHCP, and group policies across a 500-user environment. Assisted with vulnerability scans and patch cycles.",
+    skills: "Active Directory, Windows Server, PowerShell, PRTG, pfSense"
   }
 ]
 
@@ -59,9 +59,9 @@ export default function Experience() {
         {/* Left Column: Heading */}
         <div className="md:w-1/3 space-y-4">
           <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5 px-3 py-1 uppercase tracking-widest text-[10px] font-bold">EXPERIENCE</Badge>
-          <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Professional <br />Journey</h2>
+          <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Security <br />Journey</h2>
           <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-sm">
-            A linear progression of my career, focused on data science, machine learning, and high-impact engineering.
+            A linear progression through SOC analysis, network security, and IT infrastructure — built on hands-on incident response and continuous learning.
           </p>
         </div>
 
@@ -76,7 +76,10 @@ export default function Experience() {
                 {/* Timeline Node */}
                 <div className="absolute left-0 top-1.5 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border border-border bg-background z-10 group-hover:border-primary transition-colors shadow-sm">
                   {i === 0 ? (
-                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(0,112,243,0.8)]" />
+                    <RiShieldKeyholeLine
+                      size={16}
+                      className="text-primary animate-pulse"
+                    />
                   ) : (
                     <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 group-hover:bg-primary/50 transition-colors" />
                   )}

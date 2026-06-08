@@ -3,6 +3,7 @@ import { getUser, logout } from "@/lib/cms"
 import { cn } from "@/lib/utils"
 import {
     RiAwardLine,
+    RiBookOpenLine,
     RiBriefcaseLine,
     RiCloseLine,
     RiCodeBoxLine,
@@ -11,7 +12,7 @@ import {
     RiImageLine,
     RiLogoutBoxLine,
     RiMenuLine,
-    RiMessageLine,
+    RiShieldKeyholeLine,
     RiSidebarFoldLine,
     RiSidebarUnfoldLine,
     RiStarLine,
@@ -39,10 +40,10 @@ function AdminLayout() {
     { to: "/admin", label: "Overview", icon: RiDashboardLine },
     { to: "/admin/experience", label: "Experience", icon: RiBriefcaseLine },
     { to: "/admin/projects", label: "Projects", icon: RiCodeBoxLine },
-    { to: "/admin/media", label: "Media Library", icon: RiImageLine },
-    { to: "/admin/messages", label: "Messages", icon: RiMessageLine },
-    { to: "/admin/testimonials", label: "Testimonials", icon: RiStarLine },
+    { to: "/admin/publications", label: "Publications", icon: RiBookOpenLine },
     { to: "/admin/certifications", label: "Certifications", icon: RiAwardLine },
+    { to: "/admin/testimonials", label: "Testimonials", icon: RiStarLine },
+    { to: "/admin/media", label: "Media Library", icon: RiImageLine },
   ]
 
   return (
@@ -71,14 +72,14 @@ function AdminLayout() {
         <div className="mb-10 flex items-center justify-between px-2">
           {!isCollapsed ? (
             <div className="flex items-center gap-3 animate-in fade-in duration-300">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-xl font-bold text-primary-foreground">
-                JD
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <RiShieldKeyholeLine size={18} />
               </div>
-              <span className="font-bold tracking-tight">Admin</span>
+              <span className="font-bold tracking-tight">Fouzia · Admin</span>
             </div>
           ) : (
-            <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground animate-in fade-in duration-300">
-              JD
+            <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground animate-in fade-in duration-300">
+              <RiShieldKeyholeLine size={18} />
             </div>
           )}
           {!isCollapsed && (

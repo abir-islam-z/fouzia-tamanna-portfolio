@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { RiCloseLine, RiMenuLine } from "@remixicon/react"
+import { RiCloseLine, RiMenuLine, RiShieldKeyholeLine } from "@remixicon/react"
 import { Link, useRouterState } from "@tanstack/react-router"
 import { useState } from "react"
 import { ThemeToggle } from "./ThemeToggle"
@@ -16,14 +16,38 @@ export function Navbar() {
     { href: "/#about", label: "About" },
     { href: "/#experience", label: "Experience" },
     { href: "/#projects", label: "Projects" },
-    { href: "/#contact", label: "Contact" },
+    { href: "/#publications", label: "Publications" },
   ]
+
+  const logoUrl = hero?.logoUrl
+  const brandName = hero?.title || "Fouzia Tamanna"
 
   return (
     <nav className="glass sticky top-0 z-50 border-b border-border/40 px-4 py-4 md:px-6">
       <div className="mx-auto flex max-w-7xl items-center justify-between">
-        <Link to="/" className="text-xl font-bold tracking-tight">
-          <span className="text-primary italic">JD</span>
+        <Link to="/" className="flex items-center gap-2.5 font-bold tracking-tight">
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={`${brandName} logo`}
+              className="h-8 w-auto max-w-40 rounded-md object-contain"
+            />
+          ) : (
+            <>
+              <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/15 text-primary">
+                <RiShieldKeyholeLine size={18} />
+              </span>
+              <span className="text-base md:text-lg">
+                <span className="text-primary">{brandName.split(" ")[0]}</span>
+                {brandName.includes(" ") && (
+                  <span className="text-foreground">
+                    {" "}
+                    {brandName.split(" ").slice(1).join(" ")}
+                  </span>
+                )}
+              </span>
+            </>
+          )}
         </Link>
 
         {/* Desktop Nav */}
