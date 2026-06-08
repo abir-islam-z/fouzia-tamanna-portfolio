@@ -202,6 +202,79 @@ function AdminSettingsComponent() {
     setHeroState((prev) => ({ ...prev, logoUrl: null, logoKey: null }))
   }
 
+  // Resume upload
+  const [resumeUploading, setResumeUploading] = useState(false)
+  const [resumeProgress, setResumeProgress] = useState(0)
+  const resumeInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleResumeUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    e.target.value = ""
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Resume too large. Max 10 MB.")
+      return
+    }
+    if (
+      !file.type.startsWith("application/pdf") &&
+      !file.type.startsWith("image/")
+    ) {
+      toast.error("Please select a PDF or image file.")
+      return
+    }
+    setResumeUploading(true)
+    setResumeProgress(0)
+    try {
+      const { key, uploadUrl, publicUrl } = await getPresignedUpload({
+        data: {
+          fileName: file.name,
+          mimeType: file.type,
+          folder: "branding",
+        },
+      })
+
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open("PUT", uploadUrl, true)
+        xhr.setRequestHeader("Content-Type", file.type)
+        xhr.upload.onprogress = (ev) => {
+          if (!ev.lengthComputable) return
+          setResumeProgress(Math.round((ev.loaded / ev.total) * 100))
+        }
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) resolve()
+          else reject(new Error(`Upload failed: ${xhr.status}`))
+        }
+        xhr.onerror = () => reject(new Error("Network error"))
+        xhr.ontimeout = () => reject(new Error("Upload timed out"))
+        xhr.send(file)
+      })
+
+      await finalizeMediaUploadFn({
+        data: {
+          key,
+          originalName: file.name,
+          mimeType: file.type,
+          size: file.size,
+          folder: "branding",
+          alt: "Resume / CV",
+        },
+      })
+
+      setHeroState((prev) => ({ ...prev, resumeUrl: publicUrl }))
+      toast.success("Resume uploaded — click Save Hero to persist.")
+    } catch (err: any) {
+      toast.error(err?.message || "Resume upload failed")
+    } finally {
+      setResumeUploading(false)
+      setResumeProgress(0)
+    }
+  }
+
+  function removeResume() {
+    setHeroState((prev) => ({ ...prev, resumeUrl: "#" }))
+  }
+
   const saveHero = async () => {
     try {
       await heroMutation.mutateAsync(heroState)
@@ -374,6 +447,76 @@ function AdminSettingsComponent() {
             </div>
           </div>
 
+          {/* Resume upload */}
+          <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <Label variant="admin">Resume / CV</Label>
+                <p className="text-xs text-muted-foreground">
+                  Upload a PDF or image of your resume. Visitors can download it
+                  from the hero section.
+                </p>
+              </div>
+              {!r2Ok && (
+                <Badge
+                  variant="admin"
+                  className="bg-amber-500/10 text-amber-600"
+                >
+                  R2 Not Configured
+                </Badge>
+              )}
+            </div>
+            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+              <div className="flex h-20 w-40 items-center justify-center overflow-hidden rounded-lg border border-dashed border-border bg-secondary/30">
+                {heroState.resumeUrl && heroState.resumeUrl !== "#" ? (
+                  <div className="flex flex-col items-center gap-1 p-2 text-center">
+                    <RiUploadCloud2Line size={20} className="text-primary" />
+                    <span className="max-w-full truncate font-mono text-[10px] text-muted-foreground">
+                      {heroState.resumeUrl.split("/").pop() ?? "Resume"}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-xs text-muted-foreground">
+                    No resume
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-1 gap-2">
+                <input
+                  ref={resumeInputRef}
+                  type="file"
+                  accept="application/pdf,image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={handleResumeUpload}
+                />
+                <Button
+                  variant="admin"
+                  size="sm"
+                  onClick={() => resumeInputRef.current?.click()}
+                  disabled={resumeUploading}
+                  className="gap-2"
+                >
+                  {resumeUploading ? (
+                    <RiLoader4Line size={16} className="animate-spin" />
+                  ) : (
+                    <RiUploadCloud2Line size={16} />
+                  )}
+                  {resumeUploading ? `${resumeProgress}%` : "Upload Resume"}
+                </Button>
+                {heroState.resumeUrl && heroState.resumeUrl !== "#" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={removeResume}
+                    className="text-destructive"
+                  >
+                    Remove
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Hero fields */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {[
@@ -382,15 +525,12 @@ function AdminSettingsComponent() {
               { key: "introBadge", label: "Intro Badge" },
               { key: "location", label: "Location" },
               { key: "sponsorshipInfo", label: "Sponsorship" },
-              { key: "resumeUrl", label: "Resume URL" },
             ].map(({ key, label }) => (
               <div
                 key={key}
                 className={cn(
                   "space-y-1.5",
-                  key === "introBadge" || key === "resumeUrl"
-                    ? "md:col-span-2"
-                    : ""
+                  key === "introBadge" ? "md:col-span-2" : ""
                 )}
               >
                 <Label variant="admin">{label}</Label>
