@@ -1,142 +1,157 @@
 import { cn } from "@/lib/utils"
-import { RiCloseLine, RiMenuLine, RiShieldKeyholeLine } from "@remixicon/react"
+import {
+    RiCloseLine,
+    RiMenuLine,
+    RiShieldKeyholeLine,
+} from "@remixicon/react"
 import { Link, useRouterState } from "@tanstack/react-router"
 import { useState } from "react"
-import { ThemeToggle } from "./ThemeToggle"
 import { Button } from "./ui/button"
+import { ThemeToggle } from "./ThemeToggle"
 
+/**
+ * Cyberpunk Navbar.
+ *
+ * - Sticky, full-width, hairline neon border at the bottom.
+ * - Brand mark on the left, nav links center (lg+), actions right.
+ * - Mobile menu is a full-bleed terminal overlay.
+ */
 export function Navbar() {
-  const state = useRouterState()
-  const rootContext = state.matches.find((m) => m.routeId === "__root__")
-  const user = rootContext?.context.user
-  const hero = rootContext?.loaderData?.hero
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const state = useRouterState()
+    const rootContext = state.matches.find((m) => m.routeId === "__root__")
+    const user = rootContext?.context.user
+    const hero = rootContext?.loaderData?.hero
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const navLinks = [
-    { href: "/#about", label: "About" },
-    { href: "/#experience", label: "Experience" },
-    { href: "/#projects", label: "Projects" },
-    { href: "/#publications", label: "Publications" },
-  ]
+    const navLinks = [
+        { href: "/#about", label: "About" },
+        { href: "/#experience", label: "Experience" },
+        { href: "/#projects", label: "Projects" },
+        { href: "/#publications", label: "Publications" },
+    ]
 
-  const logoUrl = hero?.logoUrl
-  const brandName = hero?.title || "Fouzia Tamanna"
+    const logoUrl = hero?.logoUrl
+    const brandName = hero?.title || "Fouzia Tamanna"
 
-  return (
-    <nav className="glass sticky top-0 z-50 border-b border-border/40 px-4 py-4 md:px-6">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5 font-bold tracking-tight">
-          {logoUrl ? (
-            <img
-              src={logoUrl}
-              alt={`${brandName} logo`}
-              className="h-8 w-auto max-w-40 rounded-md object-contain"
-            />
-          ) : (
-            <>
-              <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/15 text-primary">
-                <RiShieldKeyholeLine size={18} />
-              </span>
-              <span className="text-base md:text-lg">
-                <span className="text-primary">{brandName.split(" ")[0]}</span>
-                {brandName.includes(" ") && (
-                  <span className="text-foreground">
-                    {" "}
-                    {brandName.split(" ").slice(1).join(" ")}
-                  </span>
+    return (
+        <nav className="sticky top-0 z-50 border-b border-border/60 bg-background/85 px-4 py-4 backdrop-blur-md md:px-6">
+            <div className="mx-auto flex max-w-7xl items-center justify-between">
+                {/* Brand */}
+                <Link
+                    to="/"
+                    className="group flex items-center gap-3"
+                >
+                    {logoUrl ? (
+                        <img
+                            src={logoUrl}
+                            alt={`${brandName} logo`}
+                            className="h-8 w-auto max-w-40 object-contain"
+                        />
+                    ) : (
+                        <>
+                            <span className="relative flex h-9 w-9 items-center justify-center border border-primary text-primary transition-all group-hover:neon-glow cyber-chamfer-sm">
+                                <RiShieldKeyholeLine size={18} />
+                            </span>
+                            <span className="font-display text-sm font-bold uppercase tracking-[0.18em] md:text-base">
+                                <span className="text-primary text-glow-sm">Fouzia</span>
+                                <span className="text-foreground"> Tamanna</span>
+                            </span>
+                        </>
+                    )}
+                </Link>
+
+                {/* Desktop Nav */}
+                <div className="hidden items-center gap-1 md:flex">
+                    {navLinks.map((link) => (
+                        <a
+                            key={link.label}
+                            href={link.href}
+                            className="group relative px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-primary"
+                        >
+                            <span className="text-primary/50 group-hover:text-primary">/</span>
+                            {link.label.toLowerCase()}
+                            <span className="absolute inset-x-4 bottom-1 h-px scale-x-0 bg-primary transition-transform group-hover:scale-x-100" />
+                        </a>
+                    ))}
+                    {user && (
+                        <Link
+                            to="/admin"
+                            className="ml-2 px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary transition-colors hover:text-glow"
+                        >
+                            // dashboard
+                        </Link>
+                    )}
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-3">
+                    <ThemeToggle />
+                    <a
+                        href={hero?.resumeUrl || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hidden sm:block"
+                    >
+                        <Button size="sm" variant="glitch" className="px-5">
+                            Resume.exe
+                        </Button>
+                    </a>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="md:hidden cyber-chamfer-sm"
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        aria-label="Toggle menu"
+                    >
+                        {isMenuOpen ? <RiCloseLine size={20} /> : <RiMenuLine size={20} />}
+                    </Button>
+                </div>
+            </div>
+
+            {/* Mobile Menu Overlay */}
+            <div
+                className={cn(
+                    "fixed inset-0 top-[72px] z-40 bg-background/95 backdrop-blur-xl transition-all duration-300 md:hidden",
+                    isMenuOpen
+                        ? "pointer-events-auto opacity-100"
+                        : "pointer-events-none opacity-0"
                 )}
-              </span>
-            </>
-          )}
-        </Link>
-
-        {/* Desktop Nav */}
-        <div className="hidden items-center gap-8 text-sm font-semibold text-muted-foreground md:flex">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="transition-colors hover:text-foreground"
             >
-              {link.label}
-            </a>
-          ))}
-          {user && (
-            <Link
-              to="/admin"
-              className="font-bold text-primary transition-colors hover:text-primary/80"
-            >
-              Dashboard
-            </Link>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 md:gap-4">
-          <ThemeToggle />
-          <a
-            href={hero?.resumeUrl || "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:block"
-          >
-            <Button size="sm" className="rounded-full px-6 font-bold">
-              Resume
-            </Button>
-          </a>
-
-          {/* Mobile Menu Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <RiCloseLine size={24} /> : <RiMenuLine size={24} />}
-          </Button>
-        </div>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      <div
-        className={cn(
-          "fixed inset-0 top-18.25 z-40 bg-background/95 backdrop-blur-xl transition-all duration-300 md:hidden",
-          isMenuOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0"
-        )}
-      >
-        <nav className="flex h-full flex-col items-center justify-center gap-8 p-6">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onClick={() => setIsMenuOpen(false)}
-              className="text-2xl font-bold text-foreground transition-colors hover:text-primary"
-            >
-              {link.label}
-            </a>
-          ))}
-          {user && (
-            <Link
-              to="/admin"
-              onClick={() => setIsMenuOpen(false)}
-              className="text-2xl font-bold text-primary"
-            >
-              Dashboard
-            </Link>
-          )}
-          <a
-            href={hero?.resumeUrl || "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full max-w-xs"
-          >
-            <Button className="h-14 w-full rounded-full text-lg font-bold">
-              Resume
-            </Button>
-          </a>
+                <div className="tech-grid absolute inset-0 opacity-50" />
+                <nav className="relative flex h-full flex-col items-center justify-center gap-6 p-8">
+                    {navLinks.map((link) => (
+                        <a
+                            key={link.label}
+                            href={link.href}
+                            onClick={() => setIsMenuOpen(false)}
+                            className="group flex items-center gap-3 font-display text-3xl font-bold uppercase tracking-widest text-foreground transition-colors hover:text-primary"
+                        >
+                            <span className="font-mono text-sm text-primary text-glow-sm">/</span>
+                            {link.label}
+                        </a>
+                    ))}
+                    {user && (
+                        <Link
+                            to="/admin"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="flex items-center gap-3 font-display text-3xl font-bold uppercase tracking-widest text-primary"
+                        >
+                            <span className="font-mono text-sm text-glow-sm">/</span>
+                            Dashboard
+                        </Link>
+                    )}
+                    <a
+                        href={hero?.resumeUrl || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full max-w-xs pt-4"
+                    >
+                        <Button variant="glitch" className="h-14 w-full">
+                            Resume.exe
+                        </Button>
+                    </a>
+                </nav>
+            </div>
         </nav>
-      </div>
-    </nav>
-  )
+    )
 }

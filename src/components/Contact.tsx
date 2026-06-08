@@ -1,282 +1,360 @@
 import { useEffect, useState } from "react"
 import {
-  RiGithubFill,
-  RiLinkedinBoxFill,
-  RiMailFill,
-  RiMailLine,
-  RiTwitterXFill,
+    RiGithubFill,
+    RiLinkedinBoxFill,
+    RiMailFill,
+    RiMailLine,
+    RiTwitterXFill,
 } from "@remixicon/react"
 import { Button } from "./ui/button"
-import { Card } from "./ui/card"
 import { Input } from "./ui/input"
 import { Textarea } from "./ui/textarea"
-import { Label } from "./ui/label"
 import { getFooter, submitContact } from "@/lib/cms"
 import { toast } from "sonner"
 
 interface FooterData {
-  bio: string
-  email: string
-  linkedin: string
-  github: string
-  twitter: string
-  availability: string
+    bio: string
+    email: string
+    linkedin: string
+    github: string
+    twitter: string
+    availability: string
 }
 
 const FALLBACK_FOOTER: FooterData = {
-  bio: "Full Stack Developer specializing in modern web technologies. Based in Silicon Valley, CA.",
-  email: "hello@johndoe.com",
-  linkedin: "#",
-  github: "#",
-  twitter: "#",
-  availability: "Open for Opportunities",
+    bio: "Full Stack Developer specializing in modern web technologies. Based in Silicon Valley, CA.",
+    email: "hello@johndoe.com",
+    linkedin: "#",
+    github: "#",
+    twitter: "#",
+    availability: "Open for Opportunities",
 }
 
+/**
+ * Cyberpunk Contact section.
+ *
+ * - Left: glitched headline with terminal "ls" listing of contact links.
+ * - Right: terminal-form card with traffic-light header, chamfered inputs.
+ */
 export default function Contact() {
-  const [pending, setPending] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [footer, setFooter] = useState<FooterData>(FALLBACK_FOOTER)
+    const [pending, setPending] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [footer, setFooter] = useState<FooterData>(FALLBACK_FOOTER)
 
-  useEffect(() => {
-    async function loadFooter() {
-      try {
-        const data = await getFooter()
-        setFooter(data)
-      } catch (err) {
-        console.error("Failed to fetch footer data.", err)
-      }
+    useEffect(() => {
+        async function loadFooter() {
+            try {
+                const data = await getFooter()
+                setFooter(data)
+            } catch (err) {
+                console.error("Failed to fetch footer data.", err)
+            }
+        }
+        loadFooter()
+    }, [])
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        setPending(true)
+        const formData = new FormData(e.currentTarget)
+        const data = Object.fromEntries(formData.entries())
+
+        try {
+            const payload = {
+                name: String(data.name || ""),
+                email: String(data.email || ""),
+                message: String(data.message || ""),
+            }
+            await submitContact({ data: payload })
+            setSuccess(true)
+            e.currentTarget.reset()
+            toast.success("Message sent! I'll get back to you soon.")
+        } catch (err: any) {
+            console.error("Submission error:", err)
+            const errorMessage =
+                err?.message || "Something went wrong. Please try again later."
+            toast.error(errorMessage)
+        } finally {
+            setPending(false)
+        }
     }
-    loadFooter()
-  }, [])
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setPending(true)
-    const formData = new FormData(e.currentTarget)
-    const data = Object.fromEntries(formData.entries())
+    return (
+        <section
+            id="contact"
+            className="circuit-bg relative border-t border-border/50 px-4 py-16 md:px-6 md:py-24"
+        >
+            <div className="mx-auto grid max-w-6xl items-start gap-12 md:gap-16 lg:grid-cols-2">
+                {/* Left Side */}
+                <div className="space-y-8 text-center lg:text-left">
+                    <div>
+                        <div className="label-mono mb-4">// CONTACT.SH</div>
+                        <h2 className="font-display mb-6 text-4xl font-bold uppercase leading-none tracking-wide md:mb-8 md:text-6xl">
+                            Security Analyst{" "}
+                            <br className="hidden md:block" />
+                            <span className="cyber-glitch text-gradient-neon-bg" data-text="who hunts?">
+                                who hunts?
+                            </span>
+                        </h2>
+                        <p className="font-mono text-base leading-relaxed text-muted-foreground md:text-lg">
+                            Let&apos;s build something intelligent together. I&apos;m always open
+                            to discussing new projects, partnerships, or opportunities to join
+                            innovative teams.
+                        </p>
+                    </div>
 
-    try {
-      const payload = {
-        name: String(data.name || ""),
-        email: String(data.email || ""),
-        message: String(data.message || ""),
-      }
-      await submitContact({ data: payload })
-      setSuccess(true)
-      e.currentTarget.reset()
-      toast.success("Message sent! I'll get back to you soon.")
-    } catch (err: any) {
-      console.error("Submission error:", err)
-      const errorMessage = err?.message || "Something went wrong. Please try again later."
-      toast.error(errorMessage)
-    } finally {
-      setPending(false)
-    }
-  }
+                    <div className="space-y-3 font-mono md:space-y-4">
+                        <a
+                            href={`mailto:${footer.email}`}
+                            className="group flex items-center justify-center gap-3 text-sm transition-colors hover:text-primary md:justify-start md:text-base"
+                        >
+                            <span className="text-primary text-glow-sm">{">"}</span>
+                            <span className="font-bold uppercase tracking-widest group-hover:text-glow">
+                                {footer.email}
+                            </span>
+                        </a>
+                        {footer.linkedin && (
+                            <a
+                                href={footer.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group flex items-center justify-center gap-3 text-sm transition-colors hover:text-primary md:justify-start md:text-base"
+                            >
+                                <span className="text-primary text-glow-sm">{">"}</span>
+                                <span className="font-bold uppercase tracking-widest group-hover:text-glow">
+                                    linkedin.com/in/fouzia
+                                </span>
+                            </a>
+                        )}
+                        <a
+                            href={footer.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group flex items-center justify-center gap-3 text-sm transition-colors hover:text-primary md:justify-start md:text-base"
+                        >
+                            <span className="text-primary text-glow-sm">{">"}</span>
+                            <span className="font-bold uppercase tracking-widest group-hover:text-glow">
+                                github.com/fouzia
+                            </span>
+                        </a>
+                    </div>
+                </div>
 
-  return (
-    <section id="contact" className="border-t border-border px-4 md:px-6 py-16 md:py-24">
-      <div className="mx-auto grid max-w-6xl items-start gap-12 md:gap-16 lg:grid-cols-2">
-        {/* Left Side */}
-        <div className="space-y-6 md:space-y-8 text-center lg:text-left">
-          <div>
-            <h2 className="mb-6 md:mb-8 text-4xl md:text-6xl leading-tight font-black tracking-tighter">
-              Full Stack Developer <br />
-              <span className="text-primary">who ships?</span>
-            </h2>
-            <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
-              Let's build something intelligent together. I'm always open to
-              discussing new projects, partnerships, or opportunities to join
-              innovative teams.
-            </p>
-          </div>
+                {/* Right Side - Terminal Form */}
+                <div className="relative border border-border bg-card/70 transition-all hover:border-primary hover:neon-glow cyber-chamfer-lg">
+                    {/* Traffic-light header */}
+                    <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-4 py-3">
+                        <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57] shadow-[0_0_6px_#ff5f57]" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e] shadow-[0_0_6px_#febc2e]" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-[#28c840] shadow-[0_0_6px_#28c840]" />
+                        <span className="ml-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                            ~/message.out — bash
+                        </span>
+                    </div>
 
-          <div className="flex flex-col gap-3 md:gap-4">
-            <a
-              href={`mailto:${footer.email}`}
-              className="text-base md:text-lg font-bold transition-colors hover:text-primary"
-            >
-              {footer.email}
-            </a>
-            <a
-              href={footer.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-base md:text-lg font-bold transition-colors hover:text-primary"
-            >
-              LinkedIn Profile
-            </a>
-          </div>
-        </div>
-
-        {/* Right Side - Form */}
-        <Card className="rounded-[24px] md:rounded-[40px] border-border bg-secondary/30 p-6 md:p-10 shadow-none">
-          {success ? (
-            <div className="space-y-4 py-8 md:py-12 text-center">
-              <div className="mx-auto mb-6 flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-primary/20 text-primary">
-                <RiMailLine size={32} />
-              </div>
-              <h3 className="text-xl md:text-2xl font-bold">Message Sent!</h3>
-              <p className="text-sm text-muted-foreground">
-                Thank you for reaching out. I'll get back to you as soon as
-                possible.
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => setSuccess(false)}
-                className="mt-4"
-              >
-                Send another message
-              </Button>
+                    <div className="p-6 md:p-8">
+                        {success ? (
+                            <div className="space-y-5 py-8 text-center md:py-12">
+                                <div className="mx-auto flex h-16 w-16 items-center justify-center border border-primary bg-primary/10 text-primary cyber-chamfer md:h-20 md:w-20">
+                                    <RiMailLine size={32} className="text-glow" />
+                                </div>
+                                <h3 className="font-display text-2xl font-bold uppercase tracking-wide md:text-3xl">
+                                    Message Sent!
+                                </h3>
+                                <p className="font-mono text-sm text-muted-foreground">
+                                    Thank you for reaching out. I&apos;ll get back to you as soon
+                                    as possible.
+                                </p>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setSuccess(false)}
+                                    className="mt-2 cyber-chamfer-sm"
+                                >
+                                    Send another message
+                                </Button>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="name"
+                                        className="block font-label text-[10px] uppercase tracking-[0.22em] text-primary"
+                                    >
+                                        $ name
+                                    </label>
+                                    <Input
+                                        id="name"
+                                        name="name"
+                                        placeholder="John Doe"
+                                        required
+                                        className="h-12"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="email"
+                                        className="block font-label text-[10px] uppercase tracking-[0.22em] text-primary"
+                                    >
+                                        $ email
+                                    </label>
+                                    <Input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        placeholder="hello@example.com"
+                                        required
+                                        className="h-12"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="message"
+                                        className="block font-label text-[10px] uppercase tracking-[0.22em] text-primary"
+                                    >
+                                        $ message
+                                    </label>
+                                    <Textarea
+                                        id="message"
+                                        name="message"
+                                        placeholder="Tell me about your project..."
+                                        required
+                                        className="min-h-32 md:min-h-36"
+                                    />
+                                </div>
+                                <Button
+                                    type="submit"
+                                    disabled={pending}
+                                    variant="glitch"
+                                    size="lg"
+                                    className="h-12 w-full md:h-14"
+                                >
+                                    {pending ? (
+                                        <span className="flex items-center gap-2">
+                                            <span className="caret h-3 w-3" />
+                                            TRANSMITTING...
+                                        </span>
+                                    ) : (
+                                        "EXECUTE_SEND"
+                                    )}
+                                </Button>
+                            </form>
+                        )}
+                    </div>
+                </div>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="name"
-                  className="text-[9px] md:text-[10px] font-bold tracking-widest text-muted-foreground uppercase"
-                >
-                  Name
-                </Label>
-                <Input
-                  id="name"
-                  name="name"
-                  placeholder="John Doe"
-                  required
-                  className="h-12 rounded-xl border-border bg-background/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-[9px] md:text-[10px] font-bold tracking-widest text-muted-foreground uppercase"
-                >
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="hello@johndoe.com"
-                  required
-                  className="h-12 rounded-xl border-border bg-background/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="message"
-                  className="text-[9px] md:text-[10px] font-bold tracking-widest text-muted-foreground uppercase"
-                >
-                  Message
-                </Label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  placeholder="Tell me about your project..."
-                  required
-                  className="min-h-32 md:min-h-37.5 resize-none rounded-xl border-border bg-background/50"
-                />
-              </div>
-              <Button
-                type="submit"
-                disabled={pending}
-                className="text-sm md:text-md h-12 md:h-14 w-full rounded-2xl bg-primary font-bold shadow-[0_4px_20px_rgba(0,112,243,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {pending ? "Sending..." : "Send Message"}
-              </Button>
-            </form>
-          )}
-        </Card>
-      </div>
 
-      <div className="mx-auto max-w-7xl mt-16 md:mt-24">
-        {/* Footer Grid */}
-        <div className="grid gap-12 border-t border-border pt-16 md:pt-24 md:grid-cols-2 lg:grid-cols-4 text-center md:text-left">
-          <div className="space-y-4 md:space-y-6">
-            <div className="text-2xl font-black tracking-tighter italic">
-              JD
+            {/* Embedded footer grid */}
+            <div className="mx-auto mt-16 max-w-7xl md:mt-24">
+                <div className="grid gap-12 border-t border-border/50 pt-12 text-center md:grid-cols-2 md:gap-10 md:pt-16 md:text-left lg:grid-cols-4">
+                    <div className="space-y-4 md:space-y-6">
+                        <div className="font-display text-2xl font-black uppercase tracking-wide italic md:justify-start">
+                            FT
+                        </div>
+                        <p className="mx-auto max-w-[250px] font-mono text-sm leading-relaxed text-muted-foreground md:mx-0">
+                            {footer.bio}
+                        </p>
+                    </div>
+
+                    <div className="space-y-4 md:space-y-6">
+                        <h4 className="font-label text-[10px] uppercase tracking-[0.22em] text-primary md:text-xs">
+                            Say Hello
+                        </h4>
+                        <div className="flex flex-col gap-2 font-mono">
+                            <a
+                                href={`mailto:${footer.email}`}
+                                className="text-sm font-bold transition-colors hover:text-primary"
+                            >
+                                {footer.email}
+                            </a>
+                            {footer.linkedin && footer.linkedin !== "#" && (
+                                <a
+                                    href={footer.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm font-bold transition-colors hover:text-primary"
+                                >
+                                    LinkedIn Profile
+                                </a>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="space-y-4 md:space-y-6">
+                        <h4 className="font-label text-[10px] uppercase tracking-[0.22em] text-primary md:text-xs">
+                            Elsewhere
+                        </h4>
+                        <div className="flex justify-center gap-3 md:justify-start">
+                            {footer.github && footer.github !== "#" && (
+                                <SocialIcon
+                                    href={footer.github}
+                                    label="GitHub"
+                                    icon={<RiGithubFill />}
+                                />
+                            )}
+                            {footer.linkedin && footer.linkedin !== "#" && (
+                                <SocialIcon
+                                    href={footer.linkedin}
+                                    label="LinkedIn"
+                                    icon={<RiLinkedinBoxFill />}
+                                />
+                            )}
+                            {footer.twitter && footer.twitter !== "#" && (
+                                <SocialIcon
+                                    href={footer.twitter}
+                                    label="Twitter"
+                                    icon={<RiTwitterXFill />}
+                                />
+                            )}
+                            <SocialIcon
+                                href={`mailto:${footer.email}`}
+                                label="Email"
+                                icon={<RiMailFill />}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-4 md:space-y-6">
+                        <h4 className="font-label text-[10px] uppercase tracking-[0.22em] text-primary md:text-xs">
+                            Availability
+                        </h4>
+                        <div className="space-y-1">
+                            <div className="flex items-center justify-center gap-2 md:justify-start">
+                                <span className="status-dot" />
+                                <p className="font-mono text-sm font-bold uppercase tracking-wide">
+                                    {footer.availability}
+                                </p>
+                            </div>
+                            <p className="font-mono text-xs text-muted-foreground">
+                                SOC · Network Security · Incident Response
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p className="max-w-62.5 text-sm leading-relaxed text-muted-foreground mx-auto md:mx-0">
-              {footer.bio}
-            </p>
-          </div>
-
-          <div className="space-y-4 md:space-y-6">
-            <h4 className="text-[10px] md:text-xs font-bold tracking-widest text-primary uppercase">
-              Say Hello
-            </h4>
-            <div className="flex flex-col space-y-2">
-              <a
-                href={`mailto:${footer.email}`}
-                className="text-sm font-bold transition-colors hover:text-primary"
-              >
-                {footer.email}
-              </a>
-              <a
-                href={footer.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-bold transition-colors hover:text-primary"
-              >
-                LinkedIn Profile
-              </a>
-            </div>
-          </div>
-
-          <div className="space-y-4 md:space-y-6">
-            <h4 className="text-[10px] md:text-xs font-bold tracking-widest text-primary uppercase">
-              Elsewhere
-            </h4>
-            <div className="flex gap-4 justify-center md:justify-start">
-              <SocialIcon href={footer.github} icon={<RiGithubFill />} />
-              <SocialIcon href={footer.linkedin} icon={<RiLinkedinBoxFill />} />
-              <SocialIcon href={footer.twitter} icon={<RiTwitterXFill />} />
-              <SocialIcon href={`mailto:${footer.email}`} icon={<RiMailFill />} />
-            </div>
-          </div>
-
-          <div className="space-y-4 md:space-y-6">
-            <h4 className="text-[10px] md:text-xs font-bold tracking-widest text-primary uppercase">
-              Availability
-            </h4>
-            <div className="space-y-1">
-              <p className="text-sm font-bold">{footer.availability}</p>
-              {/* <p className="text-xs text-muted-foreground">
-                Full-time & Contract roles
-              </p> */}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 pb-8 text-[9px] md:text-[10px] font-bold tracking-widest text-muted-foreground/40 uppercase md:flex-row border-t border-border/20 pt-8">
-          <div>
-            © {new Date().getFullYear()} John Doe. All Rights Reserved.
-          </div>
-          <div className="flex gap-6">
-            <a href="#" className="transition-colors hover:text-primary">
-              Privacy Policy
-            </a>
-            <a href="#" className="transition-colors hover:text-primary">
-              Terms of Service
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
+        </section>
+    )
 }
 
-function SocialIcon({ icon, href }: { icon: React.ReactNode, href: string }) {
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      asChild
-      className="h-10 w-10 rounded-xl border border-border bg-secondary text-muted-foreground transition-all hover:border-primary/50 hover:text-primary"
-    >
-      <a href={href} target="_blank" rel="noopener noreferrer">
-        {icon}
-      </a>
-    </Button>
-  )
+function SocialIcon({
+    icon,
+    href,
+    label,
+}: {
+    icon: React.ReactNode
+    href: string
+    label: string
+}) {
+    return (
+        <Button
+            variant="outline"
+            size="icon"
+            asChild
+            aria-label={label}
+            className="h-10 w-10 border-border text-muted-foreground hover:border-primary hover:text-primary cyber-chamfer-sm"
+        >
+            <a href={href} target="_blank" rel="noopener noreferrer">
+                {icon}
+            </a>
+        </Button>
+    )
 }

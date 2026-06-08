@@ -1,123 +1,162 @@
 import { getExperience } from "@/lib/cms"
-import { RiBuilding4Line, RiCalendarLine, RiShieldKeyholeLine, RiStackLine } from "@remixicon/react"
+import {
+    RiBuilding4Line,
+    RiCalendarLine,
+    RiShieldKeyholeLine,
+    RiStackLine,
+} from "@remixicon/react"
 import { useEffect, useState } from "react"
-import { Badge } from "./ui/badge"
 
 interface ExperienceItem {
-  role: string
-  company: string
-  period: string
-  description: string
-  skills: string
+    role: string
+    company: string
+    period: string
+    description: string
+    skills: string
 }
 
 const FALLBACK_EXPERIENCE: ExperienceItem[] = [
-  {
-    role: "SOC Analyst (Tier 2)",
-    company: "SecureNet Operations",
-    period: "2023 - Present",
-    description: "Monitor SIEM dashboards, investigate security alerts, and coordinate incident response for enterprise clients. Developed automated playbooks reducing MTTR by 35%.",
-    skills: "SIEM, Splunk, Splunk SOAR, Wireshark, MITRE ATT&CK"
-  },
-  {
-    role: "Network Security Engineer",
-    company: "CyberDefence Group",
-    period: "2021 - 2023",
-    description: "Deployed and tuned firewalls, IDS/IPS, and VPN solutions. Led network segmentation project for a financial services client (PCI-DSS compliance).",
-    skills: "Palo Alto, Cisco ASA, Suricata, Snort, VPN/IPSec, Nessus"
-  },
-  {
-    role: "Junior Network Administrator",
-    company: "IT Infrastructure Team",
-    period: "2019 - 2021",
-    description: "Managed Active Directory, DNS, DHCP, and group policies across a 500-user environment. Assisted with vulnerability scans and patch cycles.",
-    skills: "Active Directory, Windows Server, PowerShell, PRTG, pfSense"
-  }
+    {
+        role: "SOC Analyst (Tier 2)",
+        company: "SecureNet Operations",
+        period: "2023 - Present",
+        description:
+            "Monitor SIEM dashboards, investigate security alerts, and coordinate incident response for enterprise clients. Developed automated playbooks reducing MTTR by 35%.",
+        skills: "SIEM, Splunk, Splunk SOAR, Wireshark, MITRE ATT&CK",
+    },
+    {
+        role: "Network Security Engineer",
+        company: "CyberDefence Group",
+        period: "2021 - 2023",
+        description:
+            "Deployed and tuned firewalls, IDS/IPS, and VPN solutions. Led network segmentation project for a financial services client (PCI-DSS compliance).",
+        skills: "Palo Alto, Cisco ASA, Suricata, Snort, VPN/IPSec, Nessus",
+    },
+    {
+        role: "Junior Network Administrator",
+        company: "IT Infrastructure Team",
+        period: "2019 - 2021",
+        description:
+            "Managed Active Directory, DNS, DHCP, and group policies across a 500-user environment. Assisted with vulnerability scans and patch cycles.",
+        skills: "Active Directory, Windows Server, PowerShell, PRTG, pfSense",
+    },
 ]
 
+/**
+ * Cyberpunk Experience timeline.
+ *
+ * - Vertical neon line with chamfered node markers.
+ * - Each entry is a chamfered card with terminal-style date header.
+ * - Skills as chamfered pills.
+ */
 export default function Experience() {
-  const [experience, setExperience] = useState<ExperienceItem[]>(FALLBACK_EXPERIENCE)
+    const [experience, setExperience] = useState<ExperienceItem[]>(FALLBACK_EXPERIENCE)
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await getExperience()
-        if (data && data.length > 0) {
-          // Sort by order or assume most recent first if order is same
-          setExperience(data as ExperienceItem[])
+    useEffect(() => {
+        async function loadData() {
+            try {
+                const data = await getExperience()
+                if (data && data.length > 0) {
+                    setExperience(data as ExperienceItem[])
+                }
+            } catch (error) {
+                console.error("Failed to fetch experience, using fallback.", error)
+            }
         }
-      } catch (error) {
-        console.error("Failed to fetch experience, using fallback.", error)
-      }
-    }
-    loadData()
-  }, [])
+        loadData()
+    }, [])
 
-  return (
-    <section id="experience" className="py-16 md:py-32 px-4 md:px-6 max-w-5xl mx-auto">
-      <div className="flex flex-col md:flex-row gap-12 md:gap-20">
-        {/* Left Column: Heading */}
-        <div className="md:w-1/3 space-y-4">
-          <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5 px-3 py-1 uppercase tracking-widest text-[10px] font-bold">EXPERIENCE</Badge>
-          <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Security <br />Journey</h2>
-          <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-sm">
-            A linear progression through SOC analysis, network security, and IT infrastructure — built on hands-on incident response and continuous learning.
-          </p>
-        </div>
-
-        {/* Right Column: Timeline */}
-        <div className="md:w-2/3 relative">
-          {/* Vertical Line */}
-          <div className="absolute left-4 md:left-5 top-2 bottom-2 w-px bg-linear-to-b from-primary via-border to-transparent" />
-
-          <div className="space-y-12">
-            {experience.map((item, i) => (
-              <div key={i} className="relative pl-12 md:pl-16 group">
-                {/* Timeline Node */}
-                <div className="absolute left-0 top-1.5 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border border-border bg-background z-10 group-hover:border-primary transition-colors shadow-sm">
-                  {i === 0 ? (
-                    <RiShieldKeyholeLine
-                      size={16}
-                      className="text-primary animate-pulse"
-                    />
-                  ) : (
-                    <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 group-hover:bg-primary/50 transition-colors" />
-                  )}
+    return (
+        <section
+            id="experience"
+            className="circuit-bg relative px-4 py-16 md:px-6 md:py-24"
+        >
+            <div className="mx-auto flex max-w-5xl flex-col gap-12 md:flex-row md:gap-20">
+                {/* Left: Heading */}
+                <div className="space-y-5 md:w-1/3">
+                    <div className="label-mono">// TIMELINE.LOG</div>
+                    <h2 className="font-display text-3xl font-bold uppercase leading-none tracking-wide md:text-5xl">
+                        Security
+                        <br />
+                        <span className="text-gradient-neon-bg">Journey</span>
+                    </h2>
+                    <p className="font-mono text-sm leading-relaxed text-muted-foreground md:text-base">
+                        A linear progression through SOC analysis, network security, and IT
+                        infrastructure — built on hands-on incident response and continuous
+                        learning.
+                    </p>
+                    <div className="flex items-center gap-2 pt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        <span className="status-dot" />
+                        {experience.length} nodes detected
+                    </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-primary">
-                      <RiCalendarLine size={14} className="opacity-70" />
-                      <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest">{item.period}</span>
-                    </div>
-                    <h3 className="text-xl md:text-2xl font-bold tracking-tight group-hover:text-primary transition-colors">
-                      {item.role}
-                    </h3>
-                    <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm md:text-base">
-                      <RiBuilding4Line size={16} />
-                      {item.company}
-                    </div>
-                  </div>
+                {/* Right: Timeline */}
+                <div className="relative md:w-2/3">
+                    {/* Vertical neon line */}
+                    <div className="absolute left-4 top-2 bottom-2 w-px bg-gradient-to-b from-primary via-border/60 to-transparent md:left-5" />
 
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
-                    {item.description}
-                  </p>
+                    <div className="space-y-10">
+                        {experience.map((item, i) => (
+                            <div key={i} className="group relative pl-12 md:pl-16">
+                                {/* Timeline Node */}
+                                <div className="absolute left-0 top-1.5 z-10 flex h-8 w-8 items-center justify-center border border-border bg-background transition-all group-hover:border-primary group-hover:neon-glow-sm cyber-chamfer-sm md:h-10 md:w-10">
+                                    {i === 0 ? (
+                                        <RiShieldKeyholeLine
+                                            size={16}
+                                            className="text-primary animate-pulse text-glow"
+                                        />
+                                    ) : (
+                                        <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 transition-colors group-hover:bg-primary" />
+                                    )}
+                                </div>
 
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    <RiStackLine size={16} className="text-muted-foreground/40 mt-1" />
-                    {(item.skills || "").split(",").map((skill: string, j: number) => (
-                      <Badge key={j} variant="secondary" className="bg-secondary/50 text-[9px] md:text-[10px] uppercase tracking-tight font-bold border-border/50">
-                        {skill.trim()}
-                      </Badge>
-                    ))}
-                  </div>
+                                {/* Card */}
+                                <div className="relative border border-border bg-card/60 p-5 transition-all group-hover:border-primary group-hover:bg-card group-hover:neon-glow-sm cyber-chamfer md:p-6">
+                                    {/* Index marker */}
+                                    <div className="absolute right-3 top-3 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/40">
+                                        NODE_0{i + 1}
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-primary md:text-xs">
+                                                <RiCalendarLine size={12} className="opacity-70" />
+                                                {item.period}
+                                            </div>
+                                            <h3 className="font-display text-xl font-bold uppercase leading-tight tracking-wide transition-colors group-hover:text-primary md:text-2xl">
+                                                {item.role}
+                                            </h3>
+                                            <div className="flex items-center gap-2 font-mono text-sm text-muted-foreground">
+                                                <RiBuilding4Line size={14} />
+                                                {item.company}
+                                            </div>
+                                        </div>
+
+                                        <p className="font-mono text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+                                            {item.description}
+                                        </p>
+
+                                        <div className="flex flex-wrap items-center gap-1.5 pt-2">
+                                            <RiStackLine size={14} className="mr-1 text-primary/60" />
+                                            {(item.skills || "")
+                                                .split(",")
+                                                .map((skill: string, j: number) => (
+                                                    <span
+                                                        key={j}
+                                                        className="border border-border bg-secondary/60 px-2 py-1 font-mono text-[9px] uppercase tracking-widest text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground cyber-chamfer-sm md:text-[10px]"
+                                                    >
+                                                        {skill.trim()}
+                                                    </span>
+                                                ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
+            </div>
+        </section>
+    )
 }
