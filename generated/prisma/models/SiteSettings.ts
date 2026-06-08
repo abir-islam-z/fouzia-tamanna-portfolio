@@ -33,6 +33,7 @@ export type SiteSettingsMinAggregateOutputType = {
   contactSubtext: string | null
   marqueeItems: string | null
   navbarBrand: string | null
+  textLogo: string | null
   updatedAt: Date | null
 }
 
@@ -45,6 +46,7 @@ export type SiteSettingsMaxAggregateOutputType = {
   contactSubtext: string | null
   marqueeItems: string | null
   navbarBrand: string | null
+  textLogo: string | null
   updatedAt: Date | null
 }
 
@@ -57,6 +59,7 @@ export type SiteSettingsCountAggregateOutputType = {
   contactSubtext: number
   marqueeItems: number
   navbarBrand: number
+  textLogo: number
   updatedAt: number
   _all: number
 }
@@ -71,6 +74,7 @@ export type SiteSettingsMinAggregateInputType = {
   contactSubtext?: true
   marqueeItems?: true
   navbarBrand?: true
+  textLogo?: true
   updatedAt?: true
 }
 
@@ -83,6 +87,7 @@ export type SiteSettingsMaxAggregateInputType = {
   contactSubtext?: true
   marqueeItems?: true
   navbarBrand?: true
+  textLogo?: true
   updatedAt?: true
 }
 
@@ -95,6 +100,7 @@ export type SiteSettingsCountAggregateInputType = {
   contactSubtext?: true
   marqueeItems?: true
   navbarBrand?: true
+  textLogo?: true
   updatedAt?: true
   _all?: true
 }
@@ -180,6 +186,7 @@ export type SiteSettingsGroupByOutputType = {
   contactSubtext: string | null
   marqueeItems: string | null
   navbarBrand: string | null
+  textLogo: string | null
   updatedAt: Date
   _count: SiteSettingsCountAggregateOutputType | null
   _min: SiteSettingsMinAggregateOutputType | null
@@ -213,6 +220,7 @@ export type SiteSettingsWhereInput = {
   contactSubtext?: Prisma.StringNullableFilter<"SiteSettings"> | string | null
   marqueeItems?: Prisma.StringNullableFilter<"SiteSettings"> | string | null
   navbarBrand?: Prisma.StringNullableFilter<"SiteSettings"> | string | null
+  textLogo?: Prisma.StringNullableFilter<"SiteSettings"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"SiteSettings"> | Date | string
 }
 
@@ -225,6 +233,7 @@ export type SiteSettingsOrderByWithRelationInput = {
   contactSubtext?: Prisma.SortOrderInput | Prisma.SortOrder
   marqueeItems?: Prisma.SortOrderInput | Prisma.SortOrder
   navbarBrand?: Prisma.SortOrderInput | Prisma.SortOrder
+  textLogo?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -240,6 +249,7 @@ export type SiteSettingsWhereUniqueInput = Prisma.AtLeast<{
   contactSubtext?: Prisma.StringNullableFilter<"SiteSettings"> | string | null
   marqueeItems?: Prisma.StringNullableFilter<"SiteSettings"> | string | null
   navbarBrand?: Prisma.StringNullableFilter<"SiteSettings"> | string | null
+  textLogo?: Prisma.StringNullableFilter<"SiteSettings"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"SiteSettings"> | Date | string
 }, "id">
 
@@ -252,6 +262,7 @@ export type SiteSettingsOrderByWithAggregationInput = {
   contactSubtext?: Prisma.SortOrderInput | Prisma.SortOrder
   marqueeItems?: Prisma.SortOrderInput | Prisma.SortOrder
   navbarBrand?: Prisma.SortOrderInput | Prisma.SortOrder
+  textLogo?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.SiteSettingsCountOrderByAggregateInput
   _max?: Prisma.SiteSettingsMaxOrderByAggregateInput
@@ -270,6 +281,7 @@ export type SiteSettingsScalarWhereWithAggregatesInput = {
   contactSubtext?: Prisma.StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
   marqueeItems?: Prisma.StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
   navbarBrand?: Prisma.StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
+  textLogo?: Prisma.StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"SiteSettings"> | Date | string
 }
 
@@ -282,6 +294,7 @@ export type SiteSettingsCreateInput = {
   contactSubtext?: string | null
   marqueeItems?: string | null
   navbarBrand?: string | null
+  textLogo?: string | null
   updatedAt?: Date | string
 }
 
@@ -294,6 +307,7 @@ export type SiteSettingsUncheckedCreateInput = {
   contactSubtext?: string | null
   marqueeItems?: string | null
   navbarBrand?: string | null
+  textLogo?: string | null
   updatedAt?: Date | string
 }
 
@@ -306,6 +320,7 @@ export type SiteSettingsUpdateInput = {
   contactSubtext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   marqueeItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   navbarBrand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -318,6 +333,7 @@ export type SiteSettingsUncheckedUpdateInput = {
   contactSubtext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   marqueeItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   navbarBrand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -330,6 +346,7 @@ export type SiteSettingsCreateManyInput = {
   contactSubtext?: string | null
   marqueeItems?: string | null
   navbarBrand?: string | null
+  textLogo?: string | null
   updatedAt?: Date | string
 }
 
@@ -342,6 +359,7 @@ export type SiteSettingsUpdateManyMutationInput = {
   contactSubtext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   marqueeItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   navbarBrand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -354,6 +372,7 @@ export type SiteSettingsUncheckedUpdateManyInput = {
   contactSubtext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   marqueeItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   navbarBrand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -366,6 +385,7 @@ export type SiteSettingsCountOrderByAggregateInput = {
   contactSubtext?: Prisma.SortOrder
   marqueeItems?: Prisma.SortOrder
   navbarBrand?: Prisma.SortOrder
+  textLogo?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -378,6 +398,7 @@ export type SiteSettingsMaxOrderByAggregateInput = {
   contactSubtext?: Prisma.SortOrder
   marqueeItems?: Prisma.SortOrder
   navbarBrand?: Prisma.SortOrder
+  textLogo?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -390,6 +411,7 @@ export type SiteSettingsMinOrderByAggregateInput = {
   contactSubtext?: Prisma.SortOrder
   marqueeItems?: Prisma.SortOrder
   navbarBrand?: Prisma.SortOrder
+  textLogo?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -404,6 +426,7 @@ export type SiteSettingsSelect<ExtArgs extends runtime.Types.Extensions.Internal
   contactSubtext?: boolean
   marqueeItems?: boolean
   navbarBrand?: boolean
+  textLogo?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["siteSettings"]>
 
@@ -416,6 +439,7 @@ export type SiteSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   contactSubtext?: boolean
   marqueeItems?: boolean
   navbarBrand?: boolean
+  textLogo?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["siteSettings"]>
 
@@ -428,6 +452,7 @@ export type SiteSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   contactSubtext?: boolean
   marqueeItems?: boolean
   navbarBrand?: boolean
+  textLogo?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["siteSettings"]>
 
@@ -440,10 +465,11 @@ export type SiteSettingsSelectScalar = {
   contactSubtext?: boolean
   marqueeItems?: boolean
   navbarBrand?: boolean
+  textLogo?: boolean
   updatedAt?: boolean
 }
 
-export type SiteSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "heroHeadline" | "heroCtaPrimary" | "heroCtaSecondary" | "contactHeading" | "contactSubtext" | "marqueeItems" | "navbarBrand" | "updatedAt", ExtArgs["result"]["siteSettings"]>
+export type SiteSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "heroHeadline" | "heroCtaPrimary" | "heroCtaSecondary" | "contactHeading" | "contactSubtext" | "marqueeItems" | "navbarBrand" | "textLogo" | "updatedAt", ExtArgs["result"]["siteSettings"]>
 
 export type $SiteSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "SiteSettings"
@@ -457,6 +483,7 @@ export type $SiteSettingsPayload<ExtArgs extends runtime.Types.Extensions.Intern
     contactSubtext: string | null
     marqueeItems: string | null
     navbarBrand: string | null
+    textLogo: string | null
     updatedAt: Date
   }, ExtArgs["result"]["siteSettings"]>
   composites: {}
@@ -889,6 +916,7 @@ export interface SiteSettingsFieldRefs {
   readonly contactSubtext: Prisma.FieldRef<"SiteSettings", 'String'>
   readonly marqueeItems: Prisma.FieldRef<"SiteSettings", 'String'>
   readonly navbarBrand: Prisma.FieldRef<"SiteSettings", 'String'>
+  readonly textLogo: Prisma.FieldRef<"SiteSettings", 'String'>
   readonly updatedAt: Prisma.FieldRef<"SiteSettings", 'DateTime'>
 }
     

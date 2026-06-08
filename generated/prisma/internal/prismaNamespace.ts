@@ -1495,7 +1495,12 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const UserScalarFieldEnum = {
   id: 'id',
   username: 'username',
+  email: 'email',
   password: 'password',
+  provider: 'provider',
+  googleId: 'googleId',
+  passwordResetToken: 'passwordResetToken',
+  passwordResetExpiry: 'passwordResetExpiry',
   createdAt: 'createdAt'
 } as const
 
@@ -1688,6 +1693,7 @@ export const SiteSettingsScalarFieldEnum = {
   contactSubtext: 'contactSubtext',
   marqueeItems: 'marqueeItems',
   navbarBrand: 'navbarBrand',
+  textLogo: 'textLogo',
   updatedAt: 'updatedAt'
 } as const
 

@@ -693,3 +693,262 @@ export async function updateSiteSettingsServer(data: any) {
     create: { id: "singleton", ...data, updatedAt: new Date() },
   })
 }
+
+// --- GOOGLE OAUTH LOGIN ---
+export async function getGoogleAuthUrlServer() {
+  const { getGoogleOAuthUrl } = await import("./auth")
+  return { url: getGoogleOAuthUrl() }
+}
+
+export async function googleLoginCallbackServer(code: string) {
+  const {
+    exchangeGoogleCode,
+    getGoogleUserInfo,
+    isGoogleLoginAllowed,
+    encrypt,
+  } = await import("./auth")
+  const { setCookie } = await import("@tanstack/react-start/server")
+
+  // Exchange code for tokens
+  const tokens = await exchangeGoogleCode(code)
+
+  // Get user info from Google
+  const googleUser = await getGoogleUserInfo(tokens.access_token)
+
+  // Check if this email is allowed
+  if (!isGoogleLoginAllowed(googleUser.email)) {
+    throw new Error(
+      `Email "${googleUser.email}" is not authorized. Only one specific Gmail address is allowed.`
+    )
+  }
+
+  const db = await getDb()
+
+  // Find or create user
+  let user = await db.user.findUnique({
+    where: { googleId: googleUser.id },
+  })
+
+  if (!user) {
+    // Check if a user with this email already exists
+    user = await db.user.findUnique({
+      where: { email: googleUser.email },
+    })
+
+    if (user) {
+      // Link existing user to Google
+      user = await db.user.update({
+        where: { id: user.id },
+        data: {
+          googleId: googleUser.id,
+          provider: "google",
+        },
+      })
+    } else {
+      // Create new Google-linked user (no password needed)
+      user = await db.user.create({
+        data: {
+          username: googleUser.email.split("@")[0],
+          email: googleUser.email,
+          password: "", // No password for OAuth users
+          provider: "google",
+          googleId: googleUser.id,
+        },
+      })
+    }
+  }
+
+  // Create session
+  const session = await encrypt({ userId: user.id, username: user.username })
+  setCookie("session", session, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 2, // 2 hours
+  })
+
+  return { success: true }
+}
+
+// --- CHANGE PASSWORD ---
+export async function changePasswordServer(data: {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}) {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = data
+
+    if (newPassword !== confirmPassword) {
+      throw new Error("New passwords do not match")
+    }
+
+    if (newPassword.length < 6) {
+      throw new Error("New password must be at least 6 characters")
+    }
+
+    const session = await getUserServer()
+    if (!session) throw new Error("Unauthorized")
+
+    const db = await getDb()
+    const user = await db.user.findUnique({ where: { id: session.userId } })
+    if (!user) throw new Error("User not found")
+
+    // Google-only users don't have a password yet — allow setting one
+    if (user.provider === "google" && !user.password) {
+      const hashedPassword = await bcrypt.hash(newPassword, 12)
+      await db.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword },
+      })
+      return { success: true, message: "Password set successfully" }
+    }
+
+    const match = await bcrypt.compare(currentPassword, user.password)
+    if (!match) throw new Error("Current password is incorrect")
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12)
+    await db.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    })
+
+    return { success: true }
+  } catch (error: any) {
+    throw new Error(formatZodError(error))
+  }
+}
+
+// --- FORGOT PASSWORD ---
+export async function forgotPasswordServer(data: { email: string }) {
+  try {
+    const { generatePasswordResetToken, hashPasswordResetToken } =
+      await import("./auth")
+    const { Resend } = await import("resend")
+
+    const resendApiKey = process.env.RESEND_API_KEY
+    const fromEmail = process.env.RESEND_FROM_EMAIL || "noreply@example.com"
+    const appUrl = process.env.APP_URL || "http://localhost:3000"
+
+    const db = await getDb()
+    const user = await db.user.findUnique({ where: { email: data.email } })
+
+    // Always return success to prevent email enumeration
+    if (!user) {
+      return {
+        success: true,
+        message:
+          "If an account exists with that email, you will receive a reset link.",
+      }
+    }
+
+    // Google-only users without passwords
+    if (user.provider === "google" && !user.password) {
+      return {
+        success: true,
+        message:
+          "If an account exists with that email, you will receive a reset link.",
+      }
+    }
+
+    // Generate and store reset token
+    const token = generatePasswordResetToken()
+    const hashedToken = hashPasswordResetToken(token)
+    const expiry = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        passwordResetToken: hashedToken,
+        passwordResetExpiry: expiry,
+      },
+    })
+
+    // Send email via Resend
+    if (resendApiKey) {
+      const resend = new Resend(resendApiKey)
+      const resetUrl = `${appUrl}/reset-password?token=${token}`
+
+      await resend.emails.send({
+        from: fromEmail,
+        to: user.email || data.email,
+        subject: "Password Reset Request",
+        html: `
+          <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 20px;">
+            <h2>Password Reset</h2>
+            <p>You requested a password reset for your portfolio admin account.</p>
+            <p>Click the button below to reset your password. This link expires in 1 hour.</p>
+            <a href="${resetUrl}" style="display: inline-block; background: #22c55e; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin: 16px 0;">
+              Reset Password
+            </a>
+            <p style="color: #666; font-size: 13px;">If you didn't request this, you can safely ignore this email.</p>
+          </div>
+        `,
+      })
+    } else {
+      console.warn(
+        "[CMS.SERVER] RESEND_API_KEY not configured. Password reset email not sent."
+      )
+      console.warn(
+        `[CMS.SERVER] Reset URL: ${appUrl}/reset-password?token=${token}`
+      )
+    }
+
+    return {
+      success: true,
+      message:
+        "If an account exists with that email, you will receive a reset link.",
+    }
+  } catch (error: any) {
+    throw new Error(formatZodError(error))
+  }
+}
+
+// --- RESET PASSWORD ---
+export async function resetPasswordServer(data: {
+  token: string
+  password: string
+  confirmPassword: string
+}) {
+  try {
+    const { token, password, confirmPassword } = data
+
+    if (password !== confirmPassword) {
+      throw new Error("Passwords do not match")
+    }
+
+    if (password.length < 6) {
+      throw new Error("Password must be at least 6 characters")
+    }
+
+    const { hashPasswordResetToken } = await import("./auth")
+    const hashedToken = hashPasswordResetToken(token)
+
+    const db = await getDb()
+    const user = await db.user.findFirst({
+      where: {
+        passwordResetToken: hashedToken,
+        passwordResetExpiry: { gt: new Date() },
+      },
+    })
+
+    if (!user) {
+      throw new Error("Invalid or expired reset token")
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12)
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        passwordResetToken: null,
+        passwordResetExpiry: null,
+      },
+    })
+
+    return { success: true }
+  } catch (error: any) {
+    throw new Error(formatZodError(error))
+  }
+}

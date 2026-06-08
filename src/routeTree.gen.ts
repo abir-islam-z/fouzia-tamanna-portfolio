@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestRouteImport } from './routes/test'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -24,6 +26,7 @@ import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminExperienceRouteImport } from './routes/admin.experience'
 import { Route as AdminCertificationsRouteImport } from './routes/admin.certifications'
+import { Route as AuthGoogleCallbackRouteImport } from './routes/auth.google.callback'
 import { Route as AdminTestimonialsNewRouteImport } from './routes/admin.testimonials.new'
 import { Route as AdminTestimonialsIdRouteImport } from './routes/admin.testimonials.$id'
 import { Route as AdminPublicationsNewRouteImport } from './routes/admin.publications.new'
@@ -40,9 +43,19 @@ const TestRoute = TestRouteImport.update({
   path: '/test',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -110,6 +123,11 @@ const AdminCertificationsRoute = AdminCertificationsRouteImport.update({
   path: '/certifications',
   getParentRoute: () => AdminRoute,
 } as any)
+const AuthGoogleCallbackRoute = AuthGoogleCallbackRouteImport.update({
+  id: '/auth/google/callback',
+  path: '/auth/google/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminTestimonialsNewRoute = AdminTestimonialsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -164,7 +182,9 @@ const AdminCertificationsIdRoute = AdminCertificationsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/test': typeof TestRoute
   '/admin/certifications': typeof AdminCertificationsRouteWithChildren
   '/admin/experience': typeof AdminExperienceRouteWithChildren
@@ -187,10 +207,13 @@ export interface FileRoutesByFullPath {
   '/admin/publications/new': typeof AdminPublicationsNewRoute
   '/admin/testimonials/$id': typeof AdminTestimonialsIdRoute
   '/admin/testimonials/new': typeof AdminTestimonialsNewRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/test': typeof TestRoute
   '/admin/certifications': typeof AdminCertificationsRouteWithChildren
   '/admin/experience': typeof AdminExperienceRouteWithChildren
@@ -213,12 +236,15 @@ export interface FileRoutesByTo {
   '/admin/publications/new': typeof AdminPublicationsNewRoute
   '/admin/testimonials/$id': typeof AdminTestimonialsIdRoute
   '/admin/testimonials/new': typeof AdminTestimonialsNewRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/test': typeof TestRoute
   '/admin/certifications': typeof AdminCertificationsRouteWithChildren
   '/admin/experience': typeof AdminExperienceRouteWithChildren
@@ -241,13 +267,16 @@ export interface FileRoutesById {
   '/admin/publications/new': typeof AdminPublicationsNewRoute
   '/admin/testimonials/$id': typeof AdminTestimonialsIdRoute
   '/admin/testimonials/new': typeof AdminTestimonialsNewRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/test'
     | '/admin/certifications'
     | '/admin/experience'
@@ -270,10 +299,13 @@ export interface FileRouteTypes {
     | '/admin/publications/new'
     | '/admin/testimonials/$id'
     | '/admin/testimonials/new'
+    | '/auth/google/callback'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/test'
     | '/admin/certifications'
     | '/admin/experience'
@@ -296,11 +328,14 @@ export interface FileRouteTypes {
     | '/admin/publications/new'
     | '/admin/testimonials/$id'
     | '/admin/testimonials/new'
+    | '/auth/google/callback'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/test'
     | '/admin/certifications'
     | '/admin/experience'
@@ -323,14 +358,18 @@ export interface FileRouteTypes {
     | '/admin/publications/new'
     | '/admin/testimonials/$id'
     | '/admin/testimonials/new'
+    | '/auth/google/callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TestRoute: typeof TestRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
+  AuthGoogleCallbackRoute: typeof AuthGoogleCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -342,11 +381,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -439,6 +492,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/certifications'
       preLoaderRoute: typeof AdminCertificationsRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/auth/google/callback': {
+      id: '/auth/google/callback'
+      path: '/auth/google/callback'
+      fullPath: '/auth/google/callback'
+      preLoaderRoute: typeof AuthGoogleCallbackRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/testimonials/new': {
       id: '/admin/testimonials/new'
@@ -611,9 +671,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TestRoute: TestRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
+  AuthGoogleCallbackRoute: AuthGoogleCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

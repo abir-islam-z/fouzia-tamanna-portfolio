@@ -8,11 +8,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  media     Media[]
+  id                   String    @id @default(uuid())
+  username             String    @unique
+  email                String?   @unique
+  password             String
+  provider             String    @default("local")
+  googleId             String?   @unique
+  passwordResetToken   String?
+  passwordResetExpiry  DateTime?
+  createdAt            DateTime  @default(now())
+  media                Media[]
 }
 
 model Hero {
@@ -175,5 +180,6 @@ model SiteSettings {
   contactSubtext   String?
   marqueeItems     String?
   navbarBrand      String?
+  textLogo         String?
   updatedAt        DateTime @updatedAt
 }

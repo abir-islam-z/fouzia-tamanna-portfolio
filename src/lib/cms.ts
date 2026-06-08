@@ -157,6 +157,7 @@ export const siteSettingsSchema = z.object({
   contactSubtext: z.string().nullable().optional(),
   marqueeItems: z.string().nullable().optional(),
   navbarBrand: z.string().nullable().optional(),
+  textLogo: z.string().nullable().optional(),
 })
 
 // --- AUTH ---
@@ -481,4 +482,62 @@ export const getProjectBySlug = createServerFn({ method: "GET" })
   .handler(async ({ data: slug }) => {
     const { getProjectBySlugServer } = await import("./cms.server")
     return getProjectBySlugServer(slug)
+  })
+
+// --- GOOGLE OAUTH ---
+export const getGoogleAuthUrl = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const { getGoogleAuthUrlServer } = await import("./cms.server")
+    return getGoogleAuthUrlServer()
+  }
+)
+
+export const googleLoginCallback = createServerFn({ method: "POST" })
+  .validator(z.string())
+  .handler(async ({ data: code }) => {
+    const { googleLoginCallbackServer } = await import("./cms.server")
+    return googleLoginCallbackServer(code)
+  })
+
+// --- CHANGE PASSWORD ---
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+})
+export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>
+
+export const changePassword = createServerFn({ method: "POST" })
+  .validator(changePasswordSchema)
+  .handler(async ({ data }) => {
+    const { changePasswordServer } = await import("./cms.server")
+    return changePasswordServer(data)
+  })
+
+// --- FORGOT PASSWORD ---
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+})
+export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>
+
+export const forgotPassword = createServerFn({ method: "POST" })
+  .validator(forgotPasswordSchema)
+  .handler(async ({ data }) => {
+    const { forgotPasswordServer } = await import("./cms.server")
+    return forgotPasswordServer(data)
+  })
+
+// --- RESET PASSWORD ---
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Token is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+})
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>
+
+export const resetPassword = createServerFn({ method: "POST" })
+  .validator(resetPasswordSchema)
+  .handler(async ({ data }) => {
+    const { resetPasswordServer } = await import("./cms.server")
+    return resetPasswordServer(data)
   })
