@@ -16,7 +16,7 @@ import { z } from "zod"
 
 // --- SCHEMAS (shared, isomorphic) ---
 export const loginSchema = z.object({
-  username: z.string().min(1),
+  email: z.email("Invalid email address").trim(),
   password: z.string().min(1),
 })
 export type LoginSchema = z.infer<typeof loginSchema>

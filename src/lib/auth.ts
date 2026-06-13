@@ -1,5 +1,5 @@
-import { createHash, randomBytes } from "crypto"
 import { SignJWT, jwtVerify } from "jose"
+import { createHash, randomBytes } from "node:crypto"
 
 const SECRET = new TextEncoder().encode(
   process.env.AUTH_SECRET || "super-secret-key-change-this"

@@ -42,15 +42,15 @@ export async function checkAuth() {
 // --- AUTH ---
 export async function loginServer(data: LoginSchema) {
   try {
-    const { username, password } = data
-    console.log("[CMS.SERVER] loginServer calling.", { username, password })
+    const { email, password } = data
+    console.log("[CMS.SERVER] loginServer calling.", { email, password })
     const db = await getDb()
-    const user = await db.user.findUniqueOrThrow({ where: { username } })
+    const user = await db.user.findUniqueOrThrow({ where: { email } })
     const match = await bcrypt.compare(password, user.password)
 
     if (!match) throw new Error("Invalid credentials")
 
-    const session = await encrypt({ userId: user.id, username: user.username })
+    const session = await encrypt({ userId: user.id, email: user.email })
     setCookie("session", session, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -458,7 +458,7 @@ export async function getMediaServer(folder?: string) {
   ).media.findMany({
     where: folder ? { folder } : undefined,
     orderBy: { createdAt: "desc" },
-    include: { uploadedBy: { select: { id: true, username: true } } },
+    include: { uploadedBy: { select: { id: true, email: true } } },
   })
 }
 
@@ -529,7 +529,7 @@ export async function uploadMediaServer(input: {
       alt: input.alt ?? null,
       uploadedById: typeof uploadedById === "string" ? uploadedById : null,
     },
-    include: { uploadedBy: { select: { id: true, username: true } } },
+    include: { uploadedBy: { select: { id: true, email: true } } },
   })
 
   return created
@@ -588,7 +588,7 @@ export async function finalizeMediaUpload(input: {
       alt: input.alt ?? null,
       uploadedById: typeof uploadedById === "string" ? uploadedById : null,
     },
-    include: { uploadedBy: { select: { id: true, username: true } } },
+    include: { uploadedBy: { select: { id: true, email: true } } },
   })
 }
 
@@ -682,7 +682,7 @@ export async function updateLandingSectionServer(data: any) {
   })
 }
 
-export async function reorderLandingSectionsServer(orderedIds: string[]) {
+export async function reorderLandingSectionsServer(orderedIds: Array<string>) {
   await checkAuth()
   const db = await getDb()
   await db.$transaction(
@@ -725,71 +725,42 @@ export async function getGoogleAuthUrlServer() {
 }
 
 export async function googleLoginCallbackServer(code: string) {
-  const {
-    exchangeGoogleCode,
-    getGoogleUserInfo,
-    isGoogleLoginAllowed,
-    encrypt,
-  } = await import("./auth")
+  const { exchangeGoogleCode, getGoogleUserInfo, encrypt } =
+    await import("./auth")
   const { setCookie } = await import("@tanstack/react-start/server")
 
-  // Exchange code for tokens
   const tokens = await exchangeGoogleCode(code)
-
-  // Get user info from Google
   const googleUser = await getGoogleUserInfo(tokens.access_token)
-
-  // Check if this email is allowed
-  if (!isGoogleLoginAllowed(googleUser.email)) {
-    throw new Error(
-      `Email "${googleUser.email}" is not authorized. Only one specific Gmail address is allowed.`
-    )
-  }
 
   const db = await getDb()
 
-  // Find or create user
   let user = await db.user.findUnique({
-    where: { googleId: googleUser.id },
+    where: { email: googleUser.email },
   })
 
   if (!user) {
-    // Check if a user with this email already exists
-    user = await db.user.findUnique({
-      where: { email: googleUser.email },
-    })
-
-    if (user) {
-      // Link existing user to Google
-      user = await db.user.update({
-        where: { id: user.id },
-        data: {
-          googleId: googleUser.id,
-          provider: "google",
-        },
-      })
-    } else {
-      // Create new Google-linked user (no password needed)
-      user = await db.user.create({
-        data: {
-          username: googleUser.email.split("@")[0],
-          email: googleUser.email,
-          password: "", // No password for OAuth users
-          provider: "google",
-          googleId: googleUser.id,
-        },
-      })
-    }
+    throw new Error("You're not authorized to access this application.")
   }
 
-  // Create session
-  const session = await encrypt({ userId: user.id, username: user.username })
+  // Link Google ID if not already linked
+  if (!user.googleId) {
+    user = await db.user.update({
+      where: { email: googleUser.email },
+      data: {
+        googleId: googleUser.id,
+        provider: "google",
+      },
+    })
+  }
+
+  // Always set session — whether newly linked or already linked
+  const session = await encrypt({ userId: user.id, email: user.email })
   setCookie("session", session, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 2, // 2 hours
+    maxAge: 60 * 60 * 2,
   })
 
   return { success: true }
