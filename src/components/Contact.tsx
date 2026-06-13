@@ -1,9 +1,12 @@
+import { contactSchema } from "@/lib/cms"
 import { footerQuery, siteSettingsQuery, useSubmitContact } from "@/lib/queries"
 import { RiMailLine } from "@remixicon/react"
+import { useForm } from "@tanstack/react-form"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "./ui/button"
+import { Field, FieldError, FieldLabel } from "./ui/field"
 import { Input } from "./ui/input"
 import { Textarea } from "./ui/textarea"
 
@@ -63,26 +66,28 @@ export default function Contact({ sectionConfig }: ContactProps = {}) {
     "Let's build something intelligent together. I'm always open to discussing new projects, partnerships, or opportunities to join innovative teams."
   const subtext = sectionConfig?.subtext ?? s?.contactSubtext ?? defaultSubtext
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const data = Object.fromEntries(formData.entries())
-
-    try {
-      await submitMutation.mutateAsync({
-        name: String(data.name || ""),
-        email: String(data.email || ""),
-        message: String(data.message || ""),
-      })
-      setSuccess(true)
-      e.currentTarget.reset()
-      toast.success("Message sent! I'll get back to you soon.")
-    } catch (err: any) {
-      toast.error(
-        err?.message || "Something went wrong. Please try again later."
-      )
-    }
-  }
+  const form = useForm({
+    validators: {
+      onChange: contactSchema,
+    },
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        await submitMutation.mutateAsync(value)
+        setSuccess(true)
+        form.reset()
+        toast.success("Message sent! I'll get back to you soon.")
+      } catch (err: any) {
+        toast.error(
+          err?.message || "Something went wrong. Please try again later."
+        )
+      }
+    },
+  })
 
   return (
     <section
@@ -176,53 +181,110 @@ export default function Contact({ sectionConfig }: ContactProps = {}) {
                 </Button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="name"
-                    className="block font-label text-[10px] tracking-[0.22em] text-primary uppercase"
-                  >
-                    $ name
-                  </label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="John Doe"
-                    required
-                    className="h-12"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className="block font-label text-[10px] tracking-[0.22em] text-primary uppercase"
-                  >
-                    $ email
-                  </label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="hello@example.com"
-                    required
-                    className="h-12"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label
-                    htmlFor="message"
-                    className="block font-label text-[10px] tracking-[0.22em] text-primary uppercase"
-                  >
-                    $ message
-                  </label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    placeholder="Tell me about your project..."
-                    required
-                    className="min-h-32 md:min-h-36"
-                  />
-                </div>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  form.handleSubmit()
+                }}
+                className="space-y-5 md:space-y-6"
+              >
+                <form.Field
+                  name="name"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <div className="space-y-2">
+                          <FieldLabel
+                            htmlFor={field.name}
+                            className="block font-label text-[10px] tracking-[0.22em] text-primary uppercase"
+                          >
+                            $ name
+                          </FieldLabel>
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            placeholder="John Doe"
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            aria-invalid={isInvalid}
+                            className="h-12"
+                          />
+                        </div>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+                <form.Field
+                  name="email"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <div className="space-y-2">
+                          <FieldLabel
+                            htmlFor={field.name}
+                            className="block font-label text-[10px] tracking-[0.22em] text-primary uppercase"
+                          >
+                            $ email
+                          </FieldLabel>
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            type="email"
+                            placeholder="hello@example.com"
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            aria-invalid={isInvalid}
+                            className="h-12"
+                          />
+                        </div>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+                <form.Field
+                  name="message"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <div className="space-y-2">
+                          <FieldLabel
+                            htmlFor={field.name}
+                            className="block font-label text-[10px] tracking-[0.22em] text-primary uppercase"
+                          >
+                            $ message
+                          </FieldLabel>
+                          <Textarea
+                            id={field.name}
+                            name={field.name}
+                            placeholder="Tell me about your project..."
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            aria-invalid={isInvalid}
+                            className="min-h-32 md:min-h-36"
+                          />
+                        </div>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
                 <Button
                   type="submit"
                   disabled={submitMutation.isPending}
