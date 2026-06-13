@@ -404,7 +404,27 @@ export function useReorderLandingSections() {
   return useMutation({
     mutationFn: (orderedIds: string[]) =>
       reorderLandingSections({ data: { orderedIds } }),
-    onSuccess: () => {
+    onMutate: async (orderedIds) => {
+      await qc.cancelQueries({ queryKey: queryKeys.landingSections })
+      const previous = qc.getQueryData(queryKeys.landingSections)
+      qc.setQueryData(queryKeys.landingSections, (old: any) => {
+        if (!old) return old
+        const orderMap = new Map(orderedIds.map((id, idx) => [id, idx]))
+        return [...old]
+          .sort(
+            (a: any, b: any) =>
+              (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0)
+          )
+          .map((s: any, idx: number) => ({ ...s, order: idx + 1 }))
+      })
+      return { previous }
+    },
+    onError: (_err, _orderedIds, context) => {
+      if (context?.previous) {
+        qc.setQueryData(queryKeys.landingSections, context.previous)
+      }
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: queryKeys.landingSections })
     },
   })

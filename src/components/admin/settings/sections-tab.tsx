@@ -9,18 +9,18 @@ import {
   useUpdateLandingSection,
 } from "@/lib/queries"
 import { cn } from "@/lib/utils"
+import type { DragEndEvent } from "@dnd-kit/core"
 import {
-  closestCenter,
   DndContext,
   KeyboardSensor,
   PointerSensor,
+  closestCenter,
   useSensor,
   useSensors,
-  type DragEndEvent,
 } from "@dnd-kit/core"
 import {
-  arrayMove,
   SortableContext,
+  arrayMove,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
@@ -111,7 +111,7 @@ export function SectionsTab() {
           items={sections.map((s) => s.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="space-y-3">
+          <div className="relative space-y-3 overflow-hidden">
             {sections.map((s) => (
               <SortableSectionRow
                 key={s.id}
@@ -144,7 +144,8 @@ function SortableSectionRow({
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition: transition ?? "transform 150ms cubic-bezier(0.2, 0, 0, 1)",
+    willChange: isDragging ? "transform" : "auto",
   }
 
   const [open, setOpen] = useState(false)
