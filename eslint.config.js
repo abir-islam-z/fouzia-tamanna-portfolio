@@ -2,4 +2,12 @@
 
 import { tanstackConfig } from "@tanstack/eslint-config"
 
-export default [...tanstackConfig, { rules: { "import/order": "off" } }]
+export default [
+  ...tanstackConfig,
+  {
+    rules: {
+      "@typescript-eslint/no-unnecessary-condition": "off",
+      "import/order": "off",
+    },
+  },
+]

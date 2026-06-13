@@ -10,25 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestRouteImport } from './routes/test'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
-import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
-import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
-import { Route as AdminMediaRouteImport } from './routes/admin.media'
-import { Route as AdminExperienceRouteImport } from './routes/admin.experience'
-import { Route as AdminCertificationsRouteImport } from './routes/admin.certifications'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
+import { Route as AdminStatsRouteImport } from './routes/admin/stats'
+import { Route as AdminSkillsRouteImport } from './routes/admin/skills'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminPublicationsRouteImport } from './routes/admin/publications'
+import { Route as AdminProjectsRouteImport } from './routes/admin/projects'
+import { Route as AdminMessagesRouteImport } from './routes/admin/messages'
+import { Route as AdminMediaRouteImport } from './routes/admin/media'
+import { Route as AdminExperienceRouteImport } from './routes/admin/experience'
+import { Route as AdminCertificationsRouteImport } from './routes/admin/certifications'
+import { Route as AuthGoogleCallbackRouteImport } from './routes/auth.google.callback'
+import { Route as AdminTestimonialsNewRouteImport } from './routes/admin/testimonials/new'
+import { Route as AdminTestimonialsIdRouteImport } from './routes/admin/testimonials/$id'
+import { Route as AdminPublicationsNewRouteImport } from './routes/admin/publications/new'
+import { Route as AdminPublicationsIdRouteImport } from './routes/admin/publications/$id'
+import { Route as AdminProjectsNewRouteImport } from './routes/admin/projects/new'
+import { Route as AdminProjectsIdRouteImport } from './routes/admin/projects/$id'
+import { Route as AdminExperienceNewRouteImport } from './routes/admin/experience/new'
+import { Route as AdminExperienceIdRouteImport } from './routes/admin/experience/$id'
+import { Route as AdminCertificationsNewRouteImport } from './routes/admin/certifications/new'
+import { Route as AdminCertificationsIdRouteImport } from './routes/admin/certifications/$id'
 
 const TestRoute = TestRouteImport.update({
   id: '/test',
   path: '/test',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -46,9 +74,34 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStatsRoute = AdminStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSkillsRoute = AdminSkillsRouteImport.update({
+  id: '/skills',
+  path: '/skills',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPublicationsRoute = AdminPublicationsRouteImport.update({
+  id: '/publications',
+  path: '/publications',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
@@ -76,92 +129,259 @@ const AdminCertificationsRoute = AdminCertificationsRouteImport.update({
   path: '/certifications',
   getParentRoute: () => AdminRoute,
 } as any)
+const AuthGoogleCallbackRoute = AuthGoogleCallbackRouteImport.update({
+  id: '/auth/google/callback',
+  path: '/auth/google/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTestimonialsNewRoute = AdminTestimonialsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminTestimonialsRoute,
+} as any)
+const AdminTestimonialsIdRoute = AdminTestimonialsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminTestimonialsRoute,
+} as any)
+const AdminPublicationsNewRoute = AdminPublicationsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminPublicationsRoute,
+} as any)
+const AdminPublicationsIdRoute = AdminPublicationsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminPublicationsRoute,
+} as any)
+const AdminProjectsNewRoute = AdminProjectsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminProjectsRoute,
+} as any)
+const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminProjectsRoute,
+} as any)
+const AdminExperienceNewRoute = AdminExperienceNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminExperienceRoute,
+} as any)
+const AdminExperienceIdRoute = AdminExperienceIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminExperienceRoute,
+} as any)
+const AdminCertificationsNewRoute = AdminCertificationsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminCertificationsRoute,
+} as any)
+const AdminCertificationsIdRoute = AdminCertificationsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminCertificationsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/test': typeof TestRoute
-  '/admin/certifications': typeof AdminCertificationsRoute
-  '/admin/experience': typeof AdminExperienceRoute
+  '/admin/certifications': typeof AdminCertificationsRouteWithChildren
+  '/admin/experience': typeof AdminExperienceRouteWithChildren
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/publications': typeof AdminPublicationsRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/skills': typeof AdminSkillsRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRouteWithChildren
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/certifications/$id': typeof AdminCertificationsIdRoute
+  '/admin/certifications/new': typeof AdminCertificationsNewRoute
+  '/admin/experience/$id': typeof AdminExperienceIdRoute
+  '/admin/experience/new': typeof AdminExperienceNewRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/publications/$id': typeof AdminPublicationsIdRoute
+  '/admin/publications/new': typeof AdminPublicationsNewRoute
+  '/admin/testimonials/$id': typeof AdminTestimonialsIdRoute
+  '/admin/testimonials/new': typeof AdminTestimonialsNewRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/test': typeof TestRoute
-  '/admin/certifications': typeof AdminCertificationsRoute
-  '/admin/experience': typeof AdminExperienceRoute
+  '/admin/certifications': typeof AdminCertificationsRouteWithChildren
+  '/admin/experience': typeof AdminExperienceRouteWithChildren
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/publications': typeof AdminPublicationsRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/skills': typeof AdminSkillsRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRouteWithChildren
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/certifications/$id': typeof AdminCertificationsIdRoute
+  '/admin/certifications/new': typeof AdminCertificationsNewRoute
+  '/admin/experience/$id': typeof AdminExperienceIdRoute
+  '/admin/experience/new': typeof AdminExperienceNewRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/publications/$id': typeof AdminPublicationsIdRoute
+  '/admin/publications/new': typeof AdminPublicationsNewRoute
+  '/admin/testimonials/$id': typeof AdminTestimonialsIdRoute
+  '/admin/testimonials/new': typeof AdminTestimonialsNewRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/test': typeof TestRoute
-  '/admin/certifications': typeof AdminCertificationsRoute
-  '/admin/experience': typeof AdminExperienceRoute
+  '/admin/certifications': typeof AdminCertificationsRouteWithChildren
+  '/admin/experience': typeof AdminExperienceRouteWithChildren
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/publications': typeof AdminPublicationsRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/skills': typeof AdminSkillsRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRouteWithChildren
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/certifications/$id': typeof AdminCertificationsIdRoute
+  '/admin/certifications/new': typeof AdminCertificationsNewRoute
+  '/admin/experience/$id': typeof AdminExperienceIdRoute
+  '/admin/experience/new': typeof AdminExperienceNewRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/publications/$id': typeof AdminPublicationsIdRoute
+  '/admin/publications/new': typeof AdminPublicationsNewRoute
+  '/admin/testimonials/$id': typeof AdminTestimonialsIdRoute
+  '/admin/testimonials/new': typeof AdminTestimonialsNewRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/test'
     | '/admin/certifications'
     | '/admin/experience'
     | '/admin/media'
     | '/admin/messages'
     | '/admin/projects'
+    | '/admin/publications'
+    | '/admin/settings'
+    | '/admin/skills'
+    | '/admin/stats'
     | '/admin/testimonials'
+    | '/projects/$slug'
     | '/admin/'
+    | '/admin/certifications/$id'
+    | '/admin/certifications/new'
+    | '/admin/experience/$id'
+    | '/admin/experience/new'
+    | '/admin/projects/$id'
+    | '/admin/projects/new'
+    | '/admin/publications/$id'
+    | '/admin/publications/new'
+    | '/admin/testimonials/$id'
+    | '/admin/testimonials/new'
+    | '/auth/google/callback'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/test'
     | '/admin/certifications'
     | '/admin/experience'
     | '/admin/media'
     | '/admin/messages'
     | '/admin/projects'
+    | '/admin/publications'
+    | '/admin/settings'
+    | '/admin/skills'
+    | '/admin/stats'
     | '/admin/testimonials'
+    | '/projects/$slug'
     | '/admin'
+    | '/admin/certifications/$id'
+    | '/admin/certifications/new'
+    | '/admin/experience/$id'
+    | '/admin/experience/new'
+    | '/admin/projects/$id'
+    | '/admin/projects/new'
+    | '/admin/publications/$id'
+    | '/admin/publications/new'
+    | '/admin/testimonials/$id'
+    | '/admin/testimonials/new'
+    | '/auth/google/callback'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/test'
     | '/admin/certifications'
     | '/admin/experience'
     | '/admin/media'
     | '/admin/messages'
     | '/admin/projects'
+    | '/admin/publications'
+    | '/admin/settings'
+    | '/admin/skills'
+    | '/admin/stats'
     | '/admin/testimonials'
+    | '/projects/$slug'
     | '/admin/'
+    | '/admin/certifications/$id'
+    | '/admin/certifications/new'
+    | '/admin/experience/$id'
+    | '/admin/experience/new'
+    | '/admin/projects/$id'
+    | '/admin/projects/new'
+    | '/admin/publications/$id'
+    | '/admin/publications/new'
+    | '/admin/testimonials/$id'
+    | '/admin/testimonials/new'
+    | '/auth/google/callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TestRoute: typeof TestRoute
+  ProjectsSlugRoute: typeof ProjectsSlugRoute
+  AuthGoogleCallbackRoute: typeof AuthGoogleCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -173,11 +393,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -201,11 +435,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/projects/$slug': {
+      id: '/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof ProjectsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/testimonials': {
       id: '/admin/testimonials'
       path: '/testimonials'
       fullPath: '/admin/testimonials'
       preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/stats': {
+      id: '/admin/stats'
+      path: '/stats'
+      fullPath: '/admin/stats'
+      preLoaderRoute: typeof AdminStatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/skills': {
+      id: '/admin/skills'
+      path: '/skills'
+      fullPath: '/admin/skills'
+      preLoaderRoute: typeof AdminSkillsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/publications': {
+      id: '/admin/publications'
+      path: '/publications'
+      fullPath: '/admin/publications'
+      preLoaderRoute: typeof AdminPublicationsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/projects': {
@@ -243,26 +512,178 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCertificationsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/auth/google/callback': {
+      id: '/auth/google/callback'
+      path: '/auth/google/callback'
+      fullPath: '/auth/google/callback'
+      preLoaderRoute: typeof AuthGoogleCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/testimonials/new': {
+      id: '/admin/testimonials/new'
+      path: '/new'
+      fullPath: '/admin/testimonials/new'
+      preLoaderRoute: typeof AdminTestimonialsNewRouteImport
+      parentRoute: typeof AdminTestimonialsRoute
+    }
+    '/admin/testimonials/$id': {
+      id: '/admin/testimonials/$id'
+      path: '/$id'
+      fullPath: '/admin/testimonials/$id'
+      preLoaderRoute: typeof AdminTestimonialsIdRouteImport
+      parentRoute: typeof AdminTestimonialsRoute
+    }
+    '/admin/publications/new': {
+      id: '/admin/publications/new'
+      path: '/new'
+      fullPath: '/admin/publications/new'
+      preLoaderRoute: typeof AdminPublicationsNewRouteImport
+      parentRoute: typeof AdminPublicationsRoute
+    }
+    '/admin/publications/$id': {
+      id: '/admin/publications/$id'
+      path: '/$id'
+      fullPath: '/admin/publications/$id'
+      preLoaderRoute: typeof AdminPublicationsIdRouteImport
+      parentRoute: typeof AdminPublicationsRoute
+    }
+    '/admin/projects/new': {
+      id: '/admin/projects/new'
+      path: '/new'
+      fullPath: '/admin/projects/new'
+      preLoaderRoute: typeof AdminProjectsNewRouteImport
+      parentRoute: typeof AdminProjectsRoute
+    }
+    '/admin/projects/$id': {
+      id: '/admin/projects/$id'
+      path: '/$id'
+      fullPath: '/admin/projects/$id'
+      preLoaderRoute: typeof AdminProjectsIdRouteImport
+      parentRoute: typeof AdminProjectsRoute
+    }
+    '/admin/experience/new': {
+      id: '/admin/experience/new'
+      path: '/new'
+      fullPath: '/admin/experience/new'
+      preLoaderRoute: typeof AdminExperienceNewRouteImport
+      parentRoute: typeof AdminExperienceRoute
+    }
+    '/admin/experience/$id': {
+      id: '/admin/experience/$id'
+      path: '/$id'
+      fullPath: '/admin/experience/$id'
+      preLoaderRoute: typeof AdminExperienceIdRouteImport
+      parentRoute: typeof AdminExperienceRoute
+    }
+    '/admin/certifications/new': {
+      id: '/admin/certifications/new'
+      path: '/new'
+      fullPath: '/admin/certifications/new'
+      preLoaderRoute: typeof AdminCertificationsNewRouteImport
+      parentRoute: typeof AdminCertificationsRoute
+    }
+    '/admin/certifications/$id': {
+      id: '/admin/certifications/$id'
+      path: '/$id'
+      fullPath: '/admin/certifications/$id'
+      preLoaderRoute: typeof AdminCertificationsIdRouteImport
+      parentRoute: typeof AdminCertificationsRoute
+    }
   }
 }
 
+interface AdminCertificationsRouteChildren {
+  AdminCertificationsIdRoute: typeof AdminCertificationsIdRoute
+  AdminCertificationsNewRoute: typeof AdminCertificationsNewRoute
+}
+
+const AdminCertificationsRouteChildren: AdminCertificationsRouteChildren = {
+  AdminCertificationsIdRoute: AdminCertificationsIdRoute,
+  AdminCertificationsNewRoute: AdminCertificationsNewRoute,
+}
+
+const AdminCertificationsRouteWithChildren =
+  AdminCertificationsRoute._addFileChildren(AdminCertificationsRouteChildren)
+
+interface AdminExperienceRouteChildren {
+  AdminExperienceIdRoute: typeof AdminExperienceIdRoute
+  AdminExperienceNewRoute: typeof AdminExperienceNewRoute
+}
+
+const AdminExperienceRouteChildren: AdminExperienceRouteChildren = {
+  AdminExperienceIdRoute: AdminExperienceIdRoute,
+  AdminExperienceNewRoute: AdminExperienceNewRoute,
+}
+
+const AdminExperienceRouteWithChildren = AdminExperienceRoute._addFileChildren(
+  AdminExperienceRouteChildren,
+)
+
+interface AdminProjectsRouteChildren {
+  AdminProjectsIdRoute: typeof AdminProjectsIdRoute
+  AdminProjectsNewRoute: typeof AdminProjectsNewRoute
+}
+
+const AdminProjectsRouteChildren: AdminProjectsRouteChildren = {
+  AdminProjectsIdRoute: AdminProjectsIdRoute,
+  AdminProjectsNewRoute: AdminProjectsNewRoute,
+}
+
+const AdminProjectsRouteWithChildren = AdminProjectsRoute._addFileChildren(
+  AdminProjectsRouteChildren,
+)
+
+interface AdminPublicationsRouteChildren {
+  AdminPublicationsIdRoute: typeof AdminPublicationsIdRoute
+  AdminPublicationsNewRoute: typeof AdminPublicationsNewRoute
+}
+
+const AdminPublicationsRouteChildren: AdminPublicationsRouteChildren = {
+  AdminPublicationsIdRoute: AdminPublicationsIdRoute,
+  AdminPublicationsNewRoute: AdminPublicationsNewRoute,
+}
+
+const AdminPublicationsRouteWithChildren =
+  AdminPublicationsRoute._addFileChildren(AdminPublicationsRouteChildren)
+
+interface AdminTestimonialsRouteChildren {
+  AdminTestimonialsIdRoute: typeof AdminTestimonialsIdRoute
+  AdminTestimonialsNewRoute: typeof AdminTestimonialsNewRoute
+}
+
+const AdminTestimonialsRouteChildren: AdminTestimonialsRouteChildren = {
+  AdminTestimonialsIdRoute: AdminTestimonialsIdRoute,
+  AdminTestimonialsNewRoute: AdminTestimonialsNewRoute,
+}
+
+const AdminTestimonialsRouteWithChildren =
+  AdminTestimonialsRoute._addFileChildren(AdminTestimonialsRouteChildren)
+
 interface AdminRouteChildren {
-  AdminCertificationsRoute: typeof AdminCertificationsRoute
-  AdminExperienceRoute: typeof AdminExperienceRoute
+  AdminCertificationsRoute: typeof AdminCertificationsRouteWithChildren
+  AdminExperienceRoute: typeof AdminExperienceRouteWithChildren
   AdminMediaRoute: typeof AdminMediaRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
-  AdminProjectsRoute: typeof AdminProjectsRoute
-  AdminTestimonialsRoute: typeof AdminTestimonialsRoute
+  AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
+  AdminPublicationsRoute: typeof AdminPublicationsRouteWithChildren
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSkillsRoute: typeof AdminSkillsRoute
+  AdminStatsRoute: typeof AdminStatsRoute
+  AdminTestimonialsRoute: typeof AdminTestimonialsRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminCertificationsRoute: AdminCertificationsRoute,
-  AdminExperienceRoute: AdminExperienceRoute,
+  AdminCertificationsRoute: AdminCertificationsRouteWithChildren,
+  AdminExperienceRoute: AdminExperienceRouteWithChildren,
   AdminMediaRoute: AdminMediaRoute,
   AdminMessagesRoute: AdminMessagesRoute,
-  AdminProjectsRoute: AdminProjectsRoute,
-  AdminTestimonialsRoute: AdminTestimonialsRoute,
+  AdminProjectsRoute: AdminProjectsRouteWithChildren,
+  AdminPublicationsRoute: AdminPublicationsRouteWithChildren,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminSkillsRoute: AdminSkillsRoute,
+  AdminStatsRoute: AdminStatsRoute,
+  AdminTestimonialsRoute: AdminTestimonialsRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -271,8 +692,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TestRoute: TestRoute,
+  ProjectsSlugRoute: ProjectsSlugRoute,
+  AuthGoogleCallbackRoute: AuthGoogleCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

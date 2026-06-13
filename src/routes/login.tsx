@@ -3,10 +3,15 @@ import { Card } from "@/components/ui/card"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import PasswordField from "@/components/ui/password-field"
-import { login, loginSchema } from "@/lib/cms"
-import { RiLockPasswordLine, RiUser3Line } from "@remixicon/react"
+import { getGoogleAuthUrl, getUser, login, loginSchema } from "@/lib/cms"
+import { RiGoogleFill, RiLockPasswordLine, RiUser3Line } from "@remixicon/react"
 import { useForm } from "@tanstack/react-form"
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import {
+  Link,
+  createFileRoute,
+  redirect,
+  useNavigate,
+} from "@tanstack/react-router"
 import { toast } from "sonner"
 
 function LoginPage() {
@@ -17,13 +22,13 @@ function LoginPage() {
       onChange: loginSchema,
     },
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
     onSubmit: async ({ value }) => {
       try {
         await login({
-          data: { username: value.username, password: value.password },
+          data: { email: value.email, password: value.password },
         })
         toast.success("Logged in successfully")
         navigate({
@@ -34,6 +39,15 @@ function LoginPage() {
       }
     },
   })
+
+  const handleGoogleLogin = async () => {
+    try {
+      const { url } = await getGoogleAuthUrl()
+      window.location.href = url
+    } catch (error) {
+      toast.error("Failed to initiate Google login")
+    }
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-6">
@@ -49,6 +63,28 @@ function LoginPage() {
         </div>
 
         <Card className="border-border bg-secondary/30 p-8">
+          {/* Google Login Button */}
+          <Button
+            type="button"
+            variant="outline"
+            className="mb-6 h-12 w-full gap-3 border-border bg-background/50 font-bold"
+            onClick={handleGoogleLogin}
+          >
+            <RiGoogleFill />
+            Sign in with Google
+          </Button>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">
+                Or continue with Email
+              </span>
+            </div>
+          </div>
+
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -57,27 +93,28 @@ function LoginPage() {
             className="space-y-6"
           >
             <form.Field
-              name="username"
+              name="email"
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
                     <div className="space-y-2">
-                      <FieldLabel htmlFor={field.name}>Username</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                       <div className="relative">
                         <RiUser3Line
                           className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
                           size={18}
                         />
                         <Input
+                          type="email"
                           id={field.name}
                           name={field.name}
                           value={field.state.value}
                           onBlur={field.handleBlur}
                           onChange={(e) => field.handleChange(e.target.value)}
                           aria-invalid={isInvalid}
-                          placeholder="username"
+                          placeholder="email@example.com"
                           autoComplete="off"
                           className="bg-background/50 pl-10"
                         />
@@ -99,7 +136,15 @@ function LoginPage() {
                 return (
                   <Field data-invalid={isInvalid}>
                     <div className="space-y-2">
-                      <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                      <div className="flex items-center justify-between">
+                        <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                        <Link
+                          to="/forgot-password"
+                          className="text-xs text-primary hover:underline"
+                        >
+                          Forgot password?
+                        </Link>
+                      </div>
                       <div className="relative">
                         <RiLockPasswordLine
                           className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
@@ -126,11 +171,7 @@ function LoginPage() {
               }}
             />
 
-            <Button
-              type="submit"
-              // disabled={loading}
-              className="text-md h-12 w-full font-bold"
-            >
+            <Button type="submit" className="text-md h-12 w-full font-bold">
               Login
             </Button>
           </form>
@@ -141,5 +182,11 @@ function LoginPage() {
 }
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: async () => {
+    const user = await getUser()
+    if (user) {
+      throw redirect({ to: "/admin" })
+    }
+  },
   component: LoginPage,
 })

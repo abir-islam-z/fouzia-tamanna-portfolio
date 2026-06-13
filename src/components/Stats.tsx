@@ -1,59 +1,79 @@
-import { useEffect, useState } from "react"
-import { Card } from "./ui/card"
-import { getStats } from "@/lib/cms"
+import { statsQuery } from "@/lib/queries"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 interface StatItem {
   value: string
   label: string
 }
 
-const FALLBACK_STATS: StatItem[] = [
-  { value: "4+", label: "Years of Experience" },
-  { value: "25+", label: "Projects Completed" },
-  { value: "10+", label: "Global Clients" },
-  { value: "9K+", label: "LinkedIn Following" }
-]
+interface StatsProps {
+  sectionConfig?: {
+    badge?: string | null
+    heading?: string | null
+    subtext?: string | null
+  }
+}
 
-export default function Stats() {
-  const [stats, setStats] = useState<StatItem[]>(FALLBACK_STATS)
+export default function Stats({ sectionConfig }: StatsProps = {}) {
+  const { data: rawStats } = useSuspenseQuery(statsQuery)
+  const stats = (rawStats ?? []) as unknown as Array<StatItem>
 
-  useEffect(() => {
-    async function loadStats() {
-      try {
-        const data = await getStats()
-        if (data && data.length > 0) setStats(data as StatItem[])
-      } catch (error) {
-        console.error("Failed to fetch stats, using fallback.", error)
-      }
-    }
-    loadStats()
-  }, [])
+  if (stats.length === 0) return null
+
+  const badge = sectionConfig?.badge ?? "// PROFILE.SYS"
+  const heading = sectionConfig?.heading ?? (
+    <>
+      Hello, I&apos;m Fouzia —
+      <br className="hidden md:block" />
+      <span
+        className="cyber-glitch text-gradient-neon-bg"
+        data-text="SOC Analyst"
+      >
+        SOC Analyst
+      </span>{" "}
+      &amp; Network Security Specialist.
+    </>
+  )
+  const subtext = sectionConfig?.subtext
 
   return (
-    <section className="py-16 md:py-24 px-4 md:px-6 max-w-7xl mx-auto">
-      <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-start">
-        <div className="max-w-xl text-center lg:text-left">
-          <h2 className="text-2xl md:text-4xl font-extrabold mb-4 md:mb-6 leading-tight">
-            Hello, I&apos;m John — <br className="hidden md:block" />
-            <span className="text-primary">Full Stack Developer</span> & Designer.
+    <section className="tech-grid relative border-y border-border/50 px-4 py-16 md:px-6 md:py-24">
+      <div className="mx-auto grid max-w-7xl items-start gap-12 lg:grid-cols-5 lg:gap-16">
+        <div className="space-y-6 text-center lg:col-span-2 lg:text-left">
+          <div className="label-mono">{badge}</div>
+          <h2 className="font-display text-2xl leading-tight font-bold tracking-wide uppercase md:text-4xl">
+            {heading}
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-            I specialize in building modern web applications that provide exceptional user 
-            experiences. My focus lies in React, TypeScript, and scalable cloud 
-            architectures.
-          </p>
+          {subtext && (
+            <p className="font-mono text-sm leading-relaxed text-muted-foreground md:text-base">
+              {subtext}
+            </p>
+          )}
+          <div className="flex items-center justify-center gap-2 pt-2 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase lg:justify-start">
+            <span className="status-dot" />
+            <span>System online</span>
+            <span className="mx-2 text-border">|</span>
+            <span>v2.6.4</span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:gap-4">
+        <div className="cyber-chamfer grid grid-cols-2 divide-x divide-y divide-border/50 border border-border/50 lg:col-span-3">
           {stats.map((stat, i) => (
-            <Card key={i} className="p-6 md:p-8 bg-secondary/50 border-border hover:border-primary/20 transition-all group">
-              <div className="text-3xl md:text-4xl font-black text-primary mb-1 md:mb-2 group-hover:scale-105 transition-transform origin-left">
+            <div
+              key={i}
+              className="group relative flex flex-col justify-center gap-1 p-6 transition-all hover:bg-primary/5 md:p-8"
+            >
+              <div className="absolute top-3 right-3 font-mono text-[9px] tracking-widest text-muted-foreground/40 uppercase">
+                0{i + 1}
+              </div>
+              <div className="text-glow-md font-display text-3xl font-black tracking-tight text-primary uppercase md:text-5xl">
                 {stat.value}
               </div>
-              <div className="text-[9px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground">
+              <div className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground uppercase md:text-xs">
                 {stat.label}
               </div>
-            </Card>
+              <div className="absolute inset-x-0 bottom-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-primary to-transparent transition-transform duration-300 group-hover:scale-x-100" />
+            </div>
           ))}
         </div>
       </div>

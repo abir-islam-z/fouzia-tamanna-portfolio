@@ -1,134 +1,225 @@
-import { useEffect, useState } from "react"
-import { Badge } from "./ui/badge"
+import { projectsQuery } from "@/lib/queries"
+import { RiArrowRightUpLine, RiShieldKeyholeLine } from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { Link } from "@tanstack/react-router"
 import { Button } from "./ui/button"
-import { Card } from "./ui/card"
-import { RiGithubFill, RiExternalLinkLine } from "@remixicon/react"
-import { getProjects } from "@/lib/cms"
 
 interface ProjectItem {
+  id: string
+  slug: string
   title: string
-  description: string
-  image: string
+  summary: string
   tags: string
   isFeatured: boolean
   link?: string | null
   github?: string | null
 }
 
-const FALLBACK_PROJECTS: ProjectItem[] = [
-  {
-    title: "Self-Correction in LLMs",
-    description: "Researching and implementing iterative refinement techniques for large language models to improve factual accuracy and reasoning.",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-    tags: "Research, LLM, Python",
-    isFeatured: true,
-    link: "#",
-    github: "#"
-  },
-  {
-    title: "RAG Optimizer",
-    description: "A tool to optimize vector database retrieval using reranking and hybrid search methods.",
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
-    tags: "NLP, LangChain, Pinecone",
-    isFeatured: false,
-    link: "#",
-    github: "#"
+interface ProjectsProps {
+  sectionConfig?: {
+    badge?: string | null
+    heading?: string | null
+    subtext?: string | null
   }
-]
+}
 
-export default function Projects() {
-  const [projects, setProjects] = useState<ProjectItem[]>(FALLBACK_PROJECTS)
+export default function Projects({ sectionConfig }: ProjectsProps = {}) {
+  const { data: rawProjects } = useSuspenseQuery(projectsQuery)
+  const projects = (rawProjects ?? []) as unknown as Array<ProjectItem>
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await getProjects()
-        if (data && data.length > 0) setProjects(data as ProjectItem[])
-      } catch (error) {
-        console.error("Failed to fetch projects, using fallback.", error)
-      }
-    }
-    loadData()
-  }, [])
+  if (projects.length === 0) return null
 
-  const featuredProject = projects.find(p => p.isFeatured) || projects[0]
-  const otherProjects = projects.filter(p => p !== featuredProject)
+  const featuredProject = projects.find((p) => p.isFeatured) ?? projects[0]
+  const otherProjects = projects.filter((p) => p.id !== featuredProject.id)
+
+  const badge = sectionConfig?.badge ?? "// PROJECTS.MKD"
+  const heading = sectionConfig?.heading ?? (
+    <>
+      <span className="text-gradient-neon-bg">Security</span> Projects &amp;
+      <br className="hidden md:block" /> Case Studies
+    </>
+  )
+  const subtext =
+    sectionConfig?.subtext ??
+    "Hands-on projects in threat detection, network forensics, and zero-trust infrastructure."
 
   return (
-    <section id="projects" className="py-16 md:py-24 px-4 md:px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16 text-center md:text-left">
-          <div>
-            <Badge variant="outline" className="mb-4 text-primary border-primary/20 bg-primary/5 px-3 py-1 uppercase tracking-widest text-[10px] font-bold">MY WORK</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Case Studies & Projects</h2>
+    <section
+      id="projects"
+      className="tech-grid relative px-4 py-16 md:px-6 md:py-24"
+    >
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-12 flex flex-col gap-6 text-center md:mb-16 md:flex-row md:items-end md:justify-between md:text-left">
+          <div className="space-y-3">
+            <div className="label-mono">{badge}</div>
+            <h2 className="font-display text-3xl leading-none font-bold tracking-wide uppercase md:text-5xl">
+              {heading}
+            </h2>
           </div>
-          <p className="text-muted-foreground max-w-md mx-auto md:mx-0 text-sm md:text-base">
-            A selection of my recent work in data science, specializing in large language models and RAG systems.
+          <p className="mx-auto max-w-md font-mono text-sm text-muted-foreground md:mx-0 md:text-base">
+            {subtext}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:gap-12">
-          {/* Featured Project */}
-          {featuredProject && (
-            <div className="group relative grid md:grid-cols-2 gap-6 md:gap-8 items-center bg-secondary/30 rounded-[24px] md:rounded-[40px] p-6 md:p-12 border border-border/50 hover:border-primary/20 transition-all overflow-hidden">
-              <div className="absolute top-4 right-4 md:top-8 md:right-8">
-                <Badge className="bg-primary text-primary-foreground text-[10px] md:text-xs">FEATURED</Badge>
+        <div className="grid grid-cols-1 gap-8 md:gap-10">
+          <Link
+            to="/projects/$slug"
+            params={{ slug: featuredProject.slug }}
+            className="group hover:neon-glow cyber-chamfer-lg relative flex flex-col items-start gap-6 border border-border bg-card/60 p-6 transition-all hover:border-primary md:gap-8 md:p-8"
+          >
+            {featuredProject.isFeatured && (
+              <div className="cyber-chamfer-sm absolute top-4 right-4 z-10 flex items-center gap-2 border border-primary/60 bg-primary/10 px-2.5 py-1 font-mono text-[9px] tracking-[0.2em] text-primary uppercase md:top-6 md:right-6 md:text-[10px]">
+                <span className="status-dot h-1.5 w-1.5" />
+                Featured
               </div>
-              <div className="order-2 md:order-1 space-y-4 md:space-y-6">
-                <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                  {(featuredProject.tags || "").split(",").map((tag: string, i: number) => (
-                    <span key={i} className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-primary/80">{tag.trim()}</span>
+            )}
+
+            <div className="space-y-4 md:space-y-6">
+              <div className="flex flex-wrap gap-1.5">
+                {(featuredProject.tags || "")
+                  .split(",")
+                  .map((tag: string) => tag.trim())
+                  .filter(Boolean)
+                  .map((tag, i) => (
+                    <span
+                      key={i}
+                      className="cyber-chamfer-sm border border-border bg-secondary/60 px-2 py-1 font-mono text-[9px] tracking-[0.2em] text-primary/80 uppercase md:text-[10px]"
+                    >
+                      {tag}
+                    </span>
                   ))}
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-center md:text-left">{featuredProject.title}</h3>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed text-center md:text-left">
-                  {featuredProject.description}
-                </p>
-                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                  <Button className="rounded-full px-8 w-full sm:w-auto">View Case Study</Button>
-                  <div className="flex items-center gap-2">
-                    {featuredProject.github && (
-                      <Button variant="ghost" size="icon" className="rounded-full hover:bg-background"><RiGithubFill size={20} /></Button>
-                    )}
-                    {featuredProject.link && (
-                      <Button variant="ghost" size="icon" className="rounded-full hover:bg-background"><RiExternalLinkLine size={20} /></Button>
-                    )}
-                  </div>
-                </div>
               </div>
-              <div className="order-1 md:order-2 aspect-video rounded-2xl md:rounded-3xl overflow-hidden border border-border shadow-xl md:shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
-                <img src={featuredProject.image} alt={featuredProject.title} className="w-full h-full object-cover" />
+              <h3 className="text-center font-display text-2xl leading-tight font-bold tracking-wide uppercase md:text-left md:text-3xl">
+                {featuredProject.title}
+              </h3>
+              <p className="text-center font-mono text-sm leading-relaxed text-muted-foreground md:text-left md:text-base">
+                {featuredProject.summary}
+              </p>
+              <div className="flex flex-col items-center gap-3 pt-2 sm:flex-row md:justify-start">
+                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-widest text-primary uppercase">
+                  View Case Study
+                  <RiArrowRightUpLine size={12} />
+                </span>
+                <div className="flex items-center gap-2">
+                  {featuredProject.github && featuredProject.github !== "#" && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      aria-label="View source"
+                      className="cyber-chamfer-sm"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        window.open(
+                          featuredProject.github!,
+                          "_blank",
+                          "noopener,noreferrer"
+                        )
+                      }}
+                    >
+                      <RiShieldKeyholeLine size={18} />
+                    </Button>
+                  )}
+                  {featuredProject.link && featuredProject.link !== "#" && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      aria-label="Open project"
+                      className="cyber-chamfer-sm"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        window.open(
+                          featuredProject.link!,
+                          "_blank",
+                          "noopener,noreferrer"
+                        )
+                      }}
+                    >
+                      <RiArrowRightUpLine size={18} />
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
-          )}
+          </Link>
 
-          {/* Other Projects Grid */}
           {otherProjects.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {otherProjects.map((project, i) => (
-                <Card key={i} className="p-4 bg-background/50 border-border group hover:border-primary/20 transition-all overflow-hidden rounded-[24px]">
-                  <div className="aspect-video rounded-xl md:rounded-2xl overflow-hidden mb-4 md:mb-6 border border-border">
-                    <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                  </div>
-                  <div className="px-2 pb-2 space-y-3 md:space-y-4">
-                    <div className="flex flex-wrap gap-2">
-                      {(project.tags || "").split(",").map((tag: string, j: number) => (
-                        <span key={j} className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{tag.trim()}</span>
-                      ))}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+              {otherProjects.map((project) => (
+                <Link
+                  key={project.id}
+                  to="/projects/$slug"
+                  params={{ slug: project.slug }}
+                  className="group hover:neon-glow cyber-chamfer relative overflow-hidden border border-border bg-card/40 p-4 transition-all hover:border-primary"
+                >
+                  <div className="space-y-3 px-1 py-3 md:space-y-4 md:py-4">
+                    <div className="flex flex-wrap gap-1.5">
+                      {(project.tags || "")
+                        .split(",")
+                        .map((tag: string) => tag.trim())
+                        .filter(Boolean)
+                        .map((tag, j) => (
+                          <span
+                            key={j}
+                            className="font-mono text-[9px] tracking-widest text-muted-foreground uppercase md:text-[10px]"
+                          >
+                            # {tag}
+                          </span>
+                        ))}
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold">{project.title}</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground line-clamp-2">
-                      {project.description}
+                    <h3 className="font-display text-lg leading-tight font-bold tracking-wide uppercase md:text-xl">
+                      {project.title}
+                    </h3>
+                    <p className="line-clamp-2 font-mono text-xs text-muted-foreground md:text-sm">
+                      {project.summary}
                     </p>
-                    <div className="flex items-center justify-between pt-2 md:pt-4">
-                      <Button variant="link" className="p-0 h-auto text-primary font-bold text-xs md:text-sm">Read More</Button>
+                    <div className="flex items-center justify-between pt-2 md:pt-3">
+                      <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-widest text-primary uppercase">
+                        Read More
+                        <RiArrowRightUpLine size={12} />
+                      </span>
                       <div className="flex items-center gap-1">
-                        {project.github && <Button variant="ghost" size="icon" className="h-8 w-8"><RiGithubFill size={18} /></Button>}
-                        {project.link && <Button variant="ghost" size="icon" className="h-8 w-8"><RiExternalLinkLine size={18} /></Button>}
+                        {project.github && project.github !== "#" && (
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label="View source"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              window.open(
+                                project.github!,
+                                "_blank",
+                                "noopener,noreferrer"
+                              )
+                            }}
+                          >
+                            <RiShieldKeyholeLine size={16} />
+                          </Button>
+                        )}
+                        {project.link && project.link !== "#" && (
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label="Open project"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              window.open(
+                                project.link!,
+                                "_blank",
+                                "noopener,noreferrer"
+                              )
+                            }}
+                          >
+                            <RiArrowRightUpLine size={16} />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
-                </Card>
+                </Link>
               ))}
             </div>
           )}

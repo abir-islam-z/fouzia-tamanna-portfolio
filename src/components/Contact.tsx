@@ -1,18 +1,14 @@
-import { useEffect, useState } from "react"
-import {
-  RiGithubFill,
-  RiLinkedinBoxFill,
-  RiMailFill,
-  RiMailLine,
-  RiTwitterXFill,
-} from "@remixicon/react"
+import { contactSchema } from "@/lib/cms"
+import { footerQuery, siteSettingsQuery, useSubmitContact } from "@/lib/queries"
+import { RiMailLine } from "@remixicon/react"
+import { useForm } from "@tanstack/react-form"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { useState } from "react"
+import { toast } from "sonner"
 import { Button } from "./ui/button"
-import { Card } from "./ui/card"
+import { Field, FieldError, FieldLabel } from "./ui/field"
 import { Input } from "./ui/input"
 import { Textarea } from "./ui/textarea"
-import { Label } from "./ui/label"
-import { getFooter, submitContact } from "@/lib/cms"
-import { toast } from "sonner"
 
 interface FooterData {
   bio: string
@@ -23,260 +19,293 @@ interface FooterData {
   availability: string
 }
 
-const FALLBACK_FOOTER: FooterData = {
-  bio: "Full Stack Developer specializing in modern web technologies. Based in Silicon Valley, CA.",
-  email: "hello@johndoe.com",
-  linkedin: "#",
-  github: "#",
-  twitter: "#",
-  availability: "Open for Opportunities",
+interface SiteSettings {
+  contactHeading: string | null
+  contactSubtext: string | null
 }
 
-export default function Contact() {
-  const [pending, setPending] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [footer, setFooter] = useState<FooterData>(FALLBACK_FOOTER)
+interface ContactProps {
+  sectionConfig?: {
+    badge?: string | null
+    heading?: string | null
+    subtext?: string | null
+  }
+}
 
-  useEffect(() => {
-    async function loadFooter() {
-      try {
-        const data = await getFooter()
-        setFooter(data)
-      } catch (err) {
-        console.error("Failed to fetch footer data.", err)
-      }
-    }
-    loadFooter()
-  }, [])
+export default function Contact({ sectionConfig }: ContactProps = {}) {
+  const { data: rawFooter } = useSuspenseQuery(footerQuery)
+  const { data: rawSettings } = useSuspenseQuery(siteSettingsQuery)
+  const f = rawFooter as any
+  const s = rawSettings as SiteSettings | null
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setPending(true)
-    const formData = new FormData(e.currentTarget)
-    const data = Object.fromEntries(formData.entries())
-
-    try {
-      const payload = {
-        name: String(data.name || ""),
-        email: String(data.email || ""),
-        message: String(data.message || ""),
-      }
-      await submitContact({ data: payload })
-      setSuccess(true)
-      e.currentTarget.reset()
-      toast.success("Message sent! I'll get back to you soon.")
-    } catch (err: any) {
-      console.error("Submission error:", err)
-      const errorMessage = err?.message || "Something went wrong. Please try again later."
-      toast.error(errorMessage)
-    } finally {
-      setPending(false)
-    }
+  const footer: FooterData = {
+    bio: f?.bio ?? "",
+    email: f?.email ?? "",
+    linkedin: f?.linkedin ?? "#",
+    github: f?.github ?? "#",
+    twitter: f?.twitter ?? "#",
+    availability: f?.availability ?? "",
   }
 
+  const submitMutation = useSubmitContact()
+  const [success, setSuccess] = useState(false)
+
+  const heading = sectionConfig?.heading ?? (
+    <>
+      Security Analyst <br className="hidden md:block" />
+      <span
+        className="cyber-glitch text-gradient-neon-bg"
+        data-text="who hunts?"
+      >
+        who hunts?
+      </span>
+    </>
+  )
+
+  const defaultSubtext =
+    "Let's build something intelligent together. I'm always open to discussing new projects, partnerships, or opportunities to join innovative teams."
+  const subtext = sectionConfig?.subtext ?? s?.contactSubtext ?? defaultSubtext
+
+  const form = useForm({
+    validators: {
+      onChange: contactSchema,
+    },
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        await submitMutation.mutateAsync(value)
+        setSuccess(true)
+        form.reset()
+        toast.success("Message sent! I'll get back to you soon.")
+      } catch (err: any) {
+        toast.error(
+          err?.message || "Something went wrong. Please try again later."
+        )
+      }
+    },
+  })
+
   return (
-    <section id="contact" className="border-t border-border px-4 md:px-6 py-16 md:py-24">
+    <section
+      id="contact"
+      className="circuit-bg relative border-t border-border/50 px-4 py-16 md:px-6 md:py-24"
+    >
       <div className="mx-auto grid max-w-6xl items-start gap-12 md:gap-16 lg:grid-cols-2">
-        {/* Left Side */}
-        <div className="space-y-6 md:space-y-8 text-center lg:text-left">
+        <div className="space-y-8 text-center lg:text-left">
           <div>
-            <h2 className="mb-6 md:mb-8 text-4xl md:text-6xl leading-tight font-black tracking-tighter">
-              Full Stack Developer <br />
-              <span className="text-primary">who ships?</span>
+            <div className="label-mono mb-4">
+              {sectionConfig?.badge ?? "// CONTACT.SH"}
+            </div>
+            <h2 className="mb-6 font-display text-4xl leading-none font-bold tracking-wide uppercase md:mb-8 md:text-6xl">
+              {heading}
             </h2>
-            <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
-              Let's build something intelligent together. I'm always open to
-              discussing new projects, partnerships, or opportunities to join
-              innovative teams.
+            <p className="font-mono text-base leading-relaxed text-muted-foreground md:text-lg">
+              {subtext}
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 md:gap-4">
-            <a
-              href={`mailto:${footer.email}`}
-              className="text-base md:text-lg font-bold transition-colors hover:text-primary"
-            >
-              {footer.email}
-            </a>
-            <a
-              href={footer.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-base md:text-lg font-bold transition-colors hover:text-primary"
-            >
-              LinkedIn Profile
-            </a>
-          </div>
-        </div>
-
-        {/* Right Side - Form */}
-        <Card className="rounded-[24px] md:rounded-[40px] border-border bg-secondary/30 p-6 md:p-10 shadow-none">
-          {success ? (
-            <div className="space-y-4 py-8 md:py-12 text-center">
-              <div className="mx-auto mb-6 flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-primary/20 text-primary">
-                <RiMailLine size={32} />
-              </div>
-              <h3 className="text-xl md:text-2xl font-bold">Message Sent!</h3>
-              <p className="text-sm text-muted-foreground">
-                Thank you for reaching out. I'll get back to you as soon as
-                possible.
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => setSuccess(false)}
-                className="mt-4"
-              >
-                Send another message
-              </Button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="name"
-                  className="text-[9px] md:text-[10px] font-bold tracking-widest text-muted-foreground uppercase"
-                >
-                  Name
-                </Label>
-                <Input
-                  id="name"
-                  name="name"
-                  placeholder="John Doe"
-                  required
-                  className="h-12 rounded-xl border-border bg-background/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-[9px] md:text-[10px] font-bold tracking-widest text-muted-foreground uppercase"
-                >
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="hello@johndoe.com"
-                  required
-                  className="h-12 rounded-xl border-border bg-background/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="message"
-                  className="text-[9px] md:text-[10px] font-bold tracking-widest text-muted-foreground uppercase"
-                >
-                  Message
-                </Label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  placeholder="Tell me about your project..."
-                  required
-                  className="min-h-32 md:min-h-37.5 resize-none rounded-xl border-border bg-background/50"
-                />
-              </div>
-              <Button
-                type="submit"
-                disabled={pending}
-                className="text-sm md:text-md h-12 md:h-14 w-full rounded-2xl bg-primary font-bold shadow-[0_4px_20px_rgba(0,112,243,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {pending ? "Sending..." : "Send Message"}
-              </Button>
-            </form>
-          )}
-        </Card>
-      </div>
-
-      <div className="mx-auto max-w-7xl mt-16 md:mt-24">
-        {/* Footer Grid */}
-        <div className="grid gap-12 border-t border-border pt-16 md:pt-24 md:grid-cols-2 lg:grid-cols-4 text-center md:text-left">
-          <div className="space-y-4 md:space-y-6">
-            <div className="text-2xl font-black tracking-tighter italic">
-              JD
-            </div>
-            <p className="max-w-62.5 text-sm leading-relaxed text-muted-foreground mx-auto md:mx-0">
-              {footer.bio}
-            </p>
-          </div>
-
-          <div className="space-y-4 md:space-y-6">
-            <h4 className="text-[10px] md:text-xs font-bold tracking-widest text-primary uppercase">
-              Say Hello
-            </h4>
-            <div className="flex flex-col space-y-2">
+          {footer.email && (
+            <div className="space-y-3 font-mono md:space-y-4">
               <a
                 href={`mailto:${footer.email}`}
-                className="text-sm font-bold transition-colors hover:text-primary"
+                className="group flex items-center justify-center gap-3 text-sm transition-colors hover:text-primary md:justify-start md:text-base"
               >
-                {footer.email}
+                <span className="text-glow-sm text-primary">{">"}</span>
+                <span className="group-hover:text-glow font-bold tracking-widest uppercase">
+                  {footer.email}
+                </span>
               </a>
-              <a
-                href={footer.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-bold transition-colors hover:text-primary"
-              >
-                LinkedIn Profile
-              </a>
+              {footer.linkedin && footer.linkedin !== "#" && (
+                <a
+                  href={footer.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-center gap-3 text-sm transition-colors hover:text-primary md:justify-start md:text-base"
+                >
+                  <span className="text-glow-sm text-primary">{">"}</span>
+                  <span className="group-hover:text-glow font-bold tracking-widest uppercase">
+                    linkedin.com/in/fouzia
+                  </span>
+                </a>
+              )}
+              {footer.github && footer.github !== "#" && (
+                <a
+                  href={footer.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-center gap-3 text-sm transition-colors hover:text-primary md:justify-start md:text-base"
+                >
+                  <span className="text-glow-sm text-primary">{">"}</span>
+                  <span className="group-hover:text-glow font-bold tracking-widest uppercase">
+                    github.com/fouzia
+                  </span>
+                </a>
+              )}
             </div>
-          </div>
-
-          <div className="space-y-4 md:space-y-6">
-            <h4 className="text-[10px] md:text-xs font-bold tracking-widest text-primary uppercase">
-              Elsewhere
-            </h4>
-            <div className="flex gap-4 justify-center md:justify-start">
-              <SocialIcon href={footer.github} icon={<RiGithubFill />} />
-              <SocialIcon href={footer.linkedin} icon={<RiLinkedinBoxFill />} />
-              <SocialIcon href={footer.twitter} icon={<RiTwitterXFill />} />
-              <SocialIcon href={`mailto:${footer.email}`} icon={<RiMailFill />} />
-            </div>
-          </div>
-
-          <div className="space-y-4 md:space-y-6">
-            <h4 className="text-[10px] md:text-xs font-bold tracking-widest text-primary uppercase">
-              Availability
-            </h4>
-            <div className="space-y-1">
-              <p className="text-sm font-bold">{footer.availability}</p>
-              {/* <p className="text-xs text-muted-foreground">
-                Full-time & Contract roles
-              </p> */}
-            </div>
-          </div>
+          )}
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 pb-8 text-[9px] md:text-[10px] font-bold tracking-widest text-muted-foreground/40 uppercase md:flex-row border-t border-border/20 pt-8">
-          <div>
-            © {new Date().getFullYear()} John Doe. All Rights Reserved.
+        <div className="hover:neon-glow cyber-chamfer-lg relative border border-border bg-card/70 transition-all hover:border-primary">
+          <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-4 py-3">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57] shadow-[0_0_6px_#ff5f57]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e] shadow-[0_0_6px_#febc2e]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#28c840] shadow-[0_0_6px_#28c840]" />
+            <span className="ml-3 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+              ~/message.out — bash
+            </span>
           </div>
-          <div className="flex gap-6">
-            <a href="#" className="transition-colors hover:text-primary">
-              Privacy Policy
-            </a>
-            <a href="#" className="transition-colors hover:text-primary">
-              Terms of Service
-            </a>
+
+          <div className="p-6 md:p-8">
+            {success ? (
+              <div className="space-y-5 py-8 text-center md:py-12">
+                <div className="cyber-chamfer mx-auto flex h-16 w-16 items-center justify-center border border-primary bg-primary/10 text-primary md:h-20 md:w-20">
+                  <RiMailLine size={32} className="text-glow" />
+                </div>
+                <h3 className="font-display text-2xl font-bold tracking-wide uppercase md:text-3xl">
+                  Message Sent!
+                </h3>
+                <p className="font-mono text-sm text-muted-foreground">
+                  Thank you for reaching out. I&apos;ll get back to you as soon
+                  as possible.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setSuccess(false)}
+                  className="cyber-chamfer-sm mt-2"
+                >
+                  Send another message
+                </Button>
+              </div>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  form.handleSubmit()
+                }}
+                className="space-y-5 md:space-y-6"
+              >
+                <form.Field
+                  name="name"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <div className="space-y-2">
+                          <FieldLabel
+                            htmlFor={field.name}
+                            className="block font-label text-[10px] tracking-[0.22em] text-primary uppercase"
+                          >
+                            $ name
+                          </FieldLabel>
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            placeholder="John Doe"
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            aria-invalid={isInvalid}
+                            className="h-12"
+                          />
+                        </div>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+                <form.Field
+                  name="email"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <div className="space-y-2">
+                          <FieldLabel
+                            htmlFor={field.name}
+                            className="block font-label text-[10px] tracking-[0.22em] text-primary uppercase"
+                          >
+                            $ email
+                          </FieldLabel>
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            type="email"
+                            placeholder="hello@example.com"
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            aria-invalid={isInvalid}
+                            className="h-12"
+                          />
+                        </div>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+                <form.Field
+                  name="message"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <div className="space-y-2">
+                          <FieldLabel
+                            htmlFor={field.name}
+                            className="block font-label text-[10px] tracking-[0.22em] text-primary uppercase"
+                          >
+                            $ message
+                          </FieldLabel>
+                          <Textarea
+                            id={field.name}
+                            name={field.name}
+                            placeholder="Tell me about your project..."
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            aria-invalid={isInvalid}
+                            className="min-h-32 md:min-h-36"
+                          />
+                        </div>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+                <Button
+                  type="submit"
+                  disabled={submitMutation.isPending}
+                  variant="glitch"
+                  size="lg"
+                  className="h-12 w-full md:h-14"
+                >
+                  {submitMutation.isPending ? (
+                    <span className="flex items-center gap-2">
+                      <span className="caret h-3 w-3" />
+                      TRANSMITTING...
+                    </span>
+                  ) : (
+                    "EXECUTE_SEND"
+                  )}
+                </Button>
+              </form>
+            )}
           </div>
         </div>
       </div>
     </section>
-  )
-}
-
-function SocialIcon({ icon, href }: { icon: React.ReactNode, href: string }) {
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      asChild
-      className="h-10 w-10 rounded-xl border border-border bg-secondary text-muted-foreground transition-all hover:border-primary/50 hover:text-primary"
-    >
-      <a href={href} target="_blank" rel="noopener noreferrer">
-        {icon}
-      </a>
-    </Button>
   )
 }

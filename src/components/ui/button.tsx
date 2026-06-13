@@ -1,38 +1,87 @@
-import * as React from "react"
-import { cva } from "class-variance-authority"
 import { Slot } from "@radix-ui/react-slot"
 import type { VariantProps } from "class-variance-authority"
+import { cva } from "class-variance-authority"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Cyberpunk button system.
+ *
+ * - All buttons use the chamfered clip-path (the design system's signature).
+ * - Monospace, uppercase, wide tracking — every variant.
+ * - Neon glows on hover, not on rest.
+ * - 150ms transitions for that "snap" feel.
+ */
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  [
+    "group/button relative inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap select-none",
+    "font-mono tracking-widest uppercase",
+    "transition-all duration-150 ease-out outline-none",
+    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none",
+    "active:translate-y-px",
+    "disabled:pointer-events-none disabled:opacity-50",
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:drop-shadow-[0_0_4px_currentColor]",
+  ].join(" "),
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
-        outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
-        ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
-        destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
-        link: "text-primary underline-offset-4 hover:underline",
+        default: cn(
+          "border-2 border-primary bg-transparent text-primary",
+          "hover:neon-glow hover:bg-primary hover:text-primary-foreground",
+          "hover:[clip-path:polygon(0_6px,6px_0,calc(100%_-_6px)_0,100%_6px,100%_calc(100%_-_6px),calc(100%_-_6px)_100%,6px_100%,0_calc(100%_-_6px))]",
+          "[clip-path:polygon(0_6px,6px_0,calc(100%_-_6px)_0,100%_6px,100%_calc(100%_-_6px),calc(100%_-_6px)_100%,6px_100%,0_calc(100%_-_6px))]"
+        ),
+        glitch: cn(
+          "border-2 border-primary bg-primary text-primary-foreground",
+          "hover:neon-glow hover:brightness-110",
+          "[clip-path:polygon(0_6px,6px_0,calc(100%_-_6px)_0,100%_6px,100%_calc(100%_-_6px),calc(100%_-_6px)_100%,6px_100%,0_calc(100%_-_6px))]"
+        ),
+        secondary: cn(
+          "border-2 bg-transparent text-[var(--accent-secondary)]",
+          "hover:neon-glow-magenta border-[var(--accent-secondary)] hover:bg-[var(--accent-secondary)] hover:text-primary-foreground",
+          "[clip-path:polygon(0_6px,6px_0,calc(100%_-_6px)_0,100%_6px,100%_calc(100%_-_6px),calc(100%_-_6px)_100%,6px_100%,0_calc(100%_-_6px))]"
+        ),
+        outline: cn(
+          "border border-border bg-transparent text-foreground",
+          "hover:neon-glow-sm hover:border-primary hover:text-primary"
+        ),
+        ghost: cn(
+          "bg-transparent text-muted-foreground",
+          "hover:bg-primary/10 hover:text-primary"
+        ),
+        destructive: cn(
+          "border-2 border-destructive bg-transparent text-destructive",
+          "hover:neon-glow-coral hover:bg-destructive hover:text-primary-foreground",
+          "[clip-path:polygon(0_6px,6px_0,calc(100%_-_6px)_0,100%_6px,100%_calc(100%_-_6px),calc(100%_-_6px)_100%,6px_100%,0_calc(100%_-_6px))]"
+        ),
+        bracket: cn(
+          "border border-primary/40 bg-transparent text-primary",
+          "hover:neon-glow-sm hover:border-primary hover:bg-primary/10",
+          "font-mono tracking-[0.2em] uppercase"
+        ),
+        glow: cn(
+          "border-2 border-primary bg-primary/90 text-primary-foreground",
+          "hover:neon-glow hover:bg-primary",
+          "[clip-path:polygon(0_6px,6px_0,calc(100%_-_6px)_0,100%_6px,100%_calc(100%_-_6px),calc(100%_-_6px)_100%,6px_100%,0_calc(100%_-_6px))]"
+        ),
+        link: "font-bold text-primary underline-offset-4 hover:underline",
+        admin: cn(
+          "border border-border bg-background text-foreground",
+          "rounded-lg font-sans tracking-normal normal-case",
+          "hover:bg-muted"
+        ),
       },
       size: {
-        default:
-          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        icon: "size-8",
-        "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
-        "icon-lg": "size-9",
+        default: "h-10 px-5 text-xs",
+        xs: "h-7 px-3 text-[10px]",
+        sm: "h-8 px-4 text-[11px]",
+        lg: "h-12 px-7 text-sm",
+        xl: "h-14 px-9 text-base",
+        icon: "size-10",
+        "icon-xs": "size-7",
+        "icon-sm": "size-8",
+        "icon-lg": "size-12",
       },
     },
     defaultVariants: {
@@ -43,7 +92,8 @@ const buttonVariants = cva(
 )
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }

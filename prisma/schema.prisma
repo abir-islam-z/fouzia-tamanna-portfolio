@@ -2,34 +2,43 @@ generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
 }
+
 datasource db {
   provider = "postgresql"
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  password  String   // Hashed
-  createdAt DateTime @default(now())
-  media     Media[]
+  id                   String    @id @default(uuid())
+  email                String   @unique
+  password             String?
+  provider             String    @default("local")
+  googleId             String?   @unique
+  passwordResetToken   String?
+  passwordResetExpiry  DateTime?
+  createdAt            DateTime  @default(now())
+  media                Media[]
 }
 
 model Hero {
-  id                String   @id @default("singleton")
-  introBadge        String   @default("INTRO")
-  videoDuration     String   @default("0:60")
-  videoUrl          String   @default("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-  title             String   @default("Meet John")
-  description       String   @default("60 second intro")
-  openToWork        Boolean  @default(true)
-  location          String   @default("London, UK")
-  sponsorshipInfo   String   @default("No sponsorship needed")
-  resumeUrl         String   @default("#")
-  updatedAt         DateTime @updatedAt
+  id              String   @id @default("singleton")
+  introBadge      String   @default("OPEN TO WORK — SOC ANALYST")
+  title           String   @default("Fouzia Tamanna")
+  description     String   @default("Network Security & SOC Analyst specializing in threat detection, incident response, and systems security.")
+  openToWork      Boolean  @default(true)
+  location        String   @default("London, UK")
+  sponsorshipInfo String   @default("No sponsorship needed")
+  updatedAt       DateTime @updatedAt
+  resumeUrl       String   @default("#")
+  logoKey         String?
+  logoUrl         String?
+  subtitle        String   @default("MSc Computer Networks & Systems Security")
+  typedLines      String   @default("$ whoami\nfouzia_tamanna\n$ role --current\nSOC Analyst (Tier 2) @ SecureNet Operations\n$ focus --primary\nThreat Detection \u00b7 Incident Response \u00b7 SIEM\n$ certs --list\nSecurity+ \u00b7 CSA \u00b7 CCNA \u00b7 BTL1\n$ status\n[+] All systems nominal. Listening for anomalies...")
+  cvButtonLabel   String   @default("Download CV")
+  researchButtonLabel String @default("View Research")
 }
 
 model Stat {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   value     String
   label     String
   order     Int      @default(0)
@@ -37,39 +46,67 @@ model Stat {
 }
 
 model Experience {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   role        String
   company     String
   period      String
   description String
-  skills      String   
+  skills      String
   order       Int      @default(0)
   updatedAt   DateTime @updatedAt
 }
 
 model Project {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  image       String
-  tags        String   
-  isFeatured  Boolean  @default(false)
-  link        String?
-  github      String?
-  order       Int      @default(0)
-  updatedAt   DateTime @updatedAt
+  id           String           @id @default(uuid())
+  slug         String           @unique
+  title        String
+  summary      String
+  caseStudy    String           @default("")
+  tags         String
+  isFeatured   Boolean          @default(false)
+  link         String?
+  github       String?
+  order        Int              @default(0)
+  updatedAt    DateTime         @updatedAt
+  gallery      ProjectGallery[]
+}
+
+model ProjectGallery {
+  id        String  @id @default(uuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  mediaId   String
+  media     Media   @relation(fields: [mediaId], references: [id])
+  order     Int     @default(0)
+
+  @@index([projectId])
 }
 
 model ContactMessage {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String
   message   String
   createdAt DateTime @default(now())
 }
 
+model Publication {
+  id          String   @id @default(uuid())
+  title       String
+  authors     String
+  venue       String
+  year        String
+  abstract    String
+  link        String?
+  tags        String
+  type        String   @default("journal")
+  isPublished Boolean  @default(true)
+  order       Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}
+
 model Testimonial {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   role      String
   content   String
@@ -78,8 +115,17 @@ model Testimonial {
   updatedAt DateTime @updatedAt
 }
 
+model Skill {
+  id        String   @id @default(uuid())
+  name      String
+  category  String
+  level     String?
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
 model Certification {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   title     String
   issuer    String
   date      String
@@ -89,20 +135,21 @@ model Certification {
 }
 
 model Media {
-  id           Int      @id @default(autoincrement())
-  key          String   @unique // R2 object key (path in bucket)
-  url          String   // Public URL to access the file
-  originalName String   // User's original filename
-  mimeType     String   // e.g. image/png, application/pdf
-  size         Int      // Size in bytes
-  width        Int?     // Optional: image width in px
-  height       Int?     // Optional: image height in px
-  folder       String   @default("general") // Logical folder for organization
-  alt          String?  // Optional alt text for accessibility
-  uploadedById Int?     // Optional: who uploaded it
-  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String           @id @default(uuid())
+  key            String           @unique
+  url            String
+  originalName   String
+  mimeType       String
+  size           Int
+  width          Int?
+  height         Int?
+  folder         String           @default("general")
+  alt            String?
+  uploadedById   String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  uploadedBy     User?            @relation(fields: [uploadedById], references: [id])
+  galleryIn      ProjectGallery[]
 
   @@index([folder])
   @@index([createdAt])
@@ -110,11 +157,37 @@ model Media {
 
 model Footer {
   id           String   @id @default("singleton")
-  bio          String   @default("Full Stack Developer specializing in modern web technologies. Based in Silicon Valley, CA.")
-  email        String   @default("hello@johndoe.com")
+  bio          String   @default("Network Security & SOC Analyst focused on threat detection, incident response, and systems security. Based in London, UK.")
+  email        String   @default("hello@example.com")
   linkedin     String   @default("#")
   github       String   @default("#")
   twitter      String   @default("#")
-  availability String   @default("Open for Opportunities")
+  availability String   @default("Open for SOC Analyst & Network Security Roles")
   updatedAt    DateTime @updatedAt
+}
+
+model LandingSection {
+  id        String   @id
+  label     String
+  enabled   Boolean  @default(true)
+  order     Int      @default(0)
+  badge     String?
+  heading   String?
+  subtext   String?
+  ctaLabel  String?
+  ctaHref   String?
+  updatedAt DateTime @updatedAt
+}
+
+model SiteSettings {
+  id               String   @id @default("singleton")
+  heroHeadline     String?
+  heroCtaPrimary   String?
+  heroCtaSecondary String?
+  contactHeading   String?
+  contactSubtext   String?
+  marqueeItems     String?
+  navbarBrand      String?
+  textLogo         String?
+  updatedAt        DateTime @updatedAt
 }

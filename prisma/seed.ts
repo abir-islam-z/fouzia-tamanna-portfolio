@@ -7,6 +7,8 @@ async function main() {
   console.log("Seeding database...")
 
   // --- Clear existing data ---
+  await prisma.publication.deleteMany({})
+  await prisma.projectGallery.deleteMany({})
   await prisma.media.deleteMany({})
   await prisma.user.deleteMany({})
   await prisma.hero.deleteMany({})
@@ -14,40 +16,58 @@ async function main() {
   await prisma.experience.deleteMany({})
   await prisma.project.deleteMany({})
   await prisma.testimonial.deleteMany({})
+  await prisma.skill.deleteMany({})
   await prisma.certification.deleteMany({})
   await prisma.footer.deleteMany({})
+  await prisma.landingSection.deleteMany({})
+  await prisma.siteSettings.deleteMany({})
 
-  // --- User ---
+  // --- Users ---
   const hashedPassword = await bcrypt.hash("password123", 10)
   await prisma.user.create({
     data: {
-      username: "admin",
-      password: hashedPassword
-    }
+      email: "admin@example.com",
+      password: hashedPassword,
+    },
   })
-  console.log("User 'admin' with password 'password123' created.")
+  console.log("User 'admin@example.com' with password 'password123' created.")
 
   // --- Hero ---
   await prisma.hero.create({
     data: {
       id: "singleton",
-      introBadge: "FULL STACK DEVELOPER & DESIGNER",
-      title: "I build exceptional digital experiences for the web.",
-      description: "Specializing in React, Node.js, and modern cloud architecture. I focus on creating scalable, performant, and user-centric applications.",
-      videoDuration: "0:45",
-      location: "Silicon Valley, CA",
-      sponsorshipInfo: "Available for remote & on-site opportunities",
+      introBadge: "OPEN TO WORK — SOC ANALYST",
+      subtitle: "MSc Computer Networks & Systems Security",
+      title: "Fouzia Tamanna",
+      description:
+        "Network Security & SOC Analyst specializing in threat detection, incident response, and systems security.",
+      location: "London, UK",
+      sponsorshipInfo: "No sponsorship needed",
       resumeUrl: "#",
-      openToWork: true
-    }
+      openToWork: true,
+      typedLines: [
+        "$ whoami",
+        "fouzia_tamanna",
+        "$ role --current",
+        "SOC Analyst (Tier 2) @ SecureNet Operations",
+        "$ focus --primary",
+        "Threat Detection · Incident Response · SIEM",
+        "$ certs --list",
+        "Security+ · CSA · CCNA · BTL1",
+        "$ status",
+        "[+] All systems nominal. Listening for anomalies...",
+      ].join("\n"),
+      cvButtonLabel: "Download CV",
+      researchButtonLabel: "View Research",
+    },
   })
 
   // --- Stats ---
   const stats = [
-    { label: "Years Experience", value: "5+", order: 1 },
-    { label: "Projects Completed", value: "30+", order: 2 },
-    { label: "Happy Clients", value: "20+", order: 3 },
-    { label: "Commits This Year", value: "1K+", order: 4 }
+    { label: "Threats Triaged", value: "2K+", order: 1 },
+    { label: "Incidents Resolved", value: "150+", order: 2 },
+    { label: "Network Uptime", value: "99.9%", order: 3 },
+    { label: "Years in IT Security", value: "4+", order: 4 },
   ]
   for (const stat of stats) {
     await prisma.stat.create({ data: stat })
@@ -56,29 +76,32 @@ async function main() {
   // --- Experience ---
   const experiences = [
     {
-      company: "Tech Giant",
-      role: "Senior Software Engineer",
-      period: "2022 - Present",
-      description: "Leading frontend development for a high-traffic SaaS platform. Implementing micro-frontends and improving CI/CD pipelines.",
-      skills: "React, TypeScript, AWS, Next.js",
-      order: 1
+      company: "SecureNet Operations",
+      role: "SOC Analyst (Tier 2)",
+      period: "2023 - Present",
+      description:
+        "Monitor SIEM dashboards, investigate security alerts, and coordinate incident response for enterprise clients. Developed automated playbooks reducing MTTR by 35%.",
+      skills: "SIEM, Splunk, Splunk SOAR, Wireshark, MITRE ATT&CK",
+      order: 1,
     },
     {
-      company: "Startup Co",
-      role: "Full Stack Developer",
-      period: "2019 - 2022",
-      description: "Architected and built a real-time collaboration tool from scratch. Scaled the backend to handle 50k concurrent users.",
-      skills: "Node.js, PostgreSQL, Redis, Docker",
-      order: 2
+      company: "CyberDefence Group",
+      role: "Network Security Engineer",
+      period: "2021 - 2023",
+      description:
+        "Deployed and tuned firewalls, IDS/IPS, and VPN solutions. Led network segmentation project for a financial services client (PCI-DSS compliance).",
+      skills: "Palo Alto, Cisco ASA, Suricata, Snort, VPN/IPSec, Nessus",
+      order: 2,
     },
     {
-      company: "Digital Agency",
-      role: "Junior Web Developer",
-      period: "2018 - 2019",
-      description: "Developed custom WordPress themes and interactive web components for various client projects.",
-      skills: "JavaScript, PHP, CSS, HTML",
-      order: 3
-    }
+      company: "IT Infrastructure Team",
+      role: "Junior Network Administrator",
+      period: "2019 - 2021",
+      description:
+        "Managed Active Directory, DNS, DHCP, and group policies across a 500-user environment. Assisted with vulnerability scans and patch cycles.",
+      skills: "Active Directory, Windows Server, PowerShell, PRTG, pfSense",
+      order: 3,
+    },
   ]
   for (const exp of experiences) {
     await prisma.experience.create({ data: exp })
@@ -87,54 +110,116 @@ async function main() {
   // --- Projects ---
   const projects = [
     {
-      title: "Task Management Pro",
-      description: "A collaborative task management application with real-time updates and team analytics.",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
-      tags: "React, Firebase, Tailwind",
+      slug: "threat-hunting-lab",
+      title: "Threat-Hunting Lab (ELK + Caldera)",
+      summary:
+        "Home SOC lab using Elastic Stack and MITRE Caldera to emulate APT techniques, detect them, and build detection rules.",
+      caseStudy:
+        "<h2>Overview</h2><p>Built a personal SOC lab that emulates adversary techniques end-to-end.</p><h3>Stack</h3><ul><li>Elastic Stack (Elasticsearch, Kibana, Beats)</li><li>MITRE Caldera for automated adversary emulation</li><li>Custom detection rules mapped to ATT&amp;CK</li></ul><h3>Results</h3><p>Achieved 100% ATT&amp;CK tactic coverage with validated detections and a 0.4% false-positive rate.</p>",
+      tags: "ELK, MITRE Caldera, Detection Engineering",
       isFeatured: true,
-      link: "https://github.com/johndoe/task-pro",
-      github: "https://github.com/johndoe/task-pro",
-      order: 1
+      link: "#",
+      github: "#",
+      order: 1,
     },
     {
-      title: "E-commerce Engine",
-      description: "A headless e-commerce solution with integrated payment gateways and inventory management.",
-      image: "https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&q=80&w=800",
-      tags: "Next.js, Stripe, Shopify",
+      slug: "network-forensics-toolkit",
+      title: "Network Forensics Toolkit",
+      summary:
+        "Python-based toolkit that parses PCAP files, extracts IOCs, and exports to STIX 2.1 for threat-intel platforms.",
+      caseStudy:
+        "<h2>Overview</h2><p>A Python CLI for fast triage of packet captures and IOC extraction.</p><h3>Features</h3><ul><li>PCAP parsing with Scapy</li><li>IOC extraction (IPs, domains, hashes)</li><li>STIX 2.1 export for sharing with threat-intel platforms</li></ul><h3>Results</h3><p>Processed a 10 GB capture in under 90 seconds on commodity hardware.</p>",
+      tags: "Python, Scapy, STIX 2.1, PCAP Analysis",
       isFeatured: true,
-      link: "https://github.com/johndoe/shop-engine",
-      github: "https://github.com/johndoe/shop-engine",
-      order: 2
+      link: "#",
+      github: "#",
+      order: 2,
     },
     {
-      title: "Weather Pulse",
-      description: "A weather tracking dashboard providing hyper-local forecasts and historical data visualization.",
-      image: "https://images.unsplash.com/photo-1592210454359-9043f067919b?auto=format&fit=crop&q=80&w=800",
-      tags: "React, D3.js, API",
+      slug: "zero-trust-vpn",
+      title: "Zero-Trust VPN Deployment",
+      summary:
+        "WireGuard-based zero-trust mesh VPN with mutual TLS, device posture checks, and per-app access policies.",
+      caseStudy:
+        "<h2>Overview</h2><p>Replaced a legacy site-to-site VPN with a zero-trust mesh.</p><h3>Design</h3><ul><li>WireGuard tunnels between every node</li><li>Mutual TLS for service identity</li><li>Device-posture checks before granting access</li><li>Per-app policies enforced at the gateway</li></ul>",
+      tags: "WireGuard, mTLS, Zero Trust, OpenWRT",
       isFeatured: false,
-      link: "https://github.com/johndoe/weather-pulse",
-      github: "https://github.com/johndoe/weather-pulse",
-      order: 3
-    }
+      link: "#",
+      github: "#",
+      order: 3,
+    },
   ]
   for (const project of projects) {
     await prisma.project.create({ data: project })
   }
 
+  // --- Publications ---
+  const publications = [
+    {
+      title:
+        "A Survey of Machine-Learning Approaches for Encrypted Traffic Classification in Zero-Trust Networks",
+      authors: "F. Tamanna, M. Rahman, A. Hossain",
+      venue: "IEEE Transactions on Information Forensics and Security",
+      year: "2025",
+      abstract:
+        "We survey recent ML-based techniques for classifying encrypted network traffic in zero-trust architectures, compare feature-engineering vs. deep-packet approaches, and propose a hybrid pipeline that achieves 96.4% F1-score on the CIC-IDS-2017 and USTC-TFC2016 datasets while preserving user privacy.",
+      link: "https://doi.org/10.1109/TIFS.2025.0000000",
+      tags: "Encrypted Traffic, Machine Learning, Zero Trust, Network Security",
+      type: "journal",
+      isPublished: true,
+      order: 1,
+    },
+    {
+      title:
+        "Detecting Lateral Movement Using Graph Neural Networks on Authentication Logs",
+      authors: "F. Tamanna, S. Khan",
+      venue:
+        "Proceedings of the ACM Conference on Computer and Communications Security (CCS)",
+      year: "2024",
+      abstract:
+        "We present GNN-LMD, a graph-neural-network detector that models authentication events as a temporal graph and identifies lateral-movement attack chains with 0.91 AUC. Evaluated against the LANL and OpTC datasets, GNN-LMD detects attacks on average 2.3 hours earlier than baseline rule-based SIEM correlations.",
+      link: "https://doi.org/10.1145/0000000",
+      tags: "Lateral Movement, GNN, SOC, Anomaly Detection",
+      type: "conference",
+      isPublished: true,
+      order: 2,
+    },
+    {
+      title:
+        "Hardening Consumer IoT Devices Against Mirai-Style Botnet Recruitment",
+      authors: "F. Tamanna",
+      venue:
+        "Workshop on Security and Privacy of Cyber-Physical Systems (SPCPS)",
+      year: "2023",
+      abstract:
+        "We analyse 14 default-credential scanning campaigns against consumer IoT devices and propose a lightweight firmware-level hardening framework that blocks 98.7% of Mirai-style brute-force attempts with under 2% performance overhead on a Raspberry Pi 4B.",
+      link: "https://arxiv.org/abs/0000.00000",
+      tags: "IoT Security, Botnets, Firmware Hardening, Embedded Systems",
+      type: "workshop",
+      isPublished: true,
+      order: 3,
+    },
+  ]
+  for (const pub of publications) {
+    await prisma.publication.create({ data: pub })
+  }
+
   // --- Testimonials ---
   const testimonials = [
     {
-      name: "Jane Smith",
-      role: "Product Manager at Innovate Inc",
-      content: "John's technical expertise and attention to detail transformed our product. He's a rare talent who understands both code and design.",
-      order: 1
+      name: "Daniel Okafor",
+      role: "SOC Lead at SecureNet Operations",
+      content:
+        "Fouzia is one of the sharpest analysts I've worked with. Her detection-engineering work cut our false-positive rate in half and her runbooks are now team-standard.",
+      order: 1,
     },
     {
-      name: "Michael Brown",
-      role: "Founder at Future Tech",
-      content: "The best developer we've worked with. John delivered a complex feature set ahead of schedule and with zero bugs.",
-      order: 2
-    }
+      name: "Priya Mehta",
+      role: "CISO at FinSecure Ltd",
+      content:
+        "During our PCI-DSS audit, Fouzia's network segmentation design and documentation passed on the first review. Rare to see that level of rigour from someone so early in their career.",
+      order: 2,
+    },
   ]
   for (const testimonial of testimonials) {
     await prisma.testimonial.create({ data: testimonial })
@@ -143,43 +228,245 @@ async function main() {
   // --- Certifications ---
   const certifications = [
     {
-      title: "AWS Certified Solutions Architect",
-      issuer: "Amazon Web Services",
-      date: "2023",
-      link: "https://aws.amazon.com/certification/",
-      order: 1
+      title: "CompTIA Security+",
+      issuer: "CompTIA",
+      date: "2024",
+      link: "https://www.comptia.org/certifications/security",
+      order: 1,
     },
     {
-      title: "Full Stack Web Development",
-      issuer: "Code Academy",
-      date: "2021",
-      link: "#",
-      order: 2
-    }
+      title: "Certified SOC Analyst (CSA)",
+      issuer: "EC-Council",
+      date: "2023",
+      link: "https://www.eccouncil.org/programs/certified-soc-analyst-csa/",
+      order: 2,
+    },
+    {
+      title: "Cisco Certified Network Associate (CCNA)",
+      issuer: "Cisco",
+      date: "2022",
+      link: "https://www.cisco.com/site/us/en/learn/training-certification/certifications/associate/ccna/index.html",
+      order: 3,
+    },
+    {
+      title: "BTL1 (Blue Team Level 1)",
+      issuer: "Security Blue Team",
+      date: "2023",
+      link: "https://securityblue.team/certifications/btl1-blue-team-level-1/",
+      order: 4,
+    },
   ]
   for (const cert of certifications) {
     await prisma.certification.create({ data: cert })
   }
 
+  // --- Skills ---
+  const skills = [
+    {
+      name: "Splunk",
+      category: "SIEM & Monitoring",
+      level: "Expert",
+      order: 1,
+    },
+    {
+      name: "Microsoft Sentinel",
+      category: "SIEM & Monitoring",
+      level: "Advanced",
+      order: 2,
+    },
+    {
+      name: "Elastic Stack (ELK)",
+      category: "SIEM & Monitoring",
+      level: "Advanced",
+      order: 3,
+    },
+    {
+      name: "Wireshark",
+      category: "Network Analysis",
+      level: "Expert",
+      order: 4,
+    },
+    { name: "Nmap", category: "Network Analysis", level: "Expert", order: 5 },
+    {
+      name: "Zeek (Bro)",
+      category: "Network Analysis",
+      level: "Intermediate",
+      order: 6,
+    },
+    {
+      name: "Python",
+      category: "Scripting & Automation",
+      level: "Advanced",
+      order: 7,
+    },
+    {
+      name: "PowerShell",
+      category: "Scripting & Automation",
+      level: "Expert",
+      order: 8,
+    },
+    {
+      name: "Bash",
+      category: "Scripting & Automation",
+      level: "Advanced",
+      order: 9,
+    },
+    {
+      name: "MITRE ATT&CK",
+      category: "Frameworks & Methodologies",
+      level: "Expert",
+      order: 10,
+    },
+    {
+      name: "NIST CSF",
+      category: "Frameworks & Methodologies",
+      level: "Advanced",
+      order: 11,
+    },
+    {
+      name: "ITIL v4",
+      category: "Frameworks & Methodologies",
+      level: "Intermediate",
+      order: 12,
+    },
+    {
+      name: "Palo Alto Firewalls",
+      category: "Security Infrastructure",
+      level: "Advanced",
+      order: 13,
+    },
+    {
+      name: "Cisco ASA",
+      category: "Security Infrastructure",
+      level: "Advanced",
+      order: 14,
+    },
+    {
+      name: "CrowdStrike Falcon",
+      category: "Endpoint & Cloud",
+      level: "Advanced",
+      order: 15,
+    },
+    {
+      name: "AWS Security Hub",
+      category: "Endpoint & Cloud",
+      level: "Intermediate",
+      order: 16,
+    },
+  ]
+  for (const skill of skills) {
+    await prisma.skill.create({ data: skill })
+  }
+  console.log("Skills seeded.")
+
   // --- Footer ---
   await prisma.footer.create({
     data: {
       id: "singleton",
-      bio: "Full Stack Developer specializing in modern web technologies. Based in Silicon Valley, CA.",
-      email: "hello@johndoe.com",
-      linkedin: "https://linkedin.com/in/johndoe",
-      github: "https://github.com/johndoe",
-      twitter: "https://twitter.com/johndoe",
-      availability: "Open for Opportunities"
-    }
+      bio: "Network Security & SOC Analyst focused on threat detection, incident response, and systems security. Based in London, UK.",
+      email: "hello@example.com",
+      linkedin: "https://linkedin.com/in/fouzia-tamanna",
+      github: "https://github.com/fouzia-tamanna",
+      twitter: "#",
+      availability: "Open for SOC Analyst & Network Security Roles",
+    },
   })
   console.log("Footer seeded.")
+
+  // --- Landing Sections ---
+  const sections = [
+    {
+      id: "hero",
+      label: "Hero",
+      badge: "// SECURE_SESSION.0001",
+      order: 1,
+      enabled: true,
+    },
+    {
+      id: "stats",
+      label: "Stats / Profile",
+      badge: "// PROFILE.SYS",
+      order: 2,
+      enabled: true,
+    },
+    {
+      id: "experience",
+      label: "Experience",
+      badge: "// TIMELINE.LOG",
+      order: 3,
+      enabled: true,
+    },
+    {
+      id: "skills",
+      label: "Skills",
+      badge: "// SKILLS.SEC",
+      order: 4,
+      enabled: true,
+    },
+    {
+      id: "projects",
+      label: "Projects",
+      badge: "// PROJECTS.MKD",
+      order: 5,
+      enabled: true,
+    },
+    {
+      id: "testimonials",
+      label: "Testimonials",
+      badge: "// PEER_REVIEWS.LOG",
+      order: 6,
+      enabled: true,
+    },
+    {
+      id: "certifications",
+      label: "Certifications",
+      badge: "// CREDENTIALS.CRT",
+      order: 7,
+      enabled: true,
+    },
+    {
+      id: "publications",
+      label: "Publications",
+      badge: "// RESEARCH · PUBLICATIONS",
+      order: 8,
+      enabled: true,
+    },
+    {
+      id: "contact",
+      label: "Contact",
+      badge: "// CONTACT.SH",
+      order: 9,
+      enabled: true,
+    },
+  ]
+  for (const s of sections) {
+    await prisma.landingSection.create({
+      data: { ...s, updatedAt: new Date() },
+    })
+  }
+  console.log("Landing sections seeded.")
+
+  // --- Site Settings ---
+  await prisma.siteSettings.create({
+    data: {
+      id: "singleton",
+      heroHeadline: "SOC Analyst",
+      heroCtaPrimary: "Download CV",
+      heroCtaSecondary: "View Research",
+      contactHeading: null,
+      contactSubtext: null,
+      marqueeItems:
+        "// SYS://fouzia_tamanna, SOC ANALYST, // LONDON UK, // THREAT_HUNT, // INCIDENT_RESPONSE, // OPEN_TO_WORK, // ZERO_TRUST",
+      navbarBrand: "Fouzia Tamanna",
+      updatedAt: new Date(),
+    },
+  })
+  console.log("Site settings seeded.")
 
   console.log("Seeding complete!")
 }
 
-main()
-  .catch((e) => {
-    console.error("Seeding failed:", e)
-    process.exit(1)
-  })
+main().catch((e) => {
+  console.error("Seeding failed:", e)
+  process.exit(1)
+})

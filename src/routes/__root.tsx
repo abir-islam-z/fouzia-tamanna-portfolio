@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/Navbar"
-import { getHero, getUser } from "@/lib/cms"
+import { getUser } from "@/lib/cms"
+import { getQueryClient, heroQuery, siteSettingsQuery } from "@/lib/queries"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import {
   HeadContent,
@@ -19,10 +20,13 @@ export const Route = createRootRoute({
       user,
     }
   },
-  loader: async () => {
-    const hero = await getHero()
+  loader: async ({ context }) => {
+    const queryClient = getQueryClient(context)
+    const hero = await queryClient.ensureQueryData(heroQuery)
+    const siteSettings = await queryClient.ensureQueryData(siteSettingsQuery)
     return {
       hero,
+      siteSettings,
     }
   },
   head: ({ loaderData }) => {
@@ -37,12 +41,19 @@ export const Route = createRootRoute({
           content: "width=device-width, initial-scale=1",
         },
         {
-          title: hero?.title || "John Doe | Full Stack Developer",
+          title: hero?.title
+            ? `${hero.title} | Network Security & SOC Analyst`
+            : "Fouzia Tamanna | Network Security & SOC Analyst",
         },
         {
           name: "description",
           content:
-            hero?.description || "Data Scientist | LLMs, RAG & NLP | London, UK",
+            hero?.description ||
+            "Fouzia Tamanna — MSc Computer Networks & Systems Security. SOC Analyst in London specialising in threat detection, incident response, and systems security.",
+        },
+        {
+          name: "theme-color",
+          content: "#0a0f0d",
         },
       ],
       links: [

@@ -1,37 +1,74 @@
-import { getHero } from "@/lib/cms"
-import { RiCloseLine, RiPlayFill } from "@remixicon/react"
+import { heroQuery } from "@/lib/queries"
+import {
+  RiArrowRightUpLine,
+  RiDownloadLine,
+  RiShieldCheckLine,
+  RiTerminalBoxLine,
+} from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
-import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
 
 interface HeroData {
   title: string
+  subtitle?: string
   description: string
   introBadge: string
-  videoDuration: string
-  videoUrl: string
   location: string
   sponsorshipInfo: string
   openToWork: boolean
+  resumeUrl: string
+  logoUrl?: string | null
+  typedLines?: string
+  cvButtonLabel?: string
+  researchButtonLabel?: string
 }
 
-const FALLBACK_HERO: HeroData = {
-  title: "Meet John",
-  description: "60 second intro",
-  introBadge: "INTRO",
-  videoDuration: "0:60",
-  videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  location: "London, UK",
-  sponsorshipInfo: "No sponsorship needed",
-  openToWork: true,
-}
+const DEFAULT_TYPED_LINES = [
+  "$ whoami",
+  "fouzia_tamanna",
+  "$ role --current",
+  "SOC Analyst (Tier 2) @ SecureNet Operations",
+  "$ focus --primary",
+  "Threat Detection · Incident Response · SIEM",
+  "$ certs --list",
+  "Security+ · CSA · CCNA · BTL1",
+  "$ status",
+  "[+] All systems nominal. Listening for anomalies...",
+]
 
 export default function Hero() {
+  const { data: rawHero } = useSuspenseQuery(heroQuery)
+  const h = rawHero as any
+
+  const data: HeroData = {
+    title: h?.title ?? "",
+    subtitle: h?.subtitle ?? "",
+    description: h?.description ?? "",
+    introBadge: h?.introBadge ?? "",
+    location: h?.location ?? "",
+    sponsorshipInfo: h?.sponsorshipInfo ?? "",
+    openToWork: h?.openToWork ?? true,
+    resumeUrl: h?.resumeUrl ?? "#",
+    logoUrl: h?.logoUrl ?? null,
+    typedLines: h?.typedLines ?? "",
+    cvButtonLabel: h?.cvButtonLabel ?? "Download CV",
+    researchButtonLabel: h?.researchButtonLabel ?? "View Research",
+  }
+
+  const TYPED_LINES = data.typedLines
+    ? data.typedLines.split("\n").filter((l) => l.length > 0)
+    : DEFAULT_TYPED_LINES
+
+  const hasContent = Boolean(data.title || data.description || data.introBadge)
+  if (!hasContent) return null
+
   const [particles, setParticles] = useState<
     Array<{ left: string; top: string; delay: string; duration: string }>
   >([])
-  const [data, setData] = useState<HeroData>(FALLBACK_HERO)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [typed, setTyped] = useState("")
+  const [lineIndex, setLineIndex] = useState(0)
+  const [charIndex, setCharIndex] = useState(0)
 
   useEffect(() => {
     const p = [...Array(20)].map(() => ({
@@ -41,144 +78,166 @@ export default function Hero() {
       duration: `${5 + Math.random() * 10}s`,
     }))
     setParticles(p)
-
-    async function loadHero() {
-      try {
-        const h = await getHero()
-        setData(h)
-      } catch (error) {
-        console.error("Failed to fetch hero data, using fallback.", error)
-      }
-    }
-    loadHero()
   }, [])
 
-  // Helper to parse YouTube/Vimeo URLs for embedding
-  const getEmbedUrl = (url: string) => {
-    if (!url) return ""
-    if (url.includes("youtube.com") || url.includes("youtu.be")) {
-      const regExp =
-        /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
-      const match = url.match(regExp)
-      return match && match[2].length === 11
-        ? `https://www.youtube.com/embed/${match[2]}?autoplay=1`
-        : url
+  useEffect(() => {
+    if (lineIndex >= TYPED_LINES.length) return
+    const current = TYPED_LINES[lineIndex]
+    if (charIndex < current.length) {
+      const timeout = setTimeout(() => {
+        setTyped((prev) => prev + current[charIndex])
+        setCharIndex((c) => c + 1)
+      }, 28)
+      return () => clearTimeout(timeout)
+    } else {
+      const timeout = setTimeout(() => {
+        setTyped((prev) => prev + "\n")
+        setLineIndex((l) => l + 1)
+        setCharIndex(0)
+      }, 700)
+      return () => clearTimeout(timeout)
     }
-    if (url.includes("vimeo.com")) {
-      const regExp = /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/
-      const match = url.match(regExp)
-      return match ? `https://player.vimeo.com/video/${match[1]}?autoplay=1` : url
-    }
-    return url
-  }
+  }, [charIndex, lineIndex])
 
   return (
-    <section className="relative overflow-hidden px-4 pt-24 pb-16 md:px-6 md:pt-32 md:pb-20">
-      {/* Exact Video Banner Container */}
-      <div className="group relative mx-auto h-80 max-w-6xl overflow-hidden rounded-[24px] border border-border bg-black shadow-2xl transition-all duration-500 md:h-120 md:rounded-[32px]">
-        {!isPlaying ? (
-          <>
-            {/* Particle Animation Background */}
-            <div className="absolute inset-0 bg-secondary">
-              <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-transparent to-transparent opacity-50" />
-              <div className="grid-overlay absolute inset-0 opacity-20" />
-
-              {particles.map((p, i) => (
-                <div
-                  key={i}
-                  className="particle animate-float"
-                  style={{
-                    left: p.left,
-                    top: p.top,
-                    animationDelay: p.delay,
-                    animationDuration: p.duration,
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Badges */}
-            <div className="absolute top-4 left-4 flex items-center gap-2 md:top-8 md:left-8">
-              <Badge
-                variant="secondary"
-                className="border-border bg-background/40 px-2 py-1 text-[9px] tracking-widest uppercase backdrop-blur-md md:text-[10px]"
-              >
-                <div className="mr-2 h-1.5 w-1.5 animate-pulse rounded-full bg-destructive" />
-                {data.introBadge}
-              </Badge>
-            </div>
-
-            <div className="absolute right-4 bottom-4 md:right-8 md:bottom-8">
-              <Badge
-                variant="secondary"
-                className="border-border bg-background/40 px-2 py-1 text-[9px] tracking-widest backdrop-blur-md md:text-[10px]"
-              >
-                {data.videoDuration}
-              </Badge>
-            </div>
-
-            {/* Play Button & Content */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-4 md:gap-6">
-              <Button
-                size="icon"
-                onClick={() => setIsPlaying(true)}
-                className="h-16 w-16 rounded-full bg-primary shadow-[0_0_40px_rgba(0,112,243,0.4)] transition-transform hover:scale-110 hover:bg-primary/90 active:scale-95 md:h-20 md:w-20"
-              >
-                <RiPlayFill size={32} className="text-white md:size-10" />
-              </Button>
-              <div className="text-center">
-                <h2 className="mb-1 text-lg font-bold text-white md:text-2xl">
-                  {data.title}
-                </h2>
-                <p className="max-w-50 text-xs font-medium text-white/60 md:max-w-none md:text-sm">
-                  {data.description}
-                </p>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="relative h-full w-full animate-in duration-500 fade-in">
-            <iframe
-              src={getEmbedUrl(data.videoUrl)}
-              className="h-full w-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-            <Button
-              variant="secondary"
-              size="icon"
-              onClick={() => setIsPlaying(false)}
-              className="absolute top-4 right-4 z-10 rounded-full border-white/20 bg-background/20 text-white backdrop-blur-md hover:bg-background/40"
-            >
-              <RiCloseLine size={24} />
-            </Button>
-          </div>
-        )}
+    <section
+      id="about"
+      className="relative overflow-hidden px-4 pt-24 pb-16 md:px-6 md:pt-32 md:pb-20"
+    >
+      <div className="pointer-events-none absolute top-20 left-4 z-10 hidden font-label text-[10px] tracking-[0.3em] text-primary/60 uppercase md:left-8 lg:block">
+        // SECURE_SESSION.0001
+      </div>
+      <div className="pointer-events-none absolute top-20 right-4 z-10 hidden font-label text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase md:right-8 lg:block">
+        <span className="status-dot mr-2 inline-block align-middle" />
+        ALL_SYSTEMS_NOMINAL
       </div>
 
-      {/* Pill Badges Below */}
-      <div className="mx-auto mt-8 flex max-w-6xl flex-wrap items-center justify-center gap-3 md:mt-12 md:gap-4">
-        {data.openToWork && (
-          <Badge
-            variant="outline"
-            className="rounded-full border-primary/30 bg-primary/5 px-3 py-1.5 text-[10px] font-semibold text-primary md:px-4 md:py-2 md:text-xs"
-          >
-            <div className="mr-2 h-2 w-2 rounded-full bg-primary" />
-            Open to Work — No Sponsorship Required
-          </Badge>
-        )}
-        <Badge
-          variant="outline"
-          className="rounded-full border-border bg-secondary/50 px-3 py-1.5 text-[10px] font-semibold text-muted-foreground md:px-4 md:py-2 md:text-xs"
-        >
-          {data.location}
-        </Badge>
-        <Badge
-          variant="outline"
-          className="rounded-full border-border bg-secondary/50 px-3 py-1.5 text-[10px] font-semibold text-muted-foreground md:px-4 md:py-2 md:text-xs"
-        >
-          {data.sponsorshipInfo}
-        </Badge>
+      <div className="group cyber-chamfer-xl relative mx-auto max-w-6xl overflow-hidden border-2 border-primary/40 bg-void-card shadow-[0_0_60px_-15px_rgba(0,255,136,0.25)] transition-all duration-500">
+        <div className="relative z-10 flex items-center justify-between border-b border-border bg-muted/40 px-4 py-3 md:px-6">
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-[#ff5f57] shadow-[0_0_6px_#ff5f57]" />
+            <span className="h-3 w-3 rounded-full bg-[#febc2e] shadow-[0_0_6px_#febc2e]" />
+            <span className="h-3 w-3 rounded-full bg-[#28c840] shadow-[0_0_6px_#28c840]" />
+            <span className="ml-3 hidden font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase md:inline">
+              {data.title
+                ? `~/${data.title.toLowerCase().replace(/\s+/g, "-")} — bash`
+                : "~/portfolio — bash"}
+            </span>
+          </div>
+          <div className="cyber-chamfer-sm flex items-center gap-2 border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-[9px] tracking-[0.2em] text-primary uppercase md:text-[10px]">
+            <RiTerminalBoxLine size={12} className="text-glow-sm" />
+            SECURE_SESSION
+          </div>
+        </div>
+
+        <div className="relative">
+          <div className="tech-grid absolute inset-0 opacity-60" />
+          <div className="absolute inset-0">
+            {particles.map((p, i) => (
+              <div
+                key={i}
+                className="h-1 w-1 rounded-full bg-primary"
+                style={{
+                  position: "absolute",
+                  left: p.left,
+                  top: p.top,
+                  animation: `float ${p.duration} ${p.delay} infinite linear`,
+                  boxShadow: "0 0 8px #00ff88",
+                }}
+              />
+            ))}
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
+          <div className="scan-sweep absolute inset-0 opacity-50" />
+
+          <div className="relative grid gap-6 px-5 py-10 md:grid-cols-2 md:gap-8 md:px-10 md:py-14">
+            <div className="space-y-5 md:space-y-6">
+              {data.introBadge && (
+                <div className="cyber-chamfer-sm inline-flex items-center gap-2 border border-primary/40 bg-primary/5 px-2.5 py-1">
+                  <span className="status-dot" />
+                  <span className="font-mono text-[10px] tracking-[0.22em] text-primary uppercase md:text-xs">
+                    {data.introBadge}
+                  </span>
+                </div>
+              )}
+
+              {data.title && (
+                <h1
+                  className="cyber-glitch cyber-glitch-anim font-display text-4xl leading-[0.95] font-black tracking-tight text-white uppercase md:text-6xl lg:text-7xl"
+                  data-text={data.title}
+                >
+                  {data.title}
+                </h1>
+              )}
+
+              {data.subtitle && (
+                <p className="text-glow-sm font-mono text-sm text-primary md:text-base">
+                  {data.subtitle}
+                </p>
+              )}
+
+              {data.description && (
+                <p className="max-w-xl font-mono text-sm leading-relaxed text-muted-foreground md:text-base">
+                  {data.description}
+                </p>
+              )}
+
+              <div className="flex flex-wrap gap-3 pt-2">
+                {data.resumeUrl && data.resumeUrl !== "#" && (
+                  <a
+                    href={data.resumeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="glitch" size="lg">
+                      <RiDownloadLine size={16} />
+                      {data.cvButtonLabel ?? "Download CV"}
+                    </Button>
+                  </a>
+                )}
+                <a href="#publications">
+                  <Button variant="outline" size="lg">
+                    {data.researchButtonLabel ?? "View Research"}
+                    <RiArrowRightUpLine size={16} />
+                  </Button>
+                </a>
+              </div>
+
+              {(data.location || data.sponsorshipInfo) && (
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase md:text-xs">
+                  {data.location && (
+                    <span className="flex items-center gap-1.5">
+                      <RiShieldCheckLine size={12} className="text-primary" />
+                      {data.location}
+                    </span>
+                  )}
+                  {data.location && data.sponsorshipInfo && (
+                    <span className="text-border">|</span>
+                  )}
+                  {data.sponsorshipInfo && <span>{data.sponsorshipInfo}</span>}
+                </div>
+              )}
+            </div>
+
+            <div className="cyber-chamfer relative border border-primary/30 bg-background/80">
+              <div className="flex items-center justify-between border-b border-border/60 bg-muted/30 px-3 py-2">
+                <span className="font-label text-[9px] tracking-[0.2em] text-muted-foreground uppercase">
+                  OUT
+                </span>
+                <span className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.2em] text-primary uppercase">
+                  <span className="status-dot h-1.5 w-1.5" />
+                  LIVE
+                </span>
+              </div>
+              <div className="relative p-4 font-mono text-[11px] leading-relaxed text-primary/90 md:p-5 md:text-xs">
+                <pre className="m-0 max-h-72 overflow-hidden wrap-break-word whitespace-pre-wrap">
+                  {typed}
+                  <span className="caret" />
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )

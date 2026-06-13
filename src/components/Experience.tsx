@@ -1,7 +1,11 @@
-import { getExperience } from "@/lib/cms"
-import { RiBuilding4Line, RiCalendarLine, RiStackLine } from "@remixicon/react"
-import { useEffect, useState } from "react"
-import { Badge } from "./ui/badge"
+import { experienceQuery } from "@/lib/queries"
+import {
+  RiBuilding4Line,
+  RiCalendarLine,
+  RiShieldKeyholeLine,
+  RiStackLine,
+} from "@remixicon/react"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 interface ExperienceItem {
   role: string
@@ -11,103 +15,116 @@ interface ExperienceItem {
   skills: string
 }
 
-const FALLBACK_EXPERIENCE: ExperienceItem[] = [
-  {
-    role: "Senior Data Scientist",
-    company: "TechNova Solutions",
-    period: "2022 - Present",
-    description: "Leading the development of generative AI models and RAG pipelines for enterprise clients. Optimizing LLM performance and cost-efficiency.",
-    skills: "Python, PyTorch, LangChain, Azure"
-  },
-  {
-    role: "Data Scientist",
-    company: "Insight Data Systems",
-    period: "2020 - 2022",
-    description: "Built predictive models for customer churn and demand forecasting. Implemented automated data pipelines using Airflow.",
-    skills: "Pandas, Scikit-Learn, SQL, Airflow"
-  },
-  {
-    role: "Junior Machine Learning Engineer",
-    company: "StartUp Hub",
-    period: "2019 - 2020",
-    description: "Assisted in training computer vision models for retail analytics. Developed REST APIs for model serving.",
-    skills: "Flask, OpenCV, Docker"
+interface ExperienceProps {
+  sectionConfig?: {
+    badge?: string | null
+    heading?: string | null
+    subtext?: string | null
   }
-]
+}
 
-export default function Experience() {
-  const [experience, setExperience] = useState<ExperienceItem[]>(FALLBACK_EXPERIENCE)
+export default function Experience({ sectionConfig }: ExperienceProps = {}) {
+  const { data: rawExperience } = useSuspenseQuery(experienceQuery)
+  const experience = (rawExperience ?? []) as unknown as Array<ExperienceItem>
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await getExperience()
-        if (data && data.length > 0) {
-          // Sort by order or assume most recent first if order is same
-          setExperience(data as ExperienceItem[])
-        }
-      } catch (error) {
-        console.error("Failed to fetch experience, using fallback.", error)
-      }
-    }
-    loadData()
-  }, [])
+  if (experience.length === 0) return null
+
+  const badge = sectionConfig?.badge ?? "// TIMELINE.LOG"
+  const heading = sectionConfig?.heading ?? (
+    <>
+      Security
+      <br />
+      <span className="text-gradient-neon-bg">Journey</span>
+    </>
+  )
+  const subtext = sectionConfig?.subtext
 
   return (
-    <section id="experience" className="py-16 md:py-32 px-4 md:px-6 max-w-5xl mx-auto">
-      <div className="flex flex-col md:flex-row gap-12 md:gap-20">
-        {/* Left Column: Heading */}
-        <div className="md:w-1/3 space-y-4">
-          <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5 px-3 py-1 uppercase tracking-widest text-[10px] font-bold">EXPERIENCE</Badge>
-          <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Professional <br />Journey</h2>
-          <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-sm">
-            A linear progression of my career, focused on data science, machine learning, and high-impact engineering.
-          </p>
+    <section
+      id="experience"
+      className="circuit-bg relative px-4 py-16 md:px-6 md:py-24"
+    >
+      <div className="mx-auto flex max-w-5xl flex-col gap-12 md:flex-row md:gap-20">
+        <div className="space-y-5 md:w-1/3">
+          <div className="label-mono">{badge}</div>
+          <h2 className="font-display text-3xl leading-none font-bold tracking-wide uppercase md:text-5xl">
+            {heading}
+          </h2>
+          {subtext && (
+            <p className="font-mono text-sm leading-relaxed text-muted-foreground md:text-base">
+              {subtext}
+            </p>
+          )}
+          <div className="flex items-center gap-2 pt-2 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+            <span className="status-dot" />
+            {experience.length} nodes detected
+          </div>
         </div>
 
-        {/* Right Column: Timeline */}
-        <div className="md:w-2/3 relative">
-          {/* Vertical Line */}
-          <div className="absolute left-4 md:left-5 top-2 bottom-2 w-px bg-linear-to-b from-primary via-border to-transparent" />
+        <div className="relative md:w-2/3">
+          <div className="absolute top-2 bottom-2 left-4 w-px bg-gradient-to-b from-primary via-border/60 to-transparent md:left-5" />
 
-          <div className="space-y-12">
+          <div className="space-y-10">
             {experience.map((item, i) => (
-              <div key={i} className="relative pl-12 md:pl-16 group">
-                {/* Timeline Node */}
-                <div className="absolute left-0 top-1.5 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border border-border bg-background z-10 group-hover:border-primary transition-colors shadow-sm">
+              <div key={i} className="group relative pl-12 md:pl-16">
+                <div className="group-hover:neon-glow-sm cyber-chamfer-sm absolute top-1.5 left-0 z-10 flex h-8 w-8 items-center justify-center border border-border bg-background transition-all group-hover:border-primary md:h-10 md:w-10">
                   {i === 0 ? (
-                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(0,112,243,0.8)]" />
+                    <RiShieldKeyholeLine
+                      size={16}
+                      className="text-glow animate-pulse text-primary"
+                    />
                   ) : (
-                    <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 group-hover:bg-primary/50 transition-colors" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 transition-colors group-hover:bg-primary" />
                   )}
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-primary">
-                      <RiCalendarLine size={14} className="opacity-70" />
-                      <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest">{item.period}</span>
-                    </div>
-                    <h3 className="text-xl md:text-2xl font-bold tracking-tight group-hover:text-primary transition-colors">
-                      {item.role}
-                    </h3>
-                    <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm md:text-base">
-                      <RiBuilding4Line size={16} />
-                      {item.company}
-                    </div>
+                <div className="group-hover:neon-glow-sm cyber-chamfer relative border border-border bg-card/60 p-5 transition-all group-hover:border-primary group-hover:bg-card md:p-6">
+                  <div className="absolute top-3 right-3 font-mono text-[9px] tracking-widest text-muted-foreground/40 uppercase">
+                    NODE_0{i + 1}
                   </div>
 
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
-                    {item.description}
-                  </p>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] text-primary uppercase md:text-xs">
+                        <RiCalendarLine size={12} className="opacity-70" />
+                        {item.period}
+                      </div>
+                      <h3 className="font-display text-xl leading-tight font-bold tracking-wide uppercase transition-colors group-hover:text-primary md:text-2xl">
+                        {item.role}
+                      </h3>
+                      <div className="flex items-center gap-2 font-mono text-sm text-muted-foreground">
+                        <RiBuilding4Line size={14} />
+                        {item.company}
+                      </div>
+                    </div>
 
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    <RiStackLine size={16} className="text-muted-foreground/40 mt-1" />
-                    {(item.skills || "").split(",").map((skill: string, j: number) => (
-                      <Badge key={j} variant="secondary" className="bg-secondary/50 text-[9px] md:text-[10px] uppercase tracking-tight font-bold border-border/50">
-                        {skill.trim()}
-                      </Badge>
-                    ))}
+                    {item.description && (
+                      <div
+                        className="prose prose-invert max-w-none font-mono text-sm leading-relaxed text-muted-foreground md:text-[15px]"
+                        dangerouslySetInnerHTML={{ __html: item.description }}
+                      />
+                    )}
+
+                    {item.skills && (
+                      <div className="flex flex-wrap items-center gap-1.5 pt-2">
+                        <RiStackLine
+                          size={14}
+                          className="mr-1 text-primary/60"
+                        />
+                        {item.skills
+                          .split(",")
+                          .map((s) => s.trim())
+                          .filter(Boolean)
+                          .map((skill, j) => (
+                            <span
+                              key={j}
+                              className="cyber-chamfer-sm border border-border bg-secondary/60 px-2 py-1 font-mono text-[9px] tracking-widest text-muted-foreground uppercase transition-colors group-hover:border-primary/40 group-hover:text-foreground md:text-[10px]"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
