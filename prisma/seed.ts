@@ -16,6 +16,7 @@ async function main() {
   await prisma.experience.deleteMany({})
   await prisma.project.deleteMany({})
   await prisma.testimonial.deleteMany({})
+  await prisma.skill.deleteMany({})
   await prisma.certification.deleteMany({})
   await prisma.footer.deleteMany({})
   await prisma.landingSection.deleteMany({})
@@ -30,16 +31,6 @@ async function main() {
     },
   })
   console.log("User 'admin@example.com' with password 'password123' created.")
-
-  await prisma.user.create({
-    data: {
-      email: "fouzia.tamanna@gmail.com",
-      provider: "google",
-    },
-  })
-  console.log(
-    "User 'fouzia.tamanna@gmail.com' created (Google-only, no password)."
-  )
 
   // --- Hero ---
   await prisma.hero.create({
@@ -269,6 +260,105 @@ async function main() {
     await prisma.certification.create({ data: cert })
   }
 
+  // --- Skills ---
+  const skills = [
+    {
+      name: "Splunk",
+      category: "SIEM & Monitoring",
+      level: "Expert",
+      order: 1,
+    },
+    {
+      name: "Microsoft Sentinel",
+      category: "SIEM & Monitoring",
+      level: "Advanced",
+      order: 2,
+    },
+    {
+      name: "Elastic Stack (ELK)",
+      category: "SIEM & Monitoring",
+      level: "Advanced",
+      order: 3,
+    },
+    {
+      name: "Wireshark",
+      category: "Network Analysis",
+      level: "Expert",
+      order: 4,
+    },
+    { name: "Nmap", category: "Network Analysis", level: "Expert", order: 5 },
+    {
+      name: "Zeek (Bro)",
+      category: "Network Analysis",
+      level: "Intermediate",
+      order: 6,
+    },
+    {
+      name: "Python",
+      category: "Scripting & Automation",
+      level: "Advanced",
+      order: 7,
+    },
+    {
+      name: "PowerShell",
+      category: "Scripting & Automation",
+      level: "Expert",
+      order: 8,
+    },
+    {
+      name: "Bash",
+      category: "Scripting & Automation",
+      level: "Advanced",
+      order: 9,
+    },
+    {
+      name: "MITRE ATT&CK",
+      category: "Frameworks & Methodologies",
+      level: "Expert",
+      order: 10,
+    },
+    {
+      name: "NIST CSF",
+      category: "Frameworks & Methodologies",
+      level: "Advanced",
+      order: 11,
+    },
+    {
+      name: "ITIL v4",
+      category: "Frameworks & Methodologies",
+      level: "Intermediate",
+      order: 12,
+    },
+    {
+      name: "Palo Alto Firewalls",
+      category: "Security Infrastructure",
+      level: "Advanced",
+      order: 13,
+    },
+    {
+      name: "Cisco ASA",
+      category: "Security Infrastructure",
+      level: "Advanced",
+      order: 14,
+    },
+    {
+      name: "CrowdStrike Falcon",
+      category: "Endpoint & Cloud",
+      level: "Advanced",
+      order: 15,
+    },
+    {
+      name: "AWS Security Hub",
+      category: "Endpoint & Cloud",
+      level: "Intermediate",
+      order: 16,
+    },
+  ]
+  for (const skill of skills) {
+    await prisma.skill.create({ data: skill })
+  }
+  console.log("Skills seeded.")
+
   // --- Footer ---
   await prisma.footer.create({
     data: {
@@ -307,38 +397,45 @@ async function main() {
       enabled: true,
     },
     {
+      id: "skills",
+      label: "Skills",
+      badge: "// SKILLS.SEC",
+      order: 4,
+      enabled: true,
+    },
+    {
       id: "projects",
       label: "Projects",
       badge: "// PROJECTS.MKD",
-      order: 4,
+      order: 5,
       enabled: true,
     },
     {
       id: "testimonials",
       label: "Testimonials",
       badge: "// PEER_REVIEWS.LOG",
-      order: 5,
+      order: 6,
       enabled: true,
     },
     {
       id: "certifications",
       label: "Certifications",
       badge: "// CREDENTIALS.CRT",
-      order: 6,
+      order: 7,
       enabled: true,
     },
     {
       id: "publications",
       label: "Publications",
       badge: "// RESEARCH · PUBLICATIONS",
-      order: 7,
+      order: 8,
       enabled: true,
     },
     {
       id: "contact",
       label: "Contact",
       badge: "// CONTACT.SH",
-      order: 8,
+      order: 9,
       enabled: true,
     },
   ]

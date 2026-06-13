@@ -88,6 +88,14 @@ export const certificationSchema = z.object({
   order: z.number().default(0),
 })
 
+export const skillSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, "Name is required").trim(),
+  category: z.string().min(1, "Category is required").trim(),
+  level: z.string().optional(),
+  order: z.number().default(0),
+})
+
 export const publicationSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1, "Title is required").trim(),
@@ -324,6 +332,26 @@ export const deleteCertification = createServerFn({ method: "POST" })
   .handler(async ({ data: id }) => {
     const { deleteCertificationServer } = await import("./cms.server")
     return deleteCertificationServer(id)
+  })
+
+// --- SKILLS ---
+export const getSkills = createServerFn({ method: "GET" }).handler(async () => {
+  const { getSkillsServer } = await import("./cms.server")
+  return getSkillsServer()
+})
+
+export const updateSkill = createServerFn({ method: "POST" })
+  .validator(skillSchema)
+  .handler(async ({ data }) => {
+    const { updateSkillServer } = await import("./cms.server")
+    return updateSkillServer(data)
+  })
+
+export const deleteSkill = createServerFn({ method: "POST" })
+  .validator(z.string())
+  .handler(async ({ data: id }) => {
+    const { deleteSkillServer } = await import("./cms.server")
+    return deleteSkillServer(id)
   })
 
 // --- PUBLICATIONS ---

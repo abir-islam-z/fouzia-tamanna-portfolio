@@ -10,6 +10,7 @@ import {
   deleteMedia,
   deleteProject,
   deletePublication,
+  deleteSkill,
   deleteStat,
   deleteTestimonial,
   finalizeMediaUploadFn,
@@ -27,6 +28,7 @@ import {
   getPublications,
   getR2Status,
   getSiteSettings,
+  getSkills,
   getStats,
   getTestimonials,
   getUserProfile,
@@ -41,6 +43,7 @@ import {
   updateProject,
   updatePublication,
   updateSiteSettings,
+  updateSkill,
   updateStat,
   updateTestimonial,
 } from "./cms"
@@ -63,6 +66,7 @@ export const queryKeys = {
   projectBySlug: (slug: string) => ["project", slug] as const,
   testimonials: ["testimonials"] as const,
   certifications: ["certifications"] as const,
+  skills: ["skills"] as const,
   publications: (includeUnpublished?: boolean) =>
     ["publications", { includeUnpublished }] as const,
   contactMessages: ["contactMessages"] as const,
@@ -109,6 +113,11 @@ export const testimonialsQuery = queryOptions({
 export const certificationsQuery = queryOptions({
   queryKey: queryKeys.certifications,
   queryFn: () => getCertifications(),
+})
+
+export const skillsQuery = queryOptions({
+  queryKey: queryKeys.skills,
+  queryFn: () => getSkills(),
 })
 
 export const publicationsQuery = (includeUnpublished?: boolean) =>
@@ -292,6 +301,27 @@ export function useDeleteCertification() {
     mutationFn: (id: string) => deleteCertification({ data: id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.certifications })
+    },
+  })
+}
+
+export function useUpdateSkill() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (data: Parameters<typeof updateSkill>[0]["data"]) =>
+      updateSkill({ data }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.skills })
+    },
+  })
+}
+
+export function useDeleteSkill() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => deleteSkill({ data: id }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.skills })
     },
   })
 }

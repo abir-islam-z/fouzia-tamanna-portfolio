@@ -115,6 +115,15 @@ model Testimonial {
   updatedAt DateTime @updatedAt
 }
 
+model Skill {
+  id        String   @id @default(uuid())
+  name      String
+  category  String
+  level     String?
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
 model Certification {
   id        String   @id @default(uuid())
   title     String

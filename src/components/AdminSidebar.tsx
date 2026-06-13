@@ -7,6 +7,7 @@ import {
   RiBriefcaseLine,
   RiCloseLine,
   RiCodeBoxLine,
+  RiCodeSSlashLine,
   RiDashboardLine,
   RiExternalLinkLine,
   RiImageLine,
@@ -25,6 +26,7 @@ import { useState } from "react"
 const navItems = [
   { to: "/admin", label: "Overview", icon: RiDashboardLine },
   { to: "/admin/experience", label: "Experience", icon: RiBriefcaseLine },
+  { to: "/admin/skills", label: "Skills", icon: RiCodeSSlashLine },
   { to: "/admin/projects", label: "Projects", icon: RiCodeBoxLine },
   { to: "/admin/publications", label: "Publications", icon: RiBookOpenLine },
   { to: "/admin/certifications", label: "Certifications", icon: RiAwardLine },

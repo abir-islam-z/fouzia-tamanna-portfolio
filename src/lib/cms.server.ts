@@ -446,6 +446,33 @@ export async function deleteCertificationServer(id: string) {
   return await (await getDb()).certification.delete({ where: { id } })
 }
 
+// --- SKILLS ---
+export async function getSkillsServer() {
+  return await (
+    await getDb()
+  ).skill.findMany({
+    orderBy: { order: "asc" },
+  })
+}
+
+export async function updateSkillServer(data: any) {
+  try {
+    await checkAuth()
+    const { id, ...rest } = data
+    if (id) {
+      return await (await getDb()).skill.update({ where: { id }, data: rest })
+    }
+    return await (await getDb()).skill.create({ data: rest })
+  } catch (error: any) {
+    throwValidationError(error)
+  }
+}
+
+export async function deleteSkillServer(id: string) {
+  await checkAuth()
+  return await (await getDb()).skill.delete({ where: { id } })
+}
+
 // --- PUBLICATIONS ---
 export async function getPublicationsServer(includeUnpublished = false) {
   return await (

@@ -19,6 +19,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
 import { Route as AdminStatsRouteImport } from './routes/admin/stats'
+import { Route as AdminSkillsRouteImport } from './routes/admin/skills'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminPublicationsRouteImport } from './routes/admin/publications'
 import { Route as AdminProjectsRouteImport } from './routes/admin/projects'
@@ -86,6 +87,11 @@ const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
 const AdminStatsRoute = AdminStatsRouteImport.update({
   id: '/stats',
   path: '/stats',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSkillsRoute = AdminSkillsRouteImport.update({
+  id: '/skills',
+  path: '/skills',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/publications': typeof AdminPublicationsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/skills': typeof AdminSkillsRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/testimonials': typeof AdminTestimonialsRouteWithChildren
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByTo {
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/publications': typeof AdminPublicationsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/skills': typeof AdminSkillsRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/testimonials': typeof AdminTestimonialsRouteWithChildren
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -253,6 +261,7 @@ export interface FileRoutesById {
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/publications': typeof AdminPublicationsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/skills': typeof AdminSkillsRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/testimonials': typeof AdminTestimonialsRouteWithChildren
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/admin/projects'
     | '/admin/publications'
     | '/admin/settings'
+    | '/admin/skills'
     | '/admin/stats'
     | '/admin/testimonials'
     | '/projects/$slug'
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
     | '/admin/projects'
     | '/admin/publications'
     | '/admin/settings'
+    | '/admin/skills'
     | '/admin/stats'
     | '/admin/testimonials'
     | '/projects/$slug'
@@ -344,6 +355,7 @@ export interface FileRouteTypes {
     | '/admin/projects'
     | '/admin/publications'
     | '/admin/settings'
+    | '/admin/skills'
     | '/admin/stats'
     | '/admin/testimonials'
     | '/projects/$slug'
@@ -442,6 +454,13 @@ declare module '@tanstack/react-router' {
       path: '/stats'
       fullPath: '/admin/stats'
       preLoaderRoute: typeof AdminStatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/skills': {
+      id: '/admin/skills'
+      path: '/skills'
+      fullPath: '/admin/skills'
+      preLoaderRoute: typeof AdminSkillsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
@@ -648,6 +667,7 @@ interface AdminRouteChildren {
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
   AdminPublicationsRoute: typeof AdminPublicationsRouteWithChildren
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSkillsRoute: typeof AdminSkillsRoute
   AdminStatsRoute: typeof AdminStatsRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
@@ -661,6 +681,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
   AdminPublicationsRoute: AdminPublicationsRouteWithChildren,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSkillsRoute: AdminSkillsRoute,
   AdminStatsRoute: AdminStatsRoute,
   AdminTestimonialsRoute: AdminTestimonialsRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,

@@ -5,6 +5,7 @@ import Footer from "@/components/Footer"
 import Hero from "@/components/Hero"
 import Projects from "@/components/Projects"
 import Publications from "@/components/Publications"
+import Skills from "@/components/Skills"
 import Stats from "@/components/Stats"
 import Testimonials from "@/components/Testimonials"
 import {
@@ -17,6 +18,7 @@ import {
   projectsQuery,
   publicationsQuery,
   siteSettingsQuery,
+  skillsQuery,
   statsQuery,
   testimonialsQuery,
 } from "@/lib/queries"
@@ -30,6 +32,7 @@ const SECTION_RENDERERS: Record<
   hero: Hero,
   stats: Stats,
   experience: Experience,
+  skills: Skills,
   projects: Projects,
   testimonials: Testimonials,
   certifications: Certifications,
@@ -83,6 +86,7 @@ export const Route = createFileRoute("/")({
       queryClient.ensureQueryData(heroQuery),
       queryClient.ensureQueryData(statsQuery),
       queryClient.ensureQueryData(experienceQuery),
+      queryClient.ensureQueryData(skillsQuery),
       queryClient.ensureQueryData(projectsQuery),
       queryClient.ensureQueryData(testimonialsQuery),
       queryClient.ensureQueryData(certificationsQuery),
