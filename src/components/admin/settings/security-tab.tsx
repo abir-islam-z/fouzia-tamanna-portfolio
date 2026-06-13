@@ -2,16 +2,55 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import PasswordField from "@/components/ui/password-field"
-import { changePassword, changePasswordSchema } from "@/lib/cms"
-import { RiLockPasswordLine } from "@remixicon/react"
+import { changePassword, sendPasswordSetupEmail } from "@/lib/cms"
+import { userProfileQuery } from "@/lib/queries"
+import { RiLockPasswordLine, RiMailSendLine } from "@remixicon/react"
 import { useForm } from "@tanstack/react-form"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 export function SecurityTab() {
+  const { data: profile } = useSuspenseQuery(userProfileQuery)
+  const needsPassword = profile.isGoogleUser && !profile.hasPassword
+
+  const handleSendResetEmail = async () => {
+    try {
+      await sendPasswordSetupEmail()
+      toast.success("Password setup link sent! Check your inbox.")
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to send email")
+    }
+  }
+
+  // Google-only users: email is the only option
+  if (needsPassword) {
+    return (
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold">Account Security</h2>
+        <Card variant="admin" className="space-y-4 p-6">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 rounded-md bg-amber-500/10 p-2">
+              <RiMailSendLine size={18} className="text-amber-500" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium">No password set</p>
+              <p className="text-xs text-muted-foreground">
+                Your account was created with Google sign-in. We'll send you an
+                email with a link to set your password.
+              </p>
+            </div>
+          </div>
+          <Button variant="outline" size="sm" onClick={handleSendResetEmail}>
+            <RiMailSendLine size={14} className="mr-2" />
+            Send Password Setup Email
+          </Button>
+        </Card>
+      </div>
+    )
+  }
+
+  // Existing password: change password form
   const form = useForm({
-    validators: {
-      onChange: changePasswordSchema,
-    },
     defaultValues: {
       currentPassword: "",
       newPassword: "",
@@ -19,6 +58,14 @@ export function SecurityTab() {
     },
     onSubmit: async ({ value }) => {
       try {
+        if (value.newPassword.length < 6) {
+          toast.error("Password must be at least 6 characters")
+          return
+        }
+        if (value.newPassword !== value.confirmPassword) {
+          toast.error("Passwords do not match")
+          return
+        }
         await changePassword({ data: value })
         toast.success("Password changed successfully!")
         form.reset()
@@ -30,13 +77,10 @@ export function SecurityTab() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">Account Security</h2>
-      </div>
+      <h2 className="text-xl font-bold">Account Security</h2>
       <Card variant="admin" className="space-y-6 p-6">
         <p className="text-xs text-muted-foreground">
-          Change your admin account password. Google-only users can set a
-          password here to enable credential login.
+          Change your admin account password.
         </p>
         <form
           onSubmit={(e) => {
@@ -74,7 +118,9 @@ export function SecurityTab() {
                       />
                     </div>
                   </div>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  {isInvalid && (
+                    <FieldError errors={field.state.meta.errors} />
+                  )}
                 </Field>
               )
             }}

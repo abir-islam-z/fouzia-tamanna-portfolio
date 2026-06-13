@@ -8,6 +8,7 @@ import { ZodError } from "zod"
 import { decrypt, encrypt } from "./auth"
 import type { LoginSchema } from "./cms"
 import { getDb } from "./db.server"
+import { AppError, ErrorCode, throwError } from "./errors"
 import {
   buildObjectKey,
   checkR2Config,
@@ -18,24 +19,28 @@ import {
 } from "./r2.server"
 
 // --- UTILS ---
-const formatZodError = (err: any) => {
-  if (err instanceof ZodError) {
-    return err.issues.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ")
-  }
-  return err?.message || "An unexpected error occurred"
+/** Throw a VALIDATION_ERROR AppError from a caught ZodError or generic error. */
+function throwValidationError(err: any): never {
+  if (err instanceof AppError) throw err // already structured — propagate
+  const message =
+    err instanceof ZodError
+      ? err.issues.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ")
+      : err?.message || "An unexpected error occurred"
+  throwError(ErrorCode.BAD_REQUEST, message)
 }
 
 export async function checkAuth() {
   const session = getCookie("session")
-  if (!session) throw new Error("Unauthorized")
+  if (!session) throwError(ErrorCode.UNAUTHORIZED, "Unauthorized")
   try {
     const payload = await decrypt(session)
     const db = await getDb()
     const user = await db.user.findUnique({ where: { id: payload.userId } })
-    if (!user) throw new Error("Unauthorized")
+    if (!user) throwError(ErrorCode.UNAUTHORIZED, "Unauthorized")
     return payload
   } catch (e) {
-    throw new Error("Unauthorized")
+    if (e instanceof AppError) throw e
+    throwError(ErrorCode.UNAUTHORIZED, "Unauthorized")
   }
 }
 
@@ -46,9 +51,14 @@ export async function loginServer(data: LoginSchema) {
     console.log("[CMS.SERVER] loginServer calling.", { email, password })
     const db = await getDb()
     const user = await db.user.findUniqueOrThrow({ where: { email } })
+
+    if (!user.password) {
+      throwError(ErrorCode.UNAUTHORIZED, "Invalid credentials")
+    }
+
     const match = await bcrypt.compare(password, user.password)
 
-    if (!match) throw new Error("Invalid credentials")
+    if (!match) throwError(ErrorCode.UNAUTHORIZED, "Invalid credentials")
 
     const session = await encrypt({ userId: user.id, email: user.email })
     setCookie("session", session, {
@@ -61,7 +71,7 @@ export async function loginServer(data: LoginSchema) {
 
     return { success: true }
   } catch (error) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -84,6 +94,24 @@ export async function getUserServer() {
     return payload
   } catch (e) {
     return null
+  }
+}
+
+// --- USER PROFILE (for security tab) ---
+export async function getUserProfileServer() {
+  const session = await getUserServer()
+  if (!session) throwError(ErrorCode.UNAUTHORIZED, "Unauthorized")
+
+  const db = await getDb()
+  const user = await db.user.findUnique({
+    where: { id: session.userId },
+    select: { provider: true, password: true },
+  })
+  if (!user) throwError(ErrorCode.NOT_FOUND, "User not found")
+
+  return {
+    hasPassword: !!user.password,
+    isGoogleUser: user.provider === "google",
   }
 }
 
@@ -130,7 +158,7 @@ export async function updateHeroServer(data: any) {
       create: { id: "singleton", ...data },
     })
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -169,7 +197,7 @@ export async function updateFooterServer(data: any) {
       create: { id: "singleton", ...rest },
     })
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -192,7 +220,7 @@ export async function updateStatServer(data: any) {
     }
     return await (await getDb()).stat.create({ data: rest })
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -221,7 +249,7 @@ export async function updateExperienceServer(data: any) {
     }
     return await (await getDb()).experience.create({ data: rest })
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -291,7 +319,7 @@ export async function updateProjectServer(data: any) {
     }
 
     const { slug } = rest
-    if (!slug) throw new Error("Slug is required")
+    if (!slug) throwError(ErrorCode.BAD_REQUEST, "Slug is required")
 
     const { gallery: _, ...createRest } = data
     const project = await (await getDb()).project.create({ data: createRest })
@@ -309,7 +337,7 @@ export async function updateProjectServer(data: any) {
     }
     return project
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -347,7 +375,7 @@ export async function submitContactServer(data: any) {
 
     return message
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -380,7 +408,7 @@ export async function updateTestimonialServer(data: any) {
     }
     return await (await getDb()).testimonial.create({ data: rest })
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -409,7 +437,7 @@ export async function updateCertificationServer(data: any) {
     }
     return await (await getDb()).certification.create({ data: rest })
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -441,7 +469,7 @@ export async function updatePublicationServer(data: any) {
     }
     return await (await getDb()).publication.create({ data: rest })
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -484,14 +512,15 @@ export async function uploadMediaServer(input: {
 }) {
   await checkAuth()
 
-  if (!input.fileName) throw new Error("fileName is required")
-  if (!input.mimeType) throw new Error("mimeType is required")
-  if (input.size <= 0) throw new Error("File is empty")
+  if (!input.fileName) throwError(ErrorCode.BAD_REQUEST, "fileName is required")
+  if (!input.mimeType) throwError(ErrorCode.BAD_REQUEST, "mimeType is required")
+  if (input.size <= 0) throwError(ErrorCode.BAD_REQUEST, "File is empty")
 
   // 25 MB hard cap — adjust per your R2/bucket limits.
   const MAX_BYTES = 25 * 1024 * 1024
   if (input.size > MAX_BYTES) {
-    throw new Error(
+    throwError(
+      ErrorCode.PAYLOAD_TOO_LARGE,
       `File too large (${(input.size / 1024 / 1024).toFixed(2)} MB). Max is 25 MB.`
     )
   }
@@ -503,7 +532,7 @@ export async function uploadMediaServer(input: {
   } else if (input.dataBase64) {
     body = Uint8Array.from(Buffer.from(input.dataBase64, "base64"))
   } else {
-    throw new Error("No file data provided")
+    throwError(ErrorCode.BAD_REQUEST, "No file data provided")
   }
 
   const key = buildObjectKey(input.fileName, input.folder ?? "general")
@@ -545,8 +574,8 @@ export async function getPresignedUploadServer(input: {
   folder?: string
 }) {
   await checkAuth()
-  if (!input.fileName) throw new Error("fileName is required")
-  if (!input.mimeType) throw new Error("mimeType is required")
+  if (!input.fileName) throwError(ErrorCode.BAD_REQUEST, "fileName is required")
+  if (!input.mimeType) throwError(ErrorCode.BAD_REQUEST, "mimeType is required")
 
   const key = buildObjectKey(input.fileName, input.folder ?? "general")
   const uploadUrl = await getPresignedPutUrl({
@@ -739,7 +768,10 @@ export async function googleLoginCallbackServer(code: string) {
   })
 
   if (!user) {
-    throw new Error("You're not authorized to access this application.")
+    throwError(
+      ErrorCode.FORBIDDEN,
+      "You're not authorized to access this application."
+    )
   }
 
   // Link Google ID if not already linked
@@ -751,6 +783,12 @@ export async function googleLoginCallbackServer(code: string) {
         provider: "google",
       },
     })
+  } else if (user.googleId !== googleUser.id) {
+    // Google ID mismatch — different Google account for same email
+    throwError(
+      ErrorCode.FORBIDDEN,
+      "Google account mismatch. Please use the same account you used to sign up."
+    )
   }
 
   // Always set session — whether newly linked or already linked
@@ -768,7 +806,7 @@ export async function googleLoginCallbackServer(code: string) {
 
 // --- CHANGE PASSWORD ---
 export async function changePasswordServer(data: {
-  currentPassword: string
+  currentPassword?: string
   newPassword: string
   confirmPassword: string
 }) {
@@ -776,19 +814,22 @@ export async function changePasswordServer(data: {
     const { currentPassword, newPassword, confirmPassword } = data
 
     if (newPassword !== confirmPassword) {
-      throw new Error("New passwords do not match")
+      throwError(ErrorCode.BAD_REQUEST, "New passwords do not match")
     }
 
     if (newPassword.length < 6) {
-      throw new Error("New password must be at least 6 characters")
+      throwError(
+        ErrorCode.BAD_REQUEST,
+        "New password must be at least 6 characters"
+      )
     }
 
     const session = await getUserServer()
-    if (!session) throw new Error("Unauthorized")
+    if (!session) throwError(ErrorCode.UNAUTHORIZED, "Unauthorized")
 
     const db = await getDb()
     const user = await db.user.findUnique({ where: { id: session.userId } })
-    if (!user) throw new Error("User not found")
+    if (!user) throwError(ErrorCode.NOT_FOUND, "User not found")
 
     // Google-only users don't have a password yet — allow setting one
     if (user.provider === "google" && !user.password) {
@@ -800,8 +841,21 @@ export async function changePasswordServer(data: {
       return { success: true, message: "Password set successfully" }
     }
 
+    // For existing password users, current password is required
+    if (!currentPassword) {
+      throwError(ErrorCode.FORBIDDEN, "Current password is required")
+    }
+
+    if (!user.password) {
+      throwError(
+        ErrorCode.UNAUTHORIZED,
+        "No password set for this account. Please use the password setup flow."
+      )
+    }
+
     const match = await bcrypt.compare(currentPassword, user.password)
-    if (!match) throw new Error("Current password is incorrect")
+    if (!match)
+      throwError(ErrorCode.UNAUTHORIZED, "Current password is incorrect")
 
     const hashedPassword = await bcrypt.hash(newPassword, 12)
     await db.user.update({
@@ -811,7 +865,66 @@ export async function changePasswordServer(data: {
 
     return { success: true }
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
+  }
+}
+
+// --- SEND PASSWORD SETUP EMAIL (for Google-only users) ---
+export async function sendPasswordSetupEmailServer() {
+  try {
+    const { generatePasswordResetToken, hashPasswordResetToken } =
+      await import("./auth")
+    const { sendPasswordResetEmail, isEmailConfigured } =
+      await import("./email.server")
+
+    const appUrl = process.env.APP_URL || "http://localhost:3000"
+
+    const session = await getUserServer()
+    if (!session) throwError(ErrorCode.UNAUTHORIZED, "Unauthorized")
+
+    const db = await getDb()
+    const user = await db.user.findUnique({ where: { id: session.userId } })
+    if (!user) throwError(ErrorCode.NOT_FOUND, "User not found")
+
+    if (user.password) {
+      return {
+        success: true,
+        message: "A password is already set for this account.",
+      }
+    }
+
+    // Generate and store reset token
+    const token = generatePasswordResetToken()
+    const hashedToken = hashPasswordResetToken(token)
+    const expiry = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        passwordResetToken: hashedToken,
+        passwordResetExpiry: expiry,
+      },
+    })
+
+    // Send email via Resend
+    if (isEmailConfigured()) {
+      const resetUrl = `${appUrl}/reset-password?token=${token}`
+      await sendPasswordResetEmail(user.email, resetUrl)
+    } else {
+      console.warn(
+        "[CMS.SERVER] RESEND_API_KEY not configured. Password setup email not sent."
+      )
+      console.warn(
+        `[CMS.SERVER] Setup URL: ${appUrl}/reset-password?token=${token}`
+      )
+    }
+
+    return {
+      success: true,
+      message: "Password setup link sent to your email.",
+    }
+  } catch (error: any) {
+    throwValidationError(error)
   }
 }
 
@@ -830,15 +943,6 @@ export async function forgotPasswordServer(data: { email: string }) {
 
     // Always return success to prevent email enumeration
     if (!user) {
-      return {
-        success: true,
-        message:
-          "If an account exists with that email, you will receive a reset link.",
-      }
-    }
-
-    // Google-only users without passwords
-    if (user.provider === "google" && !user.password) {
       return {
         success: true,
         message:
@@ -878,7 +982,7 @@ export async function forgotPasswordServer(data: { email: string }) {
         "If an account exists with that email, you will receive a reset link.",
     }
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }
 
@@ -892,11 +996,14 @@ export async function resetPasswordServer(data: {
     const { token, password, confirmPassword } = data
 
     if (password !== confirmPassword) {
-      throw new Error("Passwords do not match")
+      throwError(ErrorCode.BAD_REQUEST, "Passwords do not match")
     }
 
     if (password.length < 6) {
-      throw new Error("Password must be at least 6 characters")
+      throwError(
+        ErrorCode.BAD_REQUEST,
+        "Password must be at least 6 characters"
+      )
     }
 
     const { hashPasswordResetToken } = await import("./auth")
@@ -911,7 +1018,7 @@ export async function resetPasswordServer(data: {
     })
 
     if (!user) {
-      throw new Error("Invalid or expired reset token")
+      throwError(ErrorCode.BAD_REQUEST, "Invalid or expired reset token")
     }
 
     const hashedPassword = await bcrypt.hash(password, 12)
@@ -926,6 +1033,6 @@ export async function resetPasswordServer(data: {
 
     return { success: true }
   } catch (error: any) {
-    throw new Error(formatZodError(error))
+    throwValidationError(error)
   }
 }

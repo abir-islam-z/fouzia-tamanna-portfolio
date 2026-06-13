@@ -10,7 +10,7 @@ datasource db {
 model User {
   id                   String    @id @default(uuid())
   email                String   @unique
-  password             String
+  password             String?
   provider             String    @default("local")
   googleId             String?   @unique
   passwordResetToken   String?

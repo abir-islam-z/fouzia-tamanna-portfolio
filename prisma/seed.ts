@@ -21,7 +21,7 @@ async function main() {
   await prisma.landingSection.deleteMany({})
   await prisma.siteSettings.deleteMany({})
 
-  // --- User ---
+  // --- Users ---
   const hashedPassword = await bcrypt.hash("password123", 10)
   await prisma.user.create({
     data: {
@@ -29,7 +29,17 @@ async function main() {
       password: hashedPassword,
     },
   })
-  console.log("User 'admin' with password 'password123' created.")
+  console.log("User 'admin@example.com' with password 'password123' created.")
+
+  await prisma.user.create({
+    data: {
+      email: "fouzia.tamanna@gmail.com",
+      provider: "google",
+    },
+  })
+  console.log(
+    "User 'fouzia.tamanna@gmail.com' created (Google-only, no password)."
+  )
 
   // --- Hero ---
   await prisma.hero.create({

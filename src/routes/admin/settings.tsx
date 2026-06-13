@@ -11,6 +11,7 @@ import {
   landingSectionsQuery,
   r2StatusQuery,
   siteSettingsQuery,
+  userProfileQuery,
 } from "@/lib/queries"
 import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
@@ -74,6 +75,7 @@ export const Route = createFileRoute("/admin/settings")({
       queryClient.ensureQueryData(landingSectionsQuery),
       queryClient.ensureQueryData(siteSettingsQuery),
       queryClient.ensureQueryData(r2StatusQuery),
+      queryClient.ensureQueryData(userProfileQuery),
     ])
   },
   component: AdminSettingsComponent,

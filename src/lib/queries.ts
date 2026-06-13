@@ -29,6 +29,7 @@ import {
   getSiteSettings,
   getStats,
   getTestimonials,
+  getUserProfile,
   reorderLandingSections,
   submitContact,
   updateCertification,
@@ -70,6 +71,7 @@ export const queryKeys = {
   r2Status: ["r2Status"] as const,
   landingSections: ["landingSections"] as const,
   siteSettings: ["siteSettings"] as const,
+  userProfile: ["userProfile"] as const,
 } as const
 
 // ─── Query Options ───────────────────────────────────────────────────
@@ -135,6 +137,11 @@ export const mediaItemQuery = (id: string) =>
 export const r2StatusQuery = queryOptions({
   queryKey: queryKeys.r2Status,
   queryFn: () => getR2Status(),
+})
+
+export const userProfileQuery = queryOptions({
+  queryKey: queryKeys.userProfile,
+  queryFn: () => getUserProfile(),
 })
 
 export const landingSectionsQuery = queryOptions({

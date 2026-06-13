@@ -499,9 +499,25 @@ export const googleLoginCallback = createServerFn({ method: "POST" })
     return googleLoginCallbackServer(code)
   })
 
+// --- USER PROFILE ---
+export const getUserProfile = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const { getUserProfileServer } = await import("./cms.server")
+    return getUserProfileServer()
+  }
+)
+
+// --- SEND PASSWORD SETUP EMAIL ---
+export const sendPasswordSetupEmail = createServerFn({
+  method: "POST",
+}).handler(async () => {
+  const { sendPasswordSetupEmailServer } = await import("./cms.server")
+  return sendPasswordSetupEmailServer()
+})
+
 // --- CHANGE PASSWORD ---
 export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, "Current password is required"),
+  currentPassword: z.string().optional(),
   newPassword: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(1, "Please confirm your password"),
 })
