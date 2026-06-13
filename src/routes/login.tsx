@@ -3,10 +3,15 @@ import { Card } from "@/components/ui/card"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import PasswordField from "@/components/ui/password-field"
-import { getGoogleAuthUrl, login, loginSchema } from "@/lib/cms"
+import { getGoogleAuthUrl, getUser, login, loginSchema } from "@/lib/cms"
 import { RiGoogleFill, RiLockPasswordLine, RiUser3Line } from "@remixicon/react"
 import { useForm } from "@tanstack/react-form"
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
+import {
+  Link,
+  createFileRoute,
+  redirect,
+  useNavigate,
+} from "@tanstack/react-router"
 import { toast } from "sonner"
 
 function LoginPage() {
@@ -177,5 +182,11 @@ function LoginPage() {
 }
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: async () => {
+    const user = await getUser()
+    if (user) {
+      throw redirect({ to: "/admin" })
+    }
+  },
   component: LoginPage,
 })
