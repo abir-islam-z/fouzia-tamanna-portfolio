@@ -457,7 +457,6 @@ async function main() {
       contactSubtext: null,
       marqueeItems:
         "// SYS://fouzia_tamanna, SOC ANALYST, // LONDON UK, // THREAT_HUNT, // INCIDENT_RESPONSE, // OPEN_TO_WORK, // ZERO_TRUST",
-      navbarBrand: "Fouzia Tamanna",
       updatedAt: new Date(),
     },
   })

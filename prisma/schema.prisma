@@ -187,7 +187,6 @@ model SiteSettings {
   contactHeading   String?
   contactSubtext   String?
   marqueeItems     String?
-  navbarBrand      String?
   textLogo         String?
   updatedAt        DateTime @updatedAt
 }

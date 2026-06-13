@@ -164,7 +164,6 @@ export const siteSettingsSchema = z.object({
   contactHeading: z.string().nullable().optional(),
   contactSubtext: z.string().nullable().optional(),
   marqueeItems: z.string().nullable().optional(),
-  navbarBrand: z.string().nullable().optional(),
   textLogo: z.string().nullable().optional(),
 })
 
