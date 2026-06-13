@@ -13,8 +13,8 @@ import {
   siteSettingsQuery,
   userProfileQuery,
 } from "@/lib/queries"
-import { createFileRoute } from "@tanstack/react-router"
-import { useState } from "react"
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router"
+import { z } from "zod"
 
 const TABS = [
   { value: "hero", label: "Hero" },
@@ -24,8 +24,13 @@ const TABS = [
   { value: "security", label: "Security" },
 ] as const
 
+const settingsSearchSchema = z.object({
+  tab: z.enum(["hero", "site", "footer", "sections", "security"]).catch("hero"),
+})
+
 function AdminSettingsComponent() {
-  const [activeTab, setActiveTab] = useState("hero")
+  const { tab } = useSearch({ from: "/admin/settings" })
+  const navigate = useNavigate({ from: "/admin/settings" })
 
   return (
     <div className="space-y-6">
@@ -37,11 +42,16 @@ function AdminSettingsComponent() {
         </p>
       </header>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs
+        value={tab}
+        onValueChange={(value) =>
+          navigate({ search: { tab: value as typeof tab } })
+        }
+      >
         <TabsList>
-          {TABS.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
-              {tab.label}
+          {TABS.map((t) => (
+            <TabsTrigger key={t.value} value={t.value}>
+              {t.label}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -67,6 +77,7 @@ function AdminSettingsComponent() {
 }
 
 export const Route = createFileRoute("/admin/settings")({
+  validateSearch: settingsSearchSchema,
   loader: async ({ context }) => {
     const queryClient = getQueryClient(context)
     await Promise.all([
