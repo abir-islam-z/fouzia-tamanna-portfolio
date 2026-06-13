@@ -42,6 +42,15 @@ export function Navbar() {
               alt={`${brandName} logo`}
               className="h-8 w-auto max-w-40 object-contain"
             />
+          ) : textLogo ? (
+            <>
+              <span className="group-hover:neon-glow cyber-chamfer-sm relative flex h-9 w-9 items-center justify-center border border-primary text-primary transition-all">
+                <RiShieldKeyholeLine size={18} />
+              </span>
+              <span className="font-display text-sm font-bold tracking-[0.18em] uppercase md:text-base">
+                <span className="text-glow-sm text-primary">{textLogo}</span>
+              </span>
+            </>
           ) : (
             <>
               <span className="group-hover:neon-glow cyber-chamfer-sm relative flex h-9 w-9 items-center justify-center border border-primary text-primary transition-all">

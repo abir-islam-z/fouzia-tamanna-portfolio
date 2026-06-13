@@ -353,8 +353,11 @@ export async function submitContactServer(data: any) {
 
     // Best-effort notification email to the site owner
     try {
-      const { sendContactNotification, isEmailConfigured } =
-        await import("./email.server")
+      const {
+        sendContactNotification,
+        sendContactConfirmation,
+        isEmailConfigured,
+      } = await import("./email.server")
       if (isEmailConfigured()) {
         const footer = await (
           await getDb()
@@ -365,6 +368,14 @@ export async function submitContactServer(data: any) {
           await sendContactNotification(footer.email, {
             name: data.name,
             email: data.email,
+            message: data.message,
+          })
+        }
+
+        // Send confirmation email to the submitter
+        if (data.email) {
+          await sendContactConfirmation(data.email, {
+            name: data.name,
             message: data.message,
           })
         }

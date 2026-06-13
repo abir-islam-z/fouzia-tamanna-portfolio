@@ -1,13 +1,11 @@
 import { Resend } from "resend"
 
 const resendApiKey = process.env.RESEND_API_KEY
-const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"
+const fromEmail = process.env.RESEND_FROM_EMAIL!
 
 function getClient() {
   if (!resendApiKey) {
-    throw new Error(
-      "RESEND_API_KEY is not set. Emails will not be sent."
-    )
+    throw new Error("RESEND_API_KEY is not set. Emails will not be sent.")
   }
   return new Resend(resendApiKey)
 }
@@ -72,6 +70,39 @@ export async function sendContactNotification(
   if (error) {
     console.error("[EMAIL] Failed to send contact notification:", error)
     throw new Error(error.message || "Failed to send email")
+  }
+
+  return result
+}
+
+// --- Contact Form Confirmation Email (sent to the submitter) ---
+export async function sendContactConfirmation(
+  to: string,
+  data: { name: string; message: string }
+) {
+  const resend = getClient()
+
+  const { data: result, error } = await resend.emails.send({
+    from: fromEmail,
+    to,
+    subject: `Thanks for reaching out, ${data.name}!`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #111;">Message Received</h2>
+        <p style="color: #333;">Hi ${data.name},</p>
+        <p style="color: #333;">Thank you for reaching out! I've received your message and will get back to you as soon as possible.</p>
+        <div style="background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0;">
+          <p style="color: #666; font-size: 13px; margin: 0 0 4px;"><strong>Your message:</strong></p>
+          <p style="color: #333; margin: 0; white-space: pre-wrap;">${data.message}</p>
+        </div>
+        <p style="color: #999; font-size: 13px;">This is an automated confirmation — no need to reply to this email.</p>
+      </div>
+    `,
+  })
+
+  if (error) {
+    console.error("[EMAIL] Failed to send contact confirmation:", error)
+    // Non-critical — don't throw, just log
   }
 
   return result
