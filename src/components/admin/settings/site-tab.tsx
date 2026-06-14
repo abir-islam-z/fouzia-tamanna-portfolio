@@ -15,7 +15,6 @@ interface SiteSettings {
   contactHeading: string | null
   contactSubtext: string | null
   marqueeItems: string | null
-  navbarBrand: string | null
   textLogo: string | null
 }
 
@@ -56,17 +55,6 @@ export function SiteTab() {
           hero, contact section, and footer marquee.
         </p>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label variant="admin">Navbar Brand</Label>
-            <Input
-              variant="admin"
-              value={siteState.navbarBrand ?? ""}
-              onChange={(e) =>
-                setSiteState({ ...siteState, navbarBrand: e.target.value })
-              }
-              placeholder="Fouzia Tamanna"
-            />
-          </div>
           <div className="space-y-1.5">
             <Label variant="admin">Text Logo</Label>
             <Input

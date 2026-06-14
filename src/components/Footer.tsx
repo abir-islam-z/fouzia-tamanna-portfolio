@@ -1,4 +1,4 @@
-import { footerQuery, siteSettingsQuery } from "@/lib/queries"
+import { footerQuery, heroQuery, siteSettingsQuery } from "@/lib/queries"
 import {
   RiGithubFill,
   RiLinkedinBoxFill,
@@ -20,13 +20,19 @@ interface FooterData {
 
 interface SiteSettings {
   marqueeItems: string | null
+  textLogo: string | null
 }
 
 export default function Footer() {
   const { data: rawFooter } = useSuspenseQuery(footerQuery)
   const { data: rawSettings } = useSuspenseQuery(siteSettingsQuery)
+  const { data: hero } = useSuspenseQuery(heroQuery)
   const f = rawFooter as any
   const s = rawSettings as SiteSettings | null
+
+  const textLogo = s?.textLogo
+  const logoUrl = textLogo ? undefined : (hero as any)?.logoUrl
+  const brandName = textLogo || (hero as any)?.title || "Fouzia Tamanna"
 
   const footer: FooterData = {
     bio: f?.bio ?? "",
@@ -76,13 +82,27 @@ export default function Footer() {
           <div className="grid gap-12 pt-4 text-center md:grid-cols-2 md:gap-10 md:text-left lg:grid-cols-4">
             <div className="space-y-5 md:space-y-6">
               <div className="flex items-center justify-center gap-3 md:justify-start">
-                <span className="cyber-chamfer-sm relative flex h-9 w-9 items-center justify-center border border-primary text-primary">
-                  <RiShieldKeyholeLine size={20} />
-                </span>
-                <span className="font-display text-base font-bold tracking-[0.18em] uppercase md:text-lg">
-                  <span className="text-glow-sm text-primary">Fouzia</span>
-                  <span className="text-foreground"> Tamanna</span>
-                </span>
+                {logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt={`${brandName} logo`}
+                    className="h-9 w-auto max-w-48 object-contain"
+                  />
+                ) : (
+                  <>
+                    <span className="cyber-chamfer-sm relative flex h-9 w-9 items-center justify-center border border-primary text-primary">
+                      <RiShieldKeyholeLine size={20} />
+                    </span>
+                    <span className="font-display text-base font-bold tracking-[0.18em] uppercase md:text-lg">
+                      <span className="text-glow-sm text-primary">
+                        {textLogo || "Fouzia"}
+                      </span>
+                      {!textLogo && (
+                        <span className="text-foreground"> Tamanna</span>
+                      )}
+                    </span>
+                  </>
+                )}
               </div>
               {footer.bio && (
                 <p className="mx-auto max-w-62.5 font-mono text-sm leading-relaxed text-muted-foreground md:mx-0">
